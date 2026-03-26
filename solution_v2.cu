@@ -141,7 +141,7 @@ __device__ __forceinline__ void heap_sift_down(long long *dist, int *idx, int k)
     }
 
 // Optimization 1 & 2: __launch_bounds__(128, 2) + shared memory tiling
-__global__ __launch_bounds__(128, 2) void knn_kernel(const int * __restrict__ xs,
+__global__ __launch_bounds__(128) void knn_kernel(const int * __restrict__ xs,
                            const int * __restrict__ ys,
                            const int * __restrict__ zs,
                            const int * __restrict__ intensity,
@@ -436,9 +436,9 @@ void kmeans_update_kernel(int       *cx, int       *cy, int       *cz,
 {
     const int c = blockIdx.x * blockDim.x + threadIdx.x;
     if (c >= k || cnt[c] == 0) return;
-    cx[c] = static_cast<int>((long long)sum_x[c] / cnt[c]) - 10001;
-    cy[c] = static_cast<int>((long long)sum_y[c] / cnt[c]) - 10001;
-    cz[c] = static_cast<int>((long long)sum_z[c] / cnt[c]) - 10001;
+    cx[c] = static_cast<int>(((long long)sum_x[c] - (long long)cnt[c] * 10001) / cnt[c]);
+    cy[c] = static_cast<int>(((long long)sum_y[c] - (long long)cnt[c] * 10001) / cnt[c]);
+    cz[c] = static_cast<int>(((long long)sum_z[c] - (long long)cnt[c] * 10001) / cnt[c]);
 }
 
 __global__
