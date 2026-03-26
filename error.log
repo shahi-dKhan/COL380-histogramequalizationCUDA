@@ -1,0 +1,43 @@
+nvcc warning : The 'compute_35', 'compute_37', 'compute_50', 'sm_35', 'sm_37' and 'sm_50' architectures are deprecated, and may be removed in a future release (Use -Wno-deprecated-gpu-targets to suppress warning).
+Traceback (most recent call last):
+  File "<stdin>", line 15, in <module>
+  File "/home/apps/anaconda3/5.2.0/gnu/lib/python3.6/subprocess.py", line 403, in run
+    with Popen(*popenargs, **kwargs) as process:
+TypeError: __init__() got an unexpected keyword argument 'capture_output'
+Traceback (most recent call last):
+  File "<stdin>", line 15, in <module>
+  File "/home/apps/anaconda3/5.2.0/gnu/lib/python3.6/subprocess.py", line 403, in run
+    with Popen(*popenargs, **kwargs) as process:
+TypeError: __init__() got an unexpected keyword argument 'capture_output'
+Traceback (most recent call last):
+  File "<stdin>", line 15, in <module>
+  File "/home/apps/anaconda3/5.2.0/gnu/lib/python3.6/subprocess.py", line 403, in run
+    with Popen(*popenargs, **kwargs) as process:
+TypeError: __init__() got an unexpected keyword argument 'capture_output'
+Traceback (most recent call last):
+  File "<stdin>", line 15, in <module>
+  File "/home/apps/anaconda3/5.2.0/gnu/lib/python3.6/subprocess.py", line 403, in run
+    with Popen(*popenargs, **kwargs) as process:
+TypeError: __init__() got an unexpected keyword argument 'capture_output'
+Traceback (most recent call last):
+  File "<stdin>", line 15, in <module>
+  File "/home/apps/anaconda3/5.2.0/gnu/lib/python3.6/subprocess.py", line 403, in run
+    with Popen(*popenargs, **kwargs) as process:
+TypeError: __init__() got an unexpected keyword argument 'capture_output'
+Traceback (most recent call last):
+  File "<stdin>", line 15, in <module>
+  File "/home/apps/anaconda3/5.2.0/gnu/lib/python3.6/subprocess.py", line 403, in run
+    with Popen(*popenargs, **kwargs) as process:
+TypeError: __init__() got an unexpected keyword argument 'capture_output'
+Traceback (most recent call last):
+  File "<stdin>", line 15, in <module>
+  File "/home/apps/anaconda3/5.2.0/gnu/lib/python3.6/subprocess.py", line 403, in run
+    with Popen(*popenargs, **kwargs) as process:
+TypeError: __init__() got an unexpected keyword argument 'capture_output'
+Traceback (most recent call last):
+  File "<stdin>", line 15, in <module>
+  File "/home/apps/anaconda3/5.2.0/gnu/lib/python3.6/subprocess.py", line 403, in run
+    with Popen(*popenargs, **kwargs) as process:
+TypeError: __init__() got an unexpected keyword argument 'capture_output'
+nvcc warning : The 'compute_35', 'compute_37', 'compute_50', 'sm_35', 'sm_37' and 'sm_50' architectures are deprecated, and may be removed in a future release (Use -Wno-deprecated-gpu-targets to suppress warning).
+nvcc warning : The 'compute_35', 'compute_37', 'compute_50', 'sm_35', 'sm_37' and 'sm_50' architectures are deprecated, and may be removed in a future release (Use -Wno-deprecated-gpu-targets to suppress warning).

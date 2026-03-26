@@ -1,0 +1,1462 @@
+========================================
+ BUILD
+========================================
+rm -f histogram_eq knn.txt approx_knn.txt kmeans.txt
+nvcc solution.cu -O3 -arch=sm_35 -Xcompiler -fopenmp -o histogram_eq
+Thu Mar 26 18:53:25 2026       
++-----------------------------------------------------------------------------+
+| NVIDIA-SMI 470.82.01    Driver Version: 470.82.01    CUDA Version: 11.4     |
+|-------------------------------+----------------------+----------------------+
+| GPU  Name        Persistence-M| Bus-Id        Disp.A | Volatile Uncorr. ECC |
+| Fan  Temp  Perf  Pwr:Usage/Cap|         Memory-Usage | GPU-Util  Compute M. |
+|                               |                      |               MIG M. |
+|===============================+======================+======================|
+|   0  Tesla K40m          Off  | 00000000:84:00.0 Off |                    0 |
+| N/A   21C    P8    21W / 235W |      6MiB / 11441MiB |      0%      Default |
+|                               |                      |                  N/A |
++-------------------------------+----------------------+----------------------+
+                                                                               
++-----------------------------------------------------------------------------+
+| Processes:                                                                  |
+|  GPU   GI   CI        PID   Type   Process name                  GPU Memory |
+|        ID   ID                                                   Usage      |
+|=============================================================================|
+|    0   N/A  N/A      3003      G   /usr/bin/X                          5MiB |
++-----------------------------------------------------------------------------+
+
+
+###################################################################
+  VARIANT: tiled  (./histogram_eq)
+###################################################################
+========================================
+ GROUP A: Vary N  (k=32, T=20, uniform)
+========================================
+[vary_n/tiled] n1000  n=1000 k=32 T=20 dist=uniform R=10000
+Dataset written to input.txt
+N=1000  k=32  T=20
+KNN:        0.0931921 s
+Approx KNN: 0.00610995 s
+K-Means:    0.00283694 s
+  approx_mae_vs_knn=0.1430
+
+[vary_n/tiled] n5000  n=5000 k=32 T=20 dist=uniform R=10000
+Dataset written to input.txt
+N=5000  k=32  T=20
+KNN:        0.0946 s
+Approx KNN: 0.012233 s
+K-Means:    0.00477099 s
+  approx_mae_vs_knn=0.1944
+
+[vary_n/tiled] n10000  n=10000 k=32 T=20 dist=uniform R=10000
+Dataset written to input.txt
+N=10000  k=32  T=20
+KNN:        0.112862 s
+Approx KNN: 0.0137279 s
+K-Means:    0.00647306 s
+  approx_mae_vs_knn=0.1694
+
+[vary_n/tiled] n25000  n=25000 k=32 T=20 dist=uniform R=10000
+Dataset written to input.txt
+N=25000  k=32  T=20
+KNN:        0.221639 s
+Approx KNN: 0.0384772 s
+K-Means:    0.0122108 s
+  approx_mae_vs_knn=0.0936
+
+[vary_n/tiled] n50000  n=50000 k=32 T=20 dist=uniform R=10000
+Dataset written to input.txt
+N=50000  k=32  T=20
+KNN:        0.423846 s
+Approx KNN: 0.07602 s
+K-Means:    0.0222352 s
+  approx_mae_vs_knn=0.0767
+
+[vary_n/tiled] n100000  n=100000 k=32 T=20 dist=uniform R=10000
+Dataset written to input.txt
+N=100000  k=32  T=20
+KNN:        0.964523 s
+Approx KNN: 0.152515 s
+K-Means:    0.0415089 s
+  approx_mae_vs_knn=0.0536
+
+========================================
+ GROUP B: Vary K  (n=10000, T=20, uniform)
+========================================
+[vary_k/tiled] k1  n=10000 k=1 T=20 dist=uniform R=10000
+Dataset written to input.txt
+N=10000  k=1  T=20
+KNN:        0.0865259 s
+Approx KNN: 0.013833 s
+K-Means:    0.00560999 s
+  approx_mae_vs_knn=0.0255
+
+[vary_k/tiled] k4  n=10000 k=4 T=20 dist=uniform R=10000
+Dataset written to input.txt
+N=10000  k=4  T=20
+KNN:        0.0858681 s
+Approx KNN: 0.015403 s
+K-Means:    0.00623798 s
+  approx_mae_vs_knn=0.7327
+
+[vary_k/tiled] k8  n=10000 k=8 T=20 dist=uniform R=10000
+Dataset written to input.txt
+N=10000  k=8  T=20
+KNN:        0.0895391 s
+Approx KNN: 0.014159 s
+K-Means:    0.00633788 s
+  approx_mae_vs_knn=2.1270
+
+[vary_k/tiled] k16  n=10000 k=16 T=20 dist=uniform R=10000
+Dataset written to input.txt
+N=10000  k=16  T=20
+KNN:        0.0954361 s
+Approx KNN: 0.00975704 s
+K-Means:    0.00644207 s
+  approx_mae_vs_knn=0.3054
+
+[vary_k/tiled] k32  n=10000 k=32 T=20 dist=uniform R=10000
+Dataset written to input.txt
+N=10000  k=32  T=20
+KNN:        0.112634 s
+Approx KNN: 0.0233381 s
+K-Means:    0.00644398 s
+  approx_mae_vs_knn=0.1627
+
+[vary_k/tiled] k64  n=10000 k=64 T=20 dist=uniform R=10000
+Dataset written to input.txt
+N=10000  k=64  T=20
+KNN:        0.155752 s
+Approx KNN: 0.0203929 s
+K-Means:    0.00661302 s
+  approx_mae_vs_knn=0.1734
+
+[vary_k/tiled] k128  n=10000 k=128 T=20 dist=uniform R=10000
+Dataset written to input.txt
+N=10000  k=128  T=20
+KNN:        0.248054 s
+Approx KNN: 0.045063 s
+K-Means:    0.00713301 s
+  approx_mae_vs_knn=0.1307
+
+========================================
+ GROUP C: Vary T  (n=10000, k=32, uniform)
+========================================
+[vary_T/tiled] T1  n=10000 k=32 T=1 dist=uniform R=10000
+Dataset written to input.txt
+N=10000  k=32  T=1
+KNN:        0.112981 s
+Approx KNN: 0.0129001 s
+K-Means:    0.00506687 s
+  approx_mae_vs_knn=0.1546
+
+[vary_T/tiled] T5  n=10000 k=32 T=5 dist=uniform R=10000
+Dataset written to input.txt
+N=10000  k=32  T=5
+KNN:        0.113106 s
+Approx KNN: 0.015662 s
+K-Means:    0.00539613 s
+  approx_mae_vs_knn=0.1569
+
+[vary_T/tiled] T10  n=10000 k=32 T=10 dist=uniform R=10000
+Dataset written to input.txt
+N=10000  k=32  T=10
+KNN:        0.113087 s
+Approx KNN: 0.0202069 s
+K-Means:    0.00600219 s
+  approx_mae_vs_knn=0.1311
+
+[vary_T/tiled] T20  n=10000 k=32 T=20 dist=uniform R=10000
+Dataset written to input.txt
+N=10000  k=32  T=20
+KNN:        0.11285 s
+Approx KNN: 0.012213 s
+K-Means:    0.00657606 s
+  approx_mae_vs_knn=0.1717
+
+[vary_T/tiled] T50  n=10000 k=32 T=50 dist=uniform R=10000
+Dataset written to input.txt
+N=10000  k=32  T=50
+KNN:        0.112555 s
+Approx KNN: 0.0125799 s
+K-Means:    0.00844193 s
+  approx_mae_vs_knn=0.1596
+
+========================================
+ GROUP D: Distributions  (n=10000, k=32, T=20)
+========================================
+[dist/tiled] uniform  n=10000 k=32 T=20 dist=uniform R=10000
+Dataset written to input.txt
+N=10000  k=32  T=20
+KNN:        0.111773 s
+Approx KNN: 0.012666 s
+K-Means:    0.00637507 s
+  approx_mae_vs_knn=0.1755
+
+[dist/tiled] dense  n=10000 k=32 T=20 dist=dense R=10000
+Dataset written to input.txt
+N=10000  k=32  T=20
+KNN:        0.111961 s
+Approx KNN: 0.018415 s
+K-Means:    0.00656605 s
+  approx_mae_vs_knn=0.1530
+
+[dist/tiled] clustered  n=10000 k=32 T=20 dist=clustered R=10000
+Dataset written to input.txt
+N=10000  k=32  T=20
+KNN:        0.113154 s
+Approx KNN: 0.0127149 s
+K-Means:    0.00643706 s
+  approx_mae_vs_knn=0.1683
+
+[dist/tiled] skewed  n=10000 k=32 T=20 dist=skewed R=10000
+Dataset written to input.txt
+N=10000  k=32  T=20
+KNN:        0.11339 s
+Approx KNN: 0.0187058 s
+K-Means:    0.00644803 s
+  approx_mae_vs_knn=0.1667
+
+========================================
+ GROUP E: Correctness  (n=1000, vs sequential)
+========================================
+[correctness/tiled] k1_uniform  n=1000 k=1 T=20 dist=uniform R=10000
+Dataset written to input.txt
+N=1000  k=1  T=20
+KNN:        0.0768099 s
+Approx KNN: 0.0118771 s
+K-Means:    0.00184393 s
+
+[correctness/tiled] k10_uniform  n=1000 k=10 T=20 dist=uniform R=10000
+Dataset written to input.txt
+N=1000  k=10  T=20
+KNN:        0.0781949 s
+Approx KNN: 0.0120711 s
+K-Means:    0.00264883 s
+
+[correctness/tiled] k32_uniform  n=1000 k=32 T=20 dist=uniform R=10000
+Dataset written to input.txt
+N=1000  k=32  T=20
+KNN:        0.0808558 s
+Approx KNN: 0.0123022 s
+K-Means:    0.00305295 s
+
+[correctness/tiled] k64_uniform  n=1000 k=64 T=20 dist=uniform R=10000
+Dataset written to input.txt
+N=1000  k=64  T=20
+KNN:        0.0846059 s
+Approx KNN: 0.00912809 s
+K-Means:    0.00242496 s
+
+[correctness/tiled] k128_uniform  n=1000 k=128 T=20 dist=uniform R=10000
+Dataset written to input.txt
+N=1000  k=128  T=20
+KNN:        0.0880828 s
+Approx KNN: 0.0199611 s
+K-Means:    0.00293303 s
+
+[correctness/tiled] k32_dense  n=1000 k=32 T=20 dist=dense R=10000
+Dataset written to input.txt
+N=1000  k=32  T=20
+KNN:        0.0808721 s
+Approx KNN: 0.0123811 s
+K-Means:    0.00306702 s
+
+[correctness/tiled] k32_clustered  n=1000 k=32 T=20 dist=clustered R=10000
+Dataset written to input.txt
+N=1000  k=32  T=20
+KNN:        0.0816751 s
+Approx KNN: 0.0122728 s
+K-Means:    0.00277615 s
+
+[correctness/tiled] k32_skewed  n=1000 k=32 T=20 dist=skewed R=10000
+Dataset written to input.txt
+N=1000  k=32  T=20
+KNN:        0.08146 s
+Approx KNN: 0.00929999 s
+K-Means:    0.00287104 s
+
+========================================
+ GROUP F: Large scale
+========================================
+[large/tiled] n100k_k128_T50  n=100000 k=128 T=50 dist=uniform R=10000
+Dataset written to input.txt
+N=100000  k=128  T=50
+KNN:        4.0951 s
+Approx KNN: 0.591681 s
+K-Means:    0.0564282 s
+  approx_mae_vs_knn=0.0508
+
+[large/tiled] n100k_k32_uniform  n=100000 k=32 T=20 dist=uniform R=10000
+Dataset written to input.txt
+N=100000  k=32  T=20
+KNN:        0.963923 s
+Approx KNN: 0.145101 s
+K-Means:    0.0413699 s
+  approx_mae_vs_knn=0.0544
+
+[large/tiled] n100k_k32_dense  n=100000 k=32 T=20 dist=dense R=10000
+Dataset written to input.txt
+N=100000  k=32  T=20
+KNN:        1.00836 s
+Approx KNN: 0.148422 s
+K-Means:    0.0416501 s
+  approx_mae_vs_knn=0.0510
+
+[large/tiled] n100k_k32_clustered  n=100000 k=32 T=20 dist=clustered R=10000
+Dataset written to input.txt
+N=100000  k=32  T=20
+KNN:        0.961551 s
+Approx KNN: 0.146715 s
+K-Means:    0.0414569 s
+  approx_mae_vs_knn=0.0505
+
+========================================
+ GROUP G: Vary coordinate range  (n=10000, k=32, T=20, uniform)
+========================================
+[vary_range/tiled] R100  n=10000 k=32 T=20 dist=uniform R=100
+Dataset written to input.txt
+N=10000  k=32  T=20
+KNN:        0.112547 s
+Approx KNN: 0.020963 s
+K-Means:    0.00703216 s
+  approx_mae_vs_knn=0.1592
+
+[vary_range/tiled] R1000  n=10000 k=32 T=20 dist=uniform R=1000
+Dataset written to input.txt
+N=10000  k=32  T=20
+KNN:        0.112218 s
+Approx KNN: 0.018357 s
+K-Means:    0.00679588 s
+  approx_mae_vs_knn=0.1500
+
+[vary_range/tiled] R10000  n=10000 k=32 T=20 dist=uniform R=10000
+Dataset written to input.txt
+N=10000  k=32  T=20
+KNN:        0.112134 s
+Approx KNN: 0.0203249 s
+K-Means:    0.00643802 s
+  approx_mae_vs_knn=0.1610
+
+[vary_range/tiled] R100000  n=10000 k=32 T=20 dist=uniform R=100000
+Dataset written to input.txt
+N=10000  k=32  T=20
+KNN:        0.113458 s
+Approx KNN: 0.0185339 s
+K-Means:    0.00653791 s
+  approx_mae_vs_knn=0.1453
+
+[vary_range/tiled] R1000000  n=10000 k=32 T=20 dist=uniform R=1000000
+Dataset written to input.txt
+N=10000  k=32  T=20
+KNN:        0.113214 s
+Approx KNN: 0.0204871 s
+K-Means:    0.00645804 s
+  approx_mae_vs_knn=0.1729
+
+
+###################################################################
+  VARIANT: notiled  (./histogram_eq_notiled)
+###################################################################
+========================================
+ GROUP A: Vary N  (k=32, T=20, uniform)
+========================================
+[vary_n/notiled] n1000  n=1000 k=32 T=20 dist=uniform R=10000
+Dataset written to input.txt
+  ERROR running ./histogram_eq_notiled
+[vary_n/notiled] n5000  n=5000 k=32 T=20 dist=uniform R=10000
+Dataset written to input.txt
+  ERROR running ./histogram_eq_notiled
+[vary_n/notiled] n10000  n=10000 k=32 T=20 dist=uniform R=10000
+Dataset written to input.txt
+  ERROR running ./histogram_eq_notiled
+[vary_n/notiled] n25000  n=25000 k=32 T=20 dist=uniform R=10000
+Dataset written to input.txt
+  ERROR running ./histogram_eq_notiled
+[vary_n/notiled] n50000  n=50000 k=32 T=20 dist=uniform R=10000
+Dataset written to input.txt
+  ERROR running ./histogram_eq_notiled
+[vary_n/notiled] n100000  n=100000 k=32 T=20 dist=uniform R=10000
+Dataset written to input.txt
+  ERROR running ./histogram_eq_notiled
+========================================
+ GROUP B: Vary K  (n=10000, T=20, uniform)
+========================================
+[vary_k/notiled] k1  n=10000 k=1 T=20 dist=uniform R=10000
+Dataset written to input.txt
+  ERROR running ./histogram_eq_notiled
+[vary_k/notiled] k4  n=10000 k=4 T=20 dist=uniform R=10000
+Dataset written to input.txt
+  ERROR running ./histogram_eq_notiled
+[vary_k/notiled] k8  n=10000 k=8 T=20 dist=uniform R=10000
+Dataset written to input.txt
+  ERROR running ./histogram_eq_notiled
+[vary_k/notiled] k16  n=10000 k=16 T=20 dist=uniform R=10000
+Dataset written to input.txt
+  ERROR running ./histogram_eq_notiled
+[vary_k/notiled] k32  n=10000 k=32 T=20 dist=uniform R=10000
+Dataset written to input.txt
+  ERROR running ./histogram_eq_notiled
+[vary_k/notiled] k64  n=10000 k=64 T=20 dist=uniform R=10000
+Dataset written to input.txt
+  ERROR running ./histogram_eq_notiled
+[vary_k/notiled] k128  n=10000 k=128 T=20 dist=uniform R=10000
+Dataset written to input.txt
+  ERROR running ./histogram_eq_notiled
+========================================
+ GROUP C: Vary T  (n=10000, k=32, uniform)
+========================================
+[vary_T/notiled] T1  n=10000 k=32 T=1 dist=uniform R=10000
+Dataset written to input.txt
+  ERROR running ./histogram_eq_notiled
+[vary_T/notiled] T5  n=10000 k=32 T=5 dist=uniform R=10000
+Dataset written to input.txt
+  ERROR running ./histogram_eq_notiled
+[vary_T/notiled] T10  n=10000 k=32 T=10 dist=uniform R=10000
+Dataset written to input.txt
+  ERROR running ./histogram_eq_notiled
+[vary_T/notiled] T20  n=10000 k=32 T=20 dist=uniform R=10000
+Dataset written to input.txt
+  ERROR running ./histogram_eq_notiled
+[vary_T/notiled] T50  n=10000 k=32 T=50 dist=uniform R=10000
+Dataset written to input.txt
+  ERROR running ./histogram_eq_notiled
+========================================
+ GROUP D: Distributions  (n=10000, k=32, T=20)
+========================================
+[dist/notiled] uniform  n=10000 k=32 T=20 dist=uniform R=10000
+Dataset written to input.txt
+  ERROR running ./histogram_eq_notiled
+[dist/notiled] dense  n=10000 k=32 T=20 dist=dense R=10000
+Dataset written to input.txt
+  ERROR running ./histogram_eq_notiled
+[dist/notiled] clustered  n=10000 k=32 T=20 dist=clustered R=10000
+Dataset written to input.txt
+  ERROR running ./histogram_eq_notiled
+[dist/notiled] skewed  n=10000 k=32 T=20 dist=skewed R=10000
+Dataset written to input.txt
+  ERROR running ./histogram_eq_notiled
+========================================
+ GROUP E: Correctness  (n=1000, vs sequential)
+========================================
+[correctness/notiled] k1_uniform  n=1000 k=1 T=20 dist=uniform R=10000
+Dataset written to input.txt
+  ERROR running ./histogram_eq_notiled
+[correctness/notiled] k10_uniform  n=1000 k=10 T=20 dist=uniform R=10000
+Dataset written to input.txt
+  ERROR running ./histogram_eq_notiled
+[correctness/notiled] k32_uniform  n=1000 k=32 T=20 dist=uniform R=10000
+Dataset written to input.txt
+  ERROR running ./histogram_eq_notiled
+[correctness/notiled] k64_uniform  n=1000 k=64 T=20 dist=uniform R=10000
+Dataset written to input.txt
+  ERROR running ./histogram_eq_notiled
+[correctness/notiled] k128_uniform  n=1000 k=128 T=20 dist=uniform R=10000
+Dataset written to input.txt
+  ERROR running ./histogram_eq_notiled
+[correctness/notiled] k32_dense  n=1000 k=32 T=20 dist=dense R=10000
+Dataset written to input.txt
+  ERROR running ./histogram_eq_notiled
+[correctness/notiled] k32_clustered  n=1000 k=32 T=20 dist=clustered R=10000
+Dataset written to input.txt
+  ERROR running ./histogram_eq_notiled
+[correctness/notiled] k32_skewed  n=1000 k=32 T=20 dist=skewed R=10000
+Dataset written to input.txt
+  ERROR running ./histogram_eq_notiled
+========================================
+ GROUP F: Large scale
+========================================
+[large/notiled] n100k_k128_T50  n=100000 k=128 T=50 dist=uniform R=10000
+Dataset written to input.txt
+  ERROR running ./histogram_eq_notiled
+[large/notiled] n100k_k32_uniform  n=100000 k=32 T=20 dist=uniform R=10000
+Dataset written to input.txt
+  ERROR running ./histogram_eq_notiled
+[large/notiled] n100k_k32_dense  n=100000 k=32 T=20 dist=dense R=10000
+Dataset written to input.txt
+  ERROR running ./histogram_eq_notiled
+[large/notiled] n100k_k32_clustered  n=100000 k=32 T=20 dist=clustered R=10000
+Dataset written to input.txt
+  ERROR running ./histogram_eq_notiled
+========================================
+ GROUP G: Vary coordinate range  (n=10000, k=32, T=20, uniform)
+========================================
+[vary_range/notiled] R100  n=10000 k=32 T=20 dist=uniform R=100
+Dataset written to input.txt
+  ERROR running ./histogram_eq_notiled
+[vary_range/notiled] R1000  n=10000 k=32 T=20 dist=uniform R=1000
+Dataset written to input.txt
+  ERROR running ./histogram_eq_notiled
+[vary_range/notiled] R10000  n=10000 k=32 T=20 dist=uniform R=10000
+Dataset written to input.txt
+  ERROR running ./histogram_eq_notiled
+[vary_range/notiled] R100000  n=10000 k=32 T=20 dist=uniform R=100000
+Dataset written to input.txt
+  ERROR running ./histogram_eq_notiled
+[vary_range/notiled] R1000000  n=10000 k=32 T=20 dist=uniform R=1000000
+Dataset written to input.txt
+  ERROR running ./histogram_eq_notiled
+========================================
+ RESULTS SUMMARY
+========================================
+
+====================================================================
+  vary_n
+====================================================================
+  label                        variant       range     knn_s   approx_s   kmeans_s  approx_mae
+  ---------------------------- --------- --------- --------- ---------- ---------- -----------
+  n1000                        tiled         10000 0.0931921 0.00610995 0.00283694      0.1430
+  n5000                        tiled         10000    0.0946   0.012233 0.00477099      0.1944
+  n10000                       tiled         10000  0.112862  0.0137279 0.00647306      0.1694
+  n25000                       tiled         10000  0.221639  0.0384772  0.0122108      0.0936
+  n50000                       tiled         10000  0.423846    0.07602  0.0222352      0.0767
+  n100000                      tiled         10000  0.964523   0.152515  0.0415089      0.0536
+  n1000                        notiled       10000     ERROR      ERROR      ERROR       ERROR
+  n5000                        notiled       10000     ERROR      ERROR      ERROR       ERROR
+  n10000                       notiled       10000     ERROR      ERROR      ERROR       ERROR
+  n25000                       notiled       10000     ERROR      ERROR      ERROR       ERROR
+  n50000                       notiled       10000     ERROR      ERROR      ERROR       ERROR
+  n100000                      notiled       10000     ERROR      ERROR      ERROR       ERROR
+
+====================================================================
+  vary_k
+====================================================================
+  label                        variant       range     knn_s   approx_s   kmeans_s  approx_mae
+  ---------------------------- --------- --------- --------- ---------- ---------- -----------
+  k1                           tiled         10000 0.0865259   0.013833 0.00560999      0.0255
+  k4                           tiled         10000 0.0858681   0.015403 0.00623798      0.7327
+  k8                           tiled         10000 0.0895391   0.014159 0.00633788      2.1270
+  k16                          tiled         10000 0.0954361 0.00975704 0.00644207      0.3054
+  k32                          tiled         10000  0.112634  0.0233381 0.00644398      0.1627
+  k64                          tiled         10000  0.155752  0.0203929 0.00661302      0.1734
+  k128                         tiled         10000  0.248054   0.045063 0.00713301      0.1307
+  k1                           notiled       10000     ERROR      ERROR      ERROR       ERROR
+  k4                           notiled       10000     ERROR      ERROR      ERROR       ERROR
+  k8                           notiled       10000     ERROR      ERROR      ERROR       ERROR
+  k16                          notiled       10000     ERROR      ERROR      ERROR       ERROR
+  k32                          notiled       10000     ERROR      ERROR      ERROR       ERROR
+  k64                          notiled       10000     ERROR      ERROR      ERROR       ERROR
+  k128                         notiled       10000     ERROR      ERROR      ERROR       ERROR
+
+====================================================================
+  vary_T
+====================================================================
+  label                        variant       range     knn_s   approx_s   kmeans_s  approx_mae
+  ---------------------------- --------- --------- --------- ---------- ---------- -----------
+  T1                           tiled         10000  0.112981  0.0129001 0.00506687      0.1546
+  T5                           tiled         10000  0.113106   0.015662 0.00539613      0.1569
+  T10                          tiled         10000  0.113087  0.0202069 0.00600219      0.1311
+  T20                          tiled         10000   0.11285   0.012213 0.00657606      0.1717
+  T50                          tiled         10000  0.112555  0.0125799 0.00844193      0.1596
+  T1                           notiled       10000     ERROR      ERROR      ERROR       ERROR
+  T5                           notiled       10000     ERROR      ERROR      ERROR       ERROR
+  T10                          notiled       10000     ERROR      ERROR      ERROR       ERROR
+  T20                          notiled       10000     ERROR      ERROR      ERROR       ERROR
+  T50                          notiled       10000     ERROR      ERROR      ERROR       ERROR
+
+====================================================================
+  dist
+====================================================================
+  label                        variant       range     knn_s   approx_s   kmeans_s  approx_mae
+  ---------------------------- --------- --------- --------- ---------- ---------- -----------
+  uniform                      tiled         10000  0.111773   0.012666 0.00637507      0.1755
+  dense                        tiled         10000  0.111961   0.018415 0.00656605      0.1530
+  clustered                    tiled         10000  0.113154  0.0127149 0.00643706      0.1683
+  skewed                       tiled         10000   0.11339  0.0187058 0.00644803      0.1667
+  uniform                      notiled       10000     ERROR      ERROR      ERROR       ERROR
+  dense                        notiled       10000     ERROR      ERROR      ERROR       ERROR
+  clustered                    notiled       10000     ERROR      ERROR      ERROR       ERROR
+  skewed                       notiled       10000     ERROR      ERROR      ERROR       ERROR
+
+====================================================================
+  large
+====================================================================
+  label                        variant       range     knn_s   approx_s   kmeans_s  approx_mae
+  ---------------------------- --------- --------- --------- ---------- ---------- -----------
+  n100k_k128_T50               tiled         10000    4.0951   0.591681  0.0564282      0.0508
+  n100k_k32_uniform            tiled         10000  0.963923   0.145101  0.0413699      0.0544
+  n100k_k32_dense              tiled         10000   1.00836   0.148422  0.0416501      0.0510
+  n100k_k32_clustered          tiled         10000  0.961551   0.146715  0.0414569      0.0505
+  n100k_k128_T50               notiled       10000     ERROR      ERROR      ERROR       ERROR
+  n100k_k32_uniform            notiled       10000     ERROR      ERROR      ERROR       ERROR
+  n100k_k32_dense              notiled       10000     ERROR      ERROR      ERROR       ERROR
+  n100k_k32_clustered          notiled       10000     ERROR      ERROR      ERROR       ERROR
+
+====================================================================
+  vary_range
+====================================================================
+  label                        variant       range     knn_s   approx_s   kmeans_s  approx_mae
+  ---------------------------- --------- --------- --------- ---------- ---------- -----------
+  R100                         tiled           100  0.112547   0.020963 0.00703216      0.1592
+  R1000                        tiled          1000  0.112218   0.018357 0.00679588      0.1500
+  R10000                       tiled         10000  0.112134  0.0203249 0.00643802      0.1610
+  R100000                      tiled        100000  0.113458  0.0185339 0.00653791      0.1453
+  R1000000                     tiled       1000000  0.113214  0.0204871 0.00645804      0.1729
+  R100                         notiled         100     ERROR      ERROR      ERROR       ERROR
+  R1000                        notiled        1000     ERROR      ERROR      ERROR       ERROR
+  R10000                       notiled       10000     ERROR      ERROR      ERROR       ERROR
+  R100000                      notiled      100000     ERROR      ERROR      ERROR       ERROR
+  R1000000                     notiled     1000000     ERROR      ERROR      ERROR       ERROR
+
+====================================================================
+  correctness
+====================================================================
+  label                        variant       range     knn_s   approx_s   kmeans_s  approx_mae
+  ---------------------------- --------- --------- --------- ---------- ---------- -----------
+  k1_uniform                   notiled       10000     ERROR      ERROR      ERROR       ERROR
+  k10_uniform                  notiled       10000     ERROR      ERROR      ERROR       ERROR
+  k32_uniform                  notiled       10000     ERROR      ERROR      ERROR       ERROR
+  k64_uniform                  notiled       10000     ERROR      ERROR      ERROR       ERROR
+  k128_uniform                 notiled       10000     ERROR      ERROR      ERROR       ERROR
+  k32_dense                    notiled       10000     ERROR      ERROR      ERROR       ERROR
+  k32_clustered                notiled       10000     ERROR      ERROR      ERROR       ERROR
+  k32_skewed                   notiled       10000     ERROR      ERROR      ERROR       ERROR
+
+Full data: results.csv
+========================================
+ DONE
+========================================
+========================================
+ BUILD
+========================================
+rm -f histogram_eq histogram_eq_notiled *.txt results.csv
+nvcc -O3 -arch=sm_35 -Xcompiler -fopenmp -DUSE_TILED_KNN=1 solution.cu -o histogram_eq
+nvcc -O3 -arch=sm_35 -Xcompiler -fopenmp -DUSE_TILED_KNN=0 solution.cu -o histogram_eq_notiled
+Thu Mar 26 21:19:54 2026       
++-----------------------------------------------------------------------------+
+| NVIDIA-SMI 470.82.01    Driver Version: 470.82.01    CUDA Version: 11.4     |
+|-------------------------------+----------------------+----------------------+
+| GPU  Name        Persistence-M| Bus-Id        Disp.A | Volatile Uncorr. ECC |
+| Fan  Temp  Perf  Pwr:Usage/Cap|         Memory-Usage | GPU-Util  Compute M. |
+|                               |                      |               MIG M. |
+|===============================+======================+======================|
+|   0  Tesla K40m          Off  | 00000000:02:00.0 Off |                    0 |
+| N/A   26C    P8    20W / 235W |      6MiB / 11441MiB |      0%      Default |
+|                               |                      |                  N/A |
++-------------------------------+----------------------+----------------------+
+                                                                               
++-----------------------------------------------------------------------------+
+| Processes:                                                                  |
+|  GPU   GI   CI        PID   Type   Process name                  GPU Memory |
+|        ID   ID                                                   Usage      |
+|=============================================================================|
+|    0   N/A  N/A      2885      G   /usr/bin/X                          5MiB |
++-----------------------------------------------------------------------------+
+
+
+###################################################################
+  VARIANT: tiled  (./histogram_eq)
+###################################################################
+========================================
+ GROUP A: Vary N  (k=32, T=20, uniform)
+========================================
+[vary_n/tiled] n1000  n=1000 k=32 T=20 dist=uniform R=10000
+Dataset written to input.txt  [n=1000, k=32, T=20, dist=uniform, seed=42, R=10000]
+N=1000  k=32  T=20
+KNN:        0.0916121 s
+Approx KNN: 0.00626898 s
+K-Means:    0.0224771 s
+  approx_mae_vs_knn=0.2490
+
+[vary_n/tiled] n5000  n=5000 k=32 T=20 dist=uniform R=10000
+Dataset written to input.txt  [n=5000, k=32, T=20, dist=uniform, seed=42, R=10000]
+N=5000  k=32  T=20
+KNN:        0.0910339 s
+Approx KNN: 0.00828505 s
+K-Means:    0.00461197 s
+  approx_mae_vs_knn=0.2224
+
+[vary_n/tiled] n10000  n=10000 k=32 T=20 dist=uniform R=10000
+Dataset written to input.txt  [n=10000, k=32, T=20, dist=uniform, seed=42, R=10000]
+N=10000  k=32  T=20
+KNN:        0.109939 s
+Approx KNN: 0.0119021 s
+K-Means:    0.00577998 s
+  approx_mae_vs_knn=0.1774
+
+[vary_n/tiled] n25000  n=25000 k=32 T=20 dist=uniform R=10000
+Dataset written to input.txt  [n=25000, k=32, T=20, dist=uniform, seed=42, R=10000]
+N=25000  k=32  T=20
+KNN:        0.203658 s
+Approx KNN: 0.0310581 s
+K-Means:    0.010926 s
+  approx_mae_vs_knn=0.1021
+
+[vary_n/tiled] n50000  n=50000 k=32 T=20 dist=uniform R=10000
+Dataset written to input.txt  [n=50000, k=32, T=20, dist=uniform, seed=42, R=10000]
+N=50000  k=32  T=20
+KNN:        0.390459 s
+Approx KNN: 0.0655921 s
+K-Means:    0.019541 s
+  approx_mae_vs_knn=0.0734
+
+[vary_n/tiled] n100000  n=100000 k=32 T=20 dist=uniform R=10000
+Dataset written to input.txt  [n=100000, k=32, T=20, dist=uniform, seed=42, R=10000]
+N=100000  k=32  T=20
+KNN:        0.844227 s
+Approx KNN: 0.139142 s
+K-Means:    0.0352449 s
+  approx_mae_vs_knn=0.0566
+
+========================================
+ GROUP B: Vary K  (n=10000, T=20, uniform)
+========================================
+[vary_k/tiled] k1  n=10000 k=1 T=20 dist=uniform R=10000
+Dataset written to input.txt  [n=10000, k=1, T=20, dist=uniform, seed=42, R=10000]
+N=10000  k=1  T=20
+KNN:        0.0809109 s
+Approx KNN: 0.00812697 s
+K-Means:    0.00508904 s
+  approx_mae_vs_knn=0.1020
+
+[vary_k/tiled] k4  n=10000 k=4 T=20 dist=uniform R=10000
+Dataset written to input.txt  [n=10000, k=4, T=20, dist=uniform, seed=42, R=10000]
+N=10000  k=4  T=20
+KNN:        0.081075 s
+Approx KNN: 0.008255 s
+K-Means:    0.00553918 s
+  approx_mae_vs_knn=0.6178
+
+[vary_k/tiled] k8  n=10000 k=8 T=20 dist=uniform R=10000
+Dataset written to input.txt  [n=10000, k=8, T=20, dist=uniform, seed=42, R=10000]
+N=10000  k=8  T=20
+KNN:        0.0836711 s
+Approx KNN: 0.00863814 s
+K-Means:    0.00558805 s
+  approx_mae_vs_knn=2.1660
+
+[vary_k/tiled] k16  n=10000 k=16 T=20 dist=uniform R=10000
+Dataset written to input.txt  [n=10000, k=16, T=20, dist=uniform, seed=42, R=10000]
+N=10000  k=16  T=20
+KNN:        0.090759 s
+Approx KNN: 0.00899982 s
+K-Means:    0.00587082 s
+  approx_mae_vs_knn=0.2478
+
+[vary_k/tiled] k32  n=10000 k=32 T=20 dist=uniform R=10000
+Dataset written to input.txt  [n=10000, k=32, T=20, dist=uniform, seed=42, R=10000]
+N=10000  k=32  T=20
+KNN:        0.107937 s
+Approx KNN: 0.012032 s
+K-Means:    0.00595903 s
+  approx_mae_vs_knn=0.1774
+
+[vary_k/tiled] k64  n=10000 k=64 T=20 dist=uniform R=10000
+Dataset written to input.txt  [n=10000, k=64, T=20, dist=uniform, seed=42, R=10000]
+N=10000  k=64  T=20
+KNN:        0.149348 s
+Approx KNN: 0.019891 s
+K-Means:    0.00584793 s
+  approx_mae_vs_knn=0.1579
+
+[vary_k/tiled] k128  n=10000 k=128 T=20 dist=uniform R=10000
+Dataset written to input.txt  [n=10000, k=128, T=20, dist=uniform, seed=42, R=10000]
+N=10000  k=128  T=20
+KNN:        0.241193 s
+Approx KNN: 0.0384459 s
+K-Means:    0.00670505 s
+  approx_mae_vs_knn=0.1490
+
+========================================
+ GROUP C: Vary T  (n=10000, k=32, uniform)
+========================================
+[vary_T/tiled] T1  n=10000 k=32 T=1 dist=uniform R=10000
+Dataset written to input.txt  [n=10000, k=32, T=1, dist=uniform, seed=42, R=10000]
+N=10000  k=32  T=1
+KNN:        0.108389 s
+Approx KNN: 0.0116849 s
+K-Means:    0.00462914 s
+  approx_mae_vs_knn=0.1774
+
+[vary_T/tiled] T5  n=10000 k=32 T=5 dist=uniform R=10000
+Dataset written to input.txt  [n=10000, k=32, T=5, dist=uniform, seed=42, R=10000]
+N=10000  k=32  T=5
+KNN:        0.109007 s
+Approx KNN: 0.0122168 s
+K-Means:    0.00489187 s
+  approx_mae_vs_knn=0.1774
+
+[vary_T/tiled] T10  n=10000 k=32 T=10 dist=uniform R=10000
+Dataset written to input.txt  [n=10000, k=32, T=10, dist=uniform, seed=42, R=10000]
+N=10000  k=32  T=10
+KNN:        0.108477 s
+Approx KNN: 0.0116761 s
+K-Means:    0.00509596 s
+  approx_mae_vs_knn=0.1774
+
+[vary_T/tiled] T20  n=10000 k=32 T=20 dist=uniform R=10000
+Dataset written to input.txt  [n=10000, k=32, T=20, dist=uniform, seed=42, R=10000]
+N=10000  k=32  T=20
+KNN:        0.108507 s
+Approx KNN: 0.0117428 s
+K-Means:    0.00585914 s
+  approx_mae_vs_knn=0.1774
+
+[vary_T/tiled] T50  n=10000 k=32 T=50 dist=uniform R=10000
+Dataset written to input.txt  [n=10000, k=32, T=50, dist=uniform, seed=42, R=10000]
+N=10000  k=32  T=50
+KNN:        0.107608 s
+Approx KNN: 0.0119741 s
+K-Means:    0.007972 s
+  approx_mae_vs_knn=0.1774
+
+========================================
+ GROUP D: Distributions  (n=10000, k=32, T=20)
+========================================
+[dist/tiled] uniform  n=10000 k=32 T=20 dist=uniform R=10000
+Dataset written to input.txt  [n=10000, k=32, T=20, dist=uniform, seed=42, R=10000]
+N=10000  k=32  T=20
+KNN:        0.107678 s
+Approx KNN: 0.0119841 s
+K-Means:    0.005759 s
+  approx_mae_vs_knn=0.1774
+
+[dist/tiled] dense  n=10000 k=32 T=20 dist=dense R=10000
+Dataset written to input.txt  [n=10000, k=32, T=20, dist=dense, seed=42, R=10000]
+N=10000  k=32  T=20
+KNN:        0.107941 s
+Approx KNN: 0.0114439 s
+K-Means:    0.00567794 s
+  approx_mae_vs_knn=0.1694
+
+[dist/tiled] clustered  n=10000 k=32 T=20 dist=clustered R=10000
+Dataset written to input.txt  [n=10000, k=32, T=20, dist=clustered, seed=42, R=10000]
+N=10000  k=32  T=20
+KNN:        0.107861 s
+Approx KNN: 0.021167 s
+K-Means:    0.00564909 s
+  approx_mae_vs_knn=0.0000
+
+[dist/tiled] skewed  n=10000 k=32 T=20 dist=skewed R=10000
+Dataset written to input.txt  [n=10000, k=32, T=20, dist=skewed, seed=42, R=10000]
+N=10000  k=32  T=20
+KNN:        0.112976 s
+Approx KNN: 0.048223 s
+K-Means:    0.00590611 s
+  approx_mae_vs_knn=0.1548
+
+========================================
+ GROUP E: Correctness  (n=1000, vs sequential)
+========================================
+[correctness/tiled] k1_uniform  n=1000 k=1 T=20 dist=uniform R=10000
+Dataset written to input.txt  [n=1000, k=1, T=20, dist=uniform, seed=42, R=10000]
+N=1000  k=1  T=20
+KNN:        0.073231 s
+Approx KNN: 0.00335193 s
+K-Means:    0.00171304 s
+  [seq] knn_mae=0.0000  kmeans_mae=0.0000
+  approx_mae_vs_knn=0.0000
+
+[correctness/tiled] k10_uniform  n=1000 k=10 T=20 dist=uniform R=10000
+Dataset written to input.txt  [n=1000, k=10, T=20, dist=uniform, seed=42, R=10000]
+N=1000  k=10  T=20
+KNN:        0.0756829 s
+Approx KNN: 0.00405717 s
+K-Means:    0.00366688 s
+  [seq] knn_mae=0.0000  kmeans_mae=1.0420
+  approx_mae_vs_knn=0.7770
+
+[correctness/tiled] k32_uniform  n=1000 k=32 T=20 dist=uniform R=10000
+Dataset written to input.txt  [n=1000, k=32, T=20, dist=uniform, seed=42, R=10000]
+N=1000  k=32  T=20
+KNN:        0.0783341 s
+Approx KNN: 0.00551701 s
+K-Means:    0.00317693 s
+  [seq] knn_mae=0.0000  kmeans_mae=0.0000
+  approx_mae_vs_knn=0.2490
+
+[correctness/tiled] k64_uniform  n=1000 k=64 T=20 dist=uniform R=10000
+Dataset written to input.txt  [n=1000, k=64, T=20, dist=uniform, seed=42, R=10000]
+N=1000  k=64  T=20
+KNN:        0.0820591 s
+Approx KNN: 0.00848079 s
+K-Means:    0.00266504 s
+  [seq] knn_mae=0.0000  kmeans_mae=1.9870
+  approx_mae_vs_knn=0.2660
+
+[correctness/tiled] k128_uniform  n=1000 k=128 T=20 dist=uniform R=10000
+Dataset written to input.txt  [n=1000, k=128, T=20, dist=uniform, seed=42, R=10000]
+N=1000  k=128  T=20
+KNN:        0.0850689 s
+Approx KNN: 0.014236 s
+K-Means:    0.00290012 s
+  [seq] knn_mae=0.0000  kmeans_mae=0.0000
+  approx_mae_vs_knn=0.3110
+
+[correctness/tiled] k32_dense  n=1000 k=32 T=20 dist=dense R=10000
+Dataset written to input.txt  [n=1000, k=32, T=20, dist=dense, seed=42, R=10000]
+N=1000  k=32  T=20
+KNN:        0.080245 s
+Approx KNN: 0.00608492 s
+K-Means:    0.00288486 s
+  [seq] knn_mae=0.0000  kmeans_mae=1.6600
+  approx_mae_vs_knn=0.3280
+
+[correctness/tiled] k32_clustered  n=1000 k=32 T=20 dist=clustered R=10000
+Dataset written to input.txt  [n=1000, k=32, T=20, dist=clustered, seed=42, R=10000]
+N=1000  k=32  T=20
+KNN:        0.0794561 s
+Approx KNN: 0.00629902 s
+K-Means:    0.00243497 s
+  [seq] knn_mae=0.0000  kmeans_mae=0.0000
+  approx_mae_vs_knn=0.0000
+
+[correctness/tiled] k32_skewed  n=1000 k=32 T=20 dist=skewed R=10000
+Dataset written to input.txt  [n=1000, k=32, T=20, dist=skewed, seed=42, R=10000]
+N=1000  k=32  T=20
+KNN:        0.0800018 s
+Approx KNN: 0.011595 s
+K-Means:    0.002918 s
+  [seq] knn_mae=0.0000  kmeans_mae=5.0810
+  approx_mae_vs_knn=0.1110
+
+========================================
+ GROUP F: Large scale
+========================================
+[large/tiled] n100k_k128_T50  n=100000 k=128 T=50 dist=uniform R=10000
+Dataset written to input.txt  [n=100000, k=128, T=50, dist=uniform, seed=42, R=10000]
+N=100000  k=128  T=50
+KNN:        4.00263 s
+Approx KNN: 0.575554 s
+K-Means:    0.050591 s
+  approx_mae_vs_knn=0.0555
+
+[large/tiled] n100k_k32_uniform  n=100000 k=32 T=20 dist=uniform R=10000
+Dataset written to input.txt  [n=100000, k=32, T=20, dist=uniform, seed=42, R=10000]
+N=100000  k=32  T=20
+KNN:        0.84974 s
+Approx KNN: 0.139948 s
+K-Means:    0.036041 s
+  approx_mae_vs_knn=0.0566
+
+[large/tiled] n100k_k32_dense  n=100000 k=32 T=20 dist=dense R=10000
+Dataset written to input.txt  [n=100000, k=32, T=20, dist=dense, seed=42, R=10000]
+N=100000  k=32  T=20
+KNN:        0.845565 s
+Approx KNN: 0.141133 s
+K-Means:    0.035835 s
+  approx_mae_vs_knn=0.0622
+
+[large/tiled] n100k_k32_clustered  n=100000 k=32 T=20 dist=clustered R=10000
+Dataset written to input.txt  [n=100000, k=32, T=20, dist=clustered, seed=42, R=10000]
+N=100000  k=32  T=20
+KNN:        0.847519 s
+Approx KNN: 0.430624 s
+K-Means:    0.0359931 s
+  approx_mae_vs_knn=0.0007
+
+========================================
+ GROUP G: Vary coordinate range  (n=10000, k=32, T=20, uniform)
+========================================
+[vary_range/tiled] R100  n=10000 k=32 T=20 dist=uniform R=100
+Dataset written to input.txt  [n=10000, k=32, T=20, dist=uniform, seed=42, R=100]
+N=10000  k=32  T=20
+KNN:        0.107537 s
+Approx KNN: 0.011827 s
+K-Means:    0.00609899 s
+  approx_mae_vs_knn=0.2679
+
+[vary_range/tiled] R1000  n=10000 k=32 T=20 dist=uniform R=1000
+Dataset written to input.txt  [n=10000, k=32, T=20, dist=uniform, seed=42, R=1000]
+N=10000  k=32  T=20
+KNN:        0.106761 s
+Approx KNN: 0.011421 s
+K-Means:    0.00587916 s
+  approx_mae_vs_knn=0.1694
+
+[vary_range/tiled] R10000  n=10000 k=32 T=20 dist=uniform R=10000
+Dataset written to input.txt  [n=10000, k=32, T=20, dist=uniform, seed=42, R=10000]
+N=10000  k=32  T=20
+KNN:        0.109123 s
+Approx KNN: 0.0120499 s
+K-Means:    0.00582004 s
+  approx_mae_vs_knn=0.1774
+
+[vary_range/tiled] R100000  n=10000 k=32 T=20 dist=uniform R=100000
+Dataset written to input.txt  [n=10000, k=32, T=20, dist=uniform, seed=42, R=100000]
+N=10000  k=32  T=20
+KNN:        0.1083 s
+Approx KNN: 0.011688 s
+K-Means:    0.00584912 s
+  approx_mae_vs_knn=0.1713
+
+[vary_range/tiled] R1000000  n=10000 k=32 T=20 dist=uniform R=1000000
+Dataset written to input.txt  [n=10000, k=32, T=20, dist=uniform, seed=42, R=1000000]
+N=10000  k=32  T=20
+KNN:        0.109247 s
+Approx KNN: 0.011801 s
+K-Means:    0.006042 s
+  approx_mae_vs_knn=0.1583
+
+
+###################################################################
+  VARIANT: notiled  (./histogram_eq_notiled)
+###################################################################
+========================================
+ GROUP A: Vary N  (k=32, T=20, uniform)
+========================================
+[vary_n/notiled] n1000  n=1000 k=32 T=20 dist=uniform R=10000
+Dataset written to input.txt  [n=1000, k=32, T=20, dist=uniform, seed=42, R=10000]
+N=1000  k=32  T=20
+KNN:        0.0777888 s
+Approx KNN: 0.00601816 s
+K-Means:    0.00233102 s
+  approx_mae_vs_knn=0.2490
+
+[vary_n/notiled] n5000  n=5000 k=32 T=20 dist=uniform R=10000
+Dataset written to input.txt  [n=5000, k=32, T=20, dist=uniform, seed=42, R=10000]
+N=5000  k=32  T=20
+KNN:        0.0894389 s
+Approx KNN: 0.00796199 s
+K-Means:    0.0044291 s
+  approx_mae_vs_knn=0.2224
+
+[vary_n/notiled] n10000  n=10000 k=32 T=20 dist=uniform R=10000
+Dataset written to input.txt  [n=10000, k=32, T=20, dist=uniform, seed=42, R=10000]
+N=10000  k=32  T=20
+KNN:        0.108157 s
+Approx KNN: 0.011512 s
+K-Means:    0.00594902 s
+  approx_mae_vs_knn=0.1774
+
+[vary_n/notiled] n25000  n=25000 k=32 T=20 dist=uniform R=10000
+Dataset written to input.txt  [n=25000, k=32, T=20, dist=uniform, seed=42, R=10000]
+N=25000  k=32  T=20
+KNN:        0.218743 s
+Approx KNN: 0.0305061 s
+K-Means:    0.0110672 s
+  approx_mae_vs_knn=0.1021
+
+[vary_n/notiled] n50000  n=50000 k=32 T=20 dist=uniform R=10000
+Dataset written to input.txt  [n=50000, k=32, T=20, dist=uniform, seed=42, R=10000]
+N=50000  k=32  T=20
+KNN:        0.420835 s
+Approx KNN: 0.0653038 s
+K-Means:    0.019315 s
+  approx_mae_vs_knn=0.0734
+
+[vary_n/notiled] n100000  n=100000 k=32 T=20 dist=uniform R=10000
+Dataset written to input.txt  [n=100000, k=32, T=20, dist=uniform, seed=42, R=10000]
+N=100000  k=32  T=20
+KNN:        0.958367 s
+Approx KNN: 0.140994 s
+K-Means:    0.0362291 s
+  approx_mae_vs_knn=0.0566
+
+========================================
+ GROUP B: Vary K  (n=10000, T=20, uniform)
+========================================
+[vary_k/notiled] k1  n=10000 k=1 T=20 dist=uniform R=10000
+Dataset written to input.txt  [n=10000, k=1, T=20, dist=uniform, seed=42, R=10000]
+N=10000  k=1  T=20
+KNN:        0.08255 s
+Approx KNN: 0.00733519 s
+K-Means:    0.00500083 s
+  approx_mae_vs_knn=0.1020
+
+[vary_k/notiled] k4  n=10000 k=4 T=20 dist=uniform R=10000
+Dataset written to input.txt  [n=10000, k=4, T=20, dist=uniform, seed=42, R=10000]
+N=10000  k=4  T=20
+KNN:        0.084111 s
+Approx KNN: 0.00778294 s
+K-Means:    0.00577092 s
+  approx_mae_vs_knn=0.6178
+
+[vary_k/notiled] k8  n=10000 k=8 T=20 dist=uniform R=10000
+Dataset written to input.txt  [n=10000, k=8, T=20, dist=uniform, seed=42, R=10000]
+N=10000  k=8  T=20
+KNN:        0.0852032 s
+Approx KNN: 0.00746083 s
+K-Means:    0.00573516 s
+  approx_mae_vs_knn=2.1660
+
+[vary_k/notiled] k16  n=10000 k=16 T=20 dist=uniform R=10000
+Dataset written to input.txt  [n=10000, k=16, T=20, dist=uniform, seed=42, R=10000]
+N=10000  k=16  T=20
+KNN:        0.0935152 s
+Approx KNN: 0.00914693 s
+K-Means:    0.00577593 s
+  approx_mae_vs_knn=0.2478
+
+[vary_k/notiled] k32  n=10000 k=32 T=20 dist=uniform R=10000
+Dataset written to input.txt  [n=10000, k=32, T=20, dist=uniform, seed=42, R=10000]
+N=10000  k=32  T=20
+KNN:        0.109104 s
+Approx KNN: 0.0115671 s
+K-Means:    0.00579381 s
+  approx_mae_vs_knn=0.1774
+
+[vary_k/notiled] k64  n=10000 k=64 T=20 dist=uniform R=10000
+Dataset written to input.txt  [n=10000, k=64, T=20, dist=uniform, seed=42, R=10000]
+N=10000  k=64  T=20
+KNN:        0.151897 s
+Approx KNN: 0.019659 s
+K-Means:    0.00607109 s
+  approx_mae_vs_knn=0.1579
+
+[vary_k/notiled] k128  n=10000 k=128 T=20 dist=uniform R=10000
+Dataset written to input.txt  [n=10000, k=128, T=20, dist=uniform, seed=42, R=10000]
+N=10000  k=128  T=20
+KNN:        0.245153 s
+Approx KNN: 0.0380681 s
+K-Means:    0.00647688 s
+  approx_mae_vs_knn=0.1490
+
+========================================
+ GROUP C: Vary T  (n=10000, k=32, uniform)
+========================================
+[vary_T/notiled] T1  n=10000 k=32 T=1 dist=uniform R=10000
+Dataset written to input.txt  [n=10000, k=32, T=1, dist=uniform, seed=42, R=10000]
+N=10000  k=32  T=1
+KNN:        0.109165 s
+Approx KNN: 0.0116251 s
+K-Means:    0.00420499 s
+  approx_mae_vs_knn=0.1774
+
+[vary_T/notiled] T5  n=10000 k=32 T=5 dist=uniform R=10000
+Dataset written to input.txt  [n=10000, k=32, T=5, dist=uniform, seed=42, R=10000]
+N=10000  k=32  T=5
+KNN:        0.109498 s
+Approx KNN: 0.012006 s
+K-Means:    0.00474715 s
+  approx_mae_vs_knn=0.1774
+
+[vary_T/notiled] T10  n=10000 k=32 T=10 dist=uniform R=10000
+Dataset written to input.txt  [n=10000, k=32, T=10, dist=uniform, seed=42, R=10000]
+N=10000  k=32  T=10
+KNN:        0.109294 s
+Approx KNN: 0.012697 s
+K-Means:    0.00515294 s
+  approx_mae_vs_knn=0.1774
+
+[vary_T/notiled] T20  n=10000 k=32 T=20 dist=uniform R=10000
+Dataset written to input.txt  [n=10000, k=32, T=20, dist=uniform, seed=42, R=10000]
+N=10000  k=32  T=20
+KNN:        0.109718 s
+Approx KNN: 0.0117049 s
+K-Means:    0.00616193 s
+  approx_mae_vs_knn=0.1774
+
+[vary_T/notiled] T50  n=10000 k=32 T=50 dist=uniform R=10000
+Dataset written to input.txt  [n=10000, k=32, T=50, dist=uniform, seed=42, R=10000]
+N=10000  k=32  T=50
+KNN:        0.108072 s
+Approx KNN: 0.0117681 s
+K-Means:    0.00799417 s
+  approx_mae_vs_knn=0.1774
+
+========================================
+ GROUP D: Distributions  (n=10000, k=32, T=20)
+========================================
+[dist/notiled] uniform  n=10000 k=32 T=20 dist=uniform R=10000
+Dataset written to input.txt  [n=10000, k=32, T=20, dist=uniform, seed=42, R=10000]
+N=10000  k=32  T=20
+KNN:        0.108726 s
+Approx KNN: 0.0116739 s
+K-Means:    0.00594497 s
+  approx_mae_vs_knn=0.1774
+
+[dist/notiled] dense  n=10000 k=32 T=20 dist=dense R=10000
+Dataset written to input.txt  [n=10000, k=32, T=20, dist=dense, seed=42, R=10000]
+N=10000  k=32  T=20
+KNN:        0.108764 s
+Approx KNN: 0.0115912 s
+K-Means:    0.00558901 s
+  approx_mae_vs_knn=0.1694
+
+[dist/notiled] clustered  n=10000 k=32 T=20 dist=clustered R=10000
+Dataset written to input.txt  [n=10000, k=32, T=20, dist=clustered, seed=42, R=10000]
+N=10000  k=32  T=20
+KNN:        0.110146 s
+Approx KNN: 0.0207961 s
+K-Means:    0.00595307 s
+  approx_mae_vs_knn=0.0000
+
+[dist/notiled] skewed  n=10000 k=32 T=20 dist=skewed R=10000
+Dataset written to input.txt  [n=10000, k=32, T=20, dist=skewed, seed=42, R=10000]
+N=10000  k=32  T=20
+KNN:        0.115849 s
+Approx KNN: 0.0484312 s
+K-Means:    0.0059731 s
+  approx_mae_vs_knn=0.1548
+
+========================================
+ GROUP E: Correctness  (n=1000, vs sequential)
+========================================
+[correctness/notiled] k1_uniform  n=1000 k=1 T=20 dist=uniform R=10000
+Dataset written to input.txt  [n=1000, k=1, T=20, dist=uniform, seed=42, R=10000]
+N=1000  k=1  T=20
+KNN:        0.074265 s
+Approx KNN: 0.00332308 s
+K-Means:    0.00172305 s
+  [seq] knn_mae=0.0000  kmeans_mae=0.0000
+  approx_mae_vs_knn=0.0000
+
+[correctness/notiled] k10_uniform  n=1000 k=10 T=20 dist=uniform R=10000
+Dataset written to input.txt  [n=1000, k=10, T=20, dist=uniform, seed=42, R=10000]
+N=1000  k=10  T=20
+KNN:        0.0769532 s
+Approx KNN: 0.00543118 s
+K-Means:    0.00275803 s
+  [seq] knn_mae=0.0000  kmeans_mae=1.0420
+  approx_mae_vs_knn=0.7770
+
+[correctness/notiled] k32_uniform  n=1000 k=32 T=20 dist=uniform R=10000
+Dataset written to input.txt  [n=1000, k=32, T=20, dist=uniform, seed=42, R=10000]
+N=1000  k=32  T=20
+KNN:        0.079253 s
+Approx KNN: 0.00599718 s
+K-Means:    0.00256109 s
+  [seq] knn_mae=0.0000  kmeans_mae=0.0000
+  approx_mae_vs_knn=0.2490
+
+[correctness/notiled] k64_uniform  n=1000 k=64 T=20 dist=uniform R=10000
+Dataset written to input.txt  [n=1000, k=64, T=20, dist=uniform, seed=42, R=10000]
+N=1000  k=64  T=20
+KNN:        0.083411 s
+Approx KNN: 0.00866199 s
+K-Means:    0.00253582 s
+  [seq] knn_mae=0.0000  kmeans_mae=1.9870
+  approx_mae_vs_knn=0.2660
+
+[correctness/notiled] k128_uniform  n=1000 k=128 T=20 dist=uniform R=10000
+Dataset written to input.txt  [n=1000, k=128, T=20, dist=uniform, seed=42, R=10000]
+N=1000  k=128  T=20
+KNN:        0.085201 s
+Approx KNN: 0.014328 s
+K-Means:    0.00273609 s
+  [seq] knn_mae=0.0000  kmeans_mae=0.0000
+  approx_mae_vs_knn=0.3110
+
+[correctness/notiled] k32_dense  n=1000 k=32 T=20 dist=dense R=10000
+Dataset written to input.txt  [n=1000, k=32, T=20, dist=dense, seed=42, R=10000]
+N=1000  k=32  T=20
+KNN:        0.0811241 s
+Approx KNN: 0.00659108 s
+K-Means:    0.00289106 s
+  [seq] knn_mae=0.0000  kmeans_mae=1.6600
+  approx_mae_vs_knn=0.3280
+
+[correctness/notiled] k32_clustered  n=1000 k=32 T=20 dist=clustered R=10000
+Dataset written to input.txt  [n=1000, k=32, T=20, dist=clustered, seed=42, R=10000]
+N=1000  k=32  T=20
+KNN:        0.0792391 s
+Approx KNN: 0.00633597 s
+K-Means:    0.00266695 s
+  [seq] knn_mae=0.0000  kmeans_mae=0.0000
+  approx_mae_vs_knn=0.0000
+
+[correctness/notiled] k32_skewed  n=1000 k=32 T=20 dist=skewed R=10000
+Dataset written to input.txt  [n=1000, k=32, T=20, dist=skewed, seed=42, R=10000]
+N=1000  k=32  T=20
+KNN:        0.0798979 s
+Approx KNN: 0.0115938 s
+K-Means:    0.00310898 s
+  [seq] knn_mae=0.0000  kmeans_mae=5.0810
+  approx_mae_vs_knn=0.1110
+
+========================================
+ GROUP F: Large scale
+========================================
+[large/notiled] n100k_k128_T50  n=100000 k=128 T=50 dist=uniform R=10000
+Dataset written to input.txt  [n=100000, k=128, T=50, dist=uniform, seed=42, R=10000]
+N=100000  k=128  T=50
+KNN:        4.00342 s
+Approx KNN: 0.577451 s
+K-Means:    0.050029 s
+  approx_mae_vs_knn=0.0555
+
+[large/notiled] n100k_k32_uniform  n=100000 k=32 T=20 dist=uniform R=10000
+Dataset written to input.txt  [n=100000, k=32, T=20, dist=uniform, seed=42, R=10000]
+N=100000  k=32  T=20
+KNN:        0.957509 s
+Approx KNN: 0.141639 s
+K-Means:    0.036129 s
+  approx_mae_vs_knn=0.0566
+
+[large/notiled] n100k_k32_dense  n=100000 k=32 T=20 dist=dense R=10000
+Dataset written to input.txt  [n=100000, k=32, T=20, dist=dense, seed=42, R=10000]
+N=100000  k=32  T=20
+KNN:        0.965795 s
+Approx KNN: 0.140216 s
+K-Means:    0.035521 s
+  approx_mae_vs_knn=0.0622
+
+[large/notiled] n100k_k32_clustered  n=100000 k=32 T=20 dist=clustered R=10000
+Dataset written to input.txt  [n=100000, k=32, T=20, dist=clustered, seed=42, R=10000]
+N=100000  k=32  T=20
+KNN:        0.968943 s
+Approx KNN: 0.424131 s
+K-Means:    0.0369799 s
+  approx_mae_vs_knn=0.0007
+
+========================================
+ GROUP G: Vary coordinate range  (n=10000, k=32, T=20, uniform)
+========================================
+[vary_range/notiled] R100  n=10000 k=32 T=20 dist=uniform R=100
+Dataset written to input.txt  [n=10000, k=32, T=20, dist=uniform, seed=42, R=100]
+N=10000  k=32  T=20
+KNN:        0.110732 s
+Approx KNN: 0.0118501 s
+K-Means:    0.00616407 s
+  approx_mae_vs_knn=0.2679
+
+[vary_range/notiled] R1000  n=10000 k=32 T=20 dist=uniform R=1000
+Dataset written to input.txt  [n=10000, k=32, T=20, dist=uniform, seed=42, R=1000]
+N=10000  k=32  T=20
+KNN:        0.109452 s
+Approx KNN: 0.011322 s
+K-Means:    0.00559402 s
+  approx_mae_vs_knn=0.1694
+
+[vary_range/notiled] R10000  n=10000 k=32 T=20 dist=uniform R=10000
+Dataset written to input.txt  [n=10000, k=32, T=20, dist=uniform, seed=42, R=10000]
+N=10000  k=32  T=20
+KNN:        0.109242 s
+Approx KNN: 0.011636 s
+K-Means:    0.00567889 s
+  approx_mae_vs_knn=0.1774
+
+[vary_range/notiled] R100000  n=10000 k=32 T=20 dist=uniform R=100000
+Dataset written to input.txt  [n=10000, k=32, T=20, dist=uniform, seed=42, R=100000]
+N=10000  k=32  T=20
+KNN:        0.109768 s
+Approx KNN: 0.012265 s
+K-Means:    0.00602984 s
+  approx_mae_vs_knn=0.1713
+
+[vary_range/notiled] R1000000  n=10000 k=32 T=20 dist=uniform R=1000000
+Dataset written to input.txt  [n=10000, k=32, T=20, dist=uniform, seed=42, R=1000000]
+N=10000  k=32  T=20
+KNN:        0.108978 s
+Approx KNN: 0.011956 s
+K-Means:    0.00610995 s
+  approx_mae_vs_knn=0.1583
+
+========================================
+ RESULTS SUMMARY
+========================================
+
+====================================================================
+  vary_n
+====================================================================
+  label                        variant       range     knn_s   approx_s   kmeans_s  approx_mae
+  ---------------------------- --------- --------- --------- ---------- ---------- -----------
+  n1000                        tiled         10000 0.0916121 0.00626898  0.0224771      0.2490
+  n5000                        tiled         10000 0.0910339 0.00828505 0.00461197      0.2224
+  n10000                       tiled         10000  0.109939  0.0119021 0.00577998      0.1774
+  n25000                       tiled         10000  0.203658  0.0310581   0.010926      0.1021
+  n50000                       tiled         10000  0.390459  0.0655921   0.019541      0.0734
+  n100000                      tiled         10000  0.844227   0.139142  0.0352449      0.0566
+  n1000                        notiled       10000 0.0777888 0.00601816 0.00233102      0.2490
+  n5000                        notiled       10000 0.0894389 0.00796199  0.0044291      0.2224
+  n10000                       notiled       10000  0.108157   0.011512 0.00594902      0.1774
+  n25000                       notiled       10000  0.218743  0.0305061  0.0110672      0.1021
+  n50000                       notiled       10000  0.420835  0.0653038   0.019315      0.0734
+  n100000                      notiled       10000  0.958367   0.140994  0.0362291      0.0566
+
+====================================================================
+  vary_k
+====================================================================
+  label                        variant       range     knn_s   approx_s   kmeans_s  approx_mae
+  ---------------------------- --------- --------- --------- ---------- ---------- -----------
+  k1                           tiled         10000 0.0809109 0.00812697 0.00508904      0.1020
+  k4                           tiled         10000  0.081075   0.008255 0.00553918      0.6178
+  k8                           tiled         10000 0.0836711 0.00863814 0.00558805      2.1660
+  k16                          tiled         10000  0.090759 0.00899982 0.00587082      0.2478
+  k32                          tiled         10000  0.107937   0.012032 0.00595903      0.1774
+  k64                          tiled         10000  0.149348   0.019891 0.00584793      0.1579
+  k128                         tiled         10000  0.241193  0.0384459 0.00670505      0.1490
+  k1                           notiled       10000   0.08255 0.00733519 0.00500083      0.1020
+  k4                           notiled       10000  0.084111 0.00778294 0.00577092      0.6178
+  k8                           notiled       10000 0.0852032 0.00746083 0.00573516      2.1660
+  k16                          notiled       10000 0.0935152 0.00914693 0.00577593      0.2478
+  k32                          notiled       10000  0.109104  0.0115671 0.00579381      0.1774
+  k64                          notiled       10000  0.151897   0.019659 0.00607109      0.1579
+  k128                         notiled       10000  0.245153  0.0380681 0.00647688      0.1490
+
+====================================================================
+  vary_T
+====================================================================
+  label                        variant       range     knn_s   approx_s   kmeans_s  approx_mae
+  ---------------------------- --------- --------- --------- ---------- ---------- -----------
+  T1                           tiled         10000  0.108389  0.0116849 0.00462914      0.1774
+  T5                           tiled         10000  0.109007  0.0122168 0.00489187      0.1774
+  T10                          tiled         10000  0.108477  0.0116761 0.00509596      0.1774
+  T20                          tiled         10000  0.108507  0.0117428 0.00585914      0.1774
+  T50                          tiled         10000  0.107608  0.0119741   0.007972      0.1774
+  T1                           notiled       10000  0.109165  0.0116251 0.00420499      0.1774
+  T5                           notiled       10000  0.109498   0.012006 0.00474715      0.1774
+  T10                          notiled       10000  0.109294   0.012697 0.00515294      0.1774
+  T20                          notiled       10000  0.109718  0.0117049 0.00616193      0.1774
+  T50                          notiled       10000  0.108072  0.0117681 0.00799417      0.1774
+
+====================================================================
+  dist
+====================================================================
+  label                        variant       range     knn_s   approx_s   kmeans_s  approx_mae
+  ---------------------------- --------- --------- --------- ---------- ---------- -----------
+  uniform                      tiled         10000  0.107678  0.0119841   0.005759      0.1774
+  dense                        tiled         10000  0.107941  0.0114439 0.00567794      0.1694
+  clustered                    tiled         10000  0.107861   0.021167 0.00564909      0.0000
+  skewed                       tiled         10000  0.112976   0.048223 0.00590611      0.1548
+  uniform                      notiled       10000  0.108726  0.0116739 0.00594497      0.1774
+  dense                        notiled       10000  0.108764  0.0115912 0.00558901      0.1694
+  clustered                    notiled       10000  0.110146  0.0207961 0.00595307      0.0000
+  skewed                       notiled       10000  0.115849  0.0484312  0.0059731      0.1548
+
+====================================================================
+  correctness
+====================================================================
+  label                        variant       range     knn_s   approx_s   kmeans_s  approx_mae
+  ---------------------------- --------- --------- --------- ---------- ---------- -----------
+  k1_uniform                   tiled         10000  0.073231 0.00335193 0.00171304      0.0000
+  k10_uniform                  tiled         10000 0.0756829 0.00405717 0.00366688      0.7770
+  k32_uniform                  tiled         10000 0.0783341 0.00551701 0.00317693      0.2490
+  k64_uniform                  tiled         10000 0.0820591 0.00848079 0.00266504      0.2660
+  k128_uniform                 tiled         10000 0.0850689   0.014236 0.00290012      0.3110
+  k32_dense                    tiled         10000  0.080245 0.00608492 0.00288486      0.3280
+  k32_clustered                tiled         10000 0.0794561 0.00629902 0.00243497      0.0000
+  k32_skewed                   tiled         10000 0.0800018   0.011595   0.002918      0.1110
+  k1_uniform                   notiled       10000  0.074265 0.00332308 0.00172305      0.0000
+  k10_uniform                  notiled       10000 0.0769532 0.00543118 0.00275803      0.7770
+  k32_uniform                  notiled       10000  0.079253 0.00599718 0.00256109      0.2490
+  k64_uniform                  notiled       10000  0.083411 0.00866199 0.00253582      0.2660
+  k128_uniform                 notiled       10000  0.085201   0.014328 0.00273609      0.3110
+  k32_dense                    notiled       10000 0.0811241 0.00659108 0.00289106      0.3280
+  k32_clustered                notiled       10000 0.0792391 0.00633597 0.00266695      0.0000
+  k32_skewed                   notiled       10000 0.0798979  0.0115938 0.00310898      0.1110
+
+====================================================================
+  large
+====================================================================
+  label                        variant       range     knn_s   approx_s   kmeans_s  approx_mae
+  ---------------------------- --------- --------- --------- ---------- ---------- -----------
+  n100k_k128_T50               tiled         10000   4.00263   0.575554   0.050591      0.0555
+  n100k_k32_uniform            tiled         10000   0.84974   0.139948   0.036041      0.0566
+  n100k_k32_dense              tiled         10000  0.845565   0.141133   0.035835      0.0622
+  n100k_k32_clustered          tiled         10000  0.847519   0.430624  0.0359931      0.0007
+  n100k_k128_T50               notiled       10000   4.00342   0.577451   0.050029      0.0555
+  n100k_k32_uniform            notiled       10000  0.957509   0.141639   0.036129      0.0566
+  n100k_k32_dense              notiled       10000  0.965795   0.140216   0.035521      0.0622
+  n100k_k32_clustered          notiled       10000  0.968943   0.424131  0.0369799      0.0007
+
+====================================================================
+  vary_range
+====================================================================
+  label                        variant       range     knn_s   approx_s   kmeans_s  approx_mae
+  ---------------------------- --------- --------- --------- ---------- ---------- -----------
+  R100                         tiled           100  0.107537   0.011827 0.00609899      0.2679
+  R1000                        tiled          1000  0.106761   0.011421 0.00587916      0.1694
+  R10000                       tiled         10000  0.109123  0.0120499 0.00582004      0.1774
+  R100000                      tiled        100000    0.1083   0.011688 0.00584912      0.1713
+  R1000000                     tiled       1000000  0.109247   0.011801   0.006042      0.1583
+  R100                         notiled         100  0.110732  0.0118501 0.00616407      0.2679
+  R1000                        notiled        1000  0.109452   0.011322 0.00559402      0.1694
+  R10000                       notiled       10000  0.109242   0.011636 0.00567889      0.1774
+  R100000                      notiled      100000  0.109768   0.012265 0.00602984      0.1713
+  R1000000                     notiled     1000000  0.108978   0.011956 0.00610995      0.1583
+
+Full data: results.csv
+========================================
+ DONE
+========================================
