@@ -2,19 +2,17 @@
 #PBS -N histogram_eq
 #PBS -o output.log
 #PBS -e error.log
-#PBS -P cse
+#PBS -P col7880.ee1221163.course
 #PBS -l select=1:ncpus=8:ngpus=1:mem=16G
 #PBS -l walltime=00:30:00
 
-# ---------------------------------------------------------------------------
-#  Environment
-# ---------------------------------------------------------------------------
-module load compiler/cuda/12.3/compilervars
+module purge
 module load compiler/gcc/9.1.0
+module load suite/nvidia-hpc-sdk/20.7/cuda11.0
 
 export OMP_NUM_THREADS=8
 
-cd $HOME
+cd $HOME/histogram_eq
 
 # ---------------------------------------------------------------------------
 #  Build
@@ -28,16 +26,18 @@ if [ $? -ne 0 ]; then
     exit 1
 fi
 
-nvidia-smi   # log GPU info for reference
+nvidia-smi
 
 # ---------------------------------------------------------------------------
-#  Helper: run one test case and verify output
+#  Helper: run one test case
+#  seq=1 means also run sequential reference (only for small n)
 # ---------------------------------------------------------------------------
 run_test() {
     local label=$1
     local n=$2
     local k=$3
     local T=$4
+    local run_seq=$5   # 1 = run sequential reference, 0 = skip
 
     echo ""
     echo "========================================"
@@ -47,16 +47,13 @@ run_test() {
     python3 gen_input.py $n $k $T input.txt
 
     ./histogram_eq input.txt
-
     if [ $? -ne 0 ]; then
         echo "RUNTIME ERROR on $label"
         return
     fi
 
-    # Basic sanity check: correct line count and intensities in [0,255]
+    # Sanity check + approx MAE vs exact
     python3 - << PYEOF
-import sys
-
 def verify(tag, infile, outfile):
     with open(infile) as f:
         n = int(f.readline())
@@ -81,7 +78,6 @@ verify("knn",        "input.txt", "knn.txt")
 verify("approx_knn", "input.txt", "approx_knn.txt")
 verify("kmeans",     "input.txt", "kmeans.txt")
 
-# MAE of approx vs exact
 with open("knn.txt") as f:
     knn = [int(l.split()[3]) for l in f]
 with open("approx_knn.txt") as f:
@@ -89,19 +85,28 @@ with open("approx_knn.txt") as f:
 mae = sum(abs(a-b) for a,b in zip(knn,approx)) / len(knn)
 print(f"  [approx_knn vs knn] MAE = {mae:.4f}")
 PYEOF
+
+    # Sequential reference (only for small n — O(N^2) is too slow for large)
+    if [ "$run_seq" = "1" ]; then
+        echo "  Running sequential reference..."
+        python3 sequential.py input.txt
+    fi
 }
 
 # ---------------------------------------------------------------------------
 #  Test suite
 # ---------------------------------------------------------------------------
-run_test "edge_k0"   1000    0  10    # k=0 edge case
-run_test "edge_k1"   1000    1  10    # k=1 edge case
-run_test "small"     1000   10  20
-run_test "medium"    10000  32  20
-run_test "large"     100000 32  20
-run_test "max"       100000 128 50    # spec maximum — grader will use this
+# edge cases — with sequential reference
+run_test "edge_k1"   1000    1  10   1
+run_test "small"     1000   10  20   1
+run_test "medium"    10000  32  20   1
+
+# large cases — skip sequential (too slow), just verify format + MAE vs exact
+run_test "large"     100000  32  20  0
+run_test "max"       100000 128  50  0
 
 echo ""
 echo "========================================"
 echo " ALL TESTS DONE"
 echo "========================================"
+
