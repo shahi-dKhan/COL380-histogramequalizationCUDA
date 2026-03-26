@@ -11,7 +11,7 @@ module load compiler/gcc/9.1.0
 module load suite/nvidia-hpc-sdk/20.7/cuda11.0
 
 export OMP_NUM_THREADS=8
-cd $HOME/histogram_eq
+cd $HOME/histogram_eq/COL380-histogramequalizationCUDA
 
 # ---------------------------------------------------------------------------
 #  Build
@@ -75,7 +75,7 @@ kmeans_seq_mae = None
 
 if $run_seq:
     import subprocess, sys as _sys
-    subprocess.run([_sys.executable, 'sequential.py', 'input.txt'], capture_output=True)
+    subprocess.run([_sys.executable, 'sequential.py', 'input.txt'], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
     knn_seq_mae    = mae('knn_${variant}.txt',    'knn_seq.txt')
     kmeans_seq_mae = mae('kmeans_${variant}.txt', 'kmeans_seq.txt')
     print(f"  [seq] knn_mae={knn_seq_mae:.4f}  kmeans_mae={kmeans_seq_mae:.4f}")
