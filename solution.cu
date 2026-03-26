@@ -794,6 +794,12 @@ int main(int argc, char *argv[])
     try {
         PointCloud pc = read_input(argv[1]);
         std::cout << "N=" << pc.n << "  k=" << pc.k << "  T=" << pc.T << '\n';
+
+        // Warm up CUDA context so the one-time ~2.5s driver init
+        // does not inflate the KNN timer (first cudaMalloc triggers init).
+        { void *tmp; CUDA_CHECK(cudaMalloc(&tmp, 4)); cudaFree(tmp);
+          CUDA_CHECK(cudaDeviceSynchronize()); }
+
         {
             double t0 = omp_get_wtime();
             write_output("knn.txt", pc, run_knn(pc));
