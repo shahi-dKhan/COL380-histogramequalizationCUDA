@@ -127,8 +127,9 @@ def run_kmeans(n, k, T, pts):
             counts[c] += 1
         for c in range(k):
             if counts[c] > 0:
-                # Truncate-toward-zero integer division, same as C++ sum/cnt
-                centroids[c] = [int(sums[c][d] / counts[c]) for d in range(3)]
+                # Floor division — matches CUDA's unsigned-shift accumulation:
+                # CUDA does floor(sum/cnt) via unsigned offset trick, not truncation.
+                centroids[c] = [sums[c][d] // counts[c] for d in range(3)]
 
     # Build per-cluster histograms
     hists   = [[0] * 256 for _ in range(k)]
