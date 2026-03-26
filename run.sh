@@ -97,7 +97,8 @@ for VARIANT_SPEC in \
     "tiled                  ./histogram_eq" \
     "notiled                ./histogram_eq_notiled" \
     "spatialhash            ./histogram_eq_spatialhash" \
-    "notiled_spatialhash    ./histogram_eq_notiled_spatialhash"; do
+    "notiled_spatialhash    ./histogram_eq_notiled_spatialhash" \
+    "unsorted_tiled         ./histogram_eq_unsorted"; do
     VARIANT=$(echo $VARIANT_SPEC | cut -d' ' -f1)
     BIN=$(echo $VARIANT_SPEC     | cut -d' ' -f2)
 

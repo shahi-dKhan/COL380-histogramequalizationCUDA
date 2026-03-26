@@ -76,6 +76,16 @@ constexpr int MAX_K            = 128;
 #define USE_SPATIAL_HASH_APPROX 0
 #endif
 
+// ---------------------------------------------------------------------------
+//  Toggle: 1 = Use unsorted array + dynamic CDF in Exact KNN.
+//              Avoids the 128-entry max-heap and the 256-bin histogram;
+//              trades O(k) linear scan for max against heap's O(log k).
+//          0 = Use original max-heap + full histogram (default).
+// ---------------------------------------------------------------------------
+#ifndef USE_UNSORTED_ARRAY
+#define USE_UNSORTED_ARRAY 0
+#endif
+
 struct PointCloud {
     int n, k, T;
     std::vector<int> x, y, z, intensity;
@@ -191,10 +201,19 @@ __global__ void knn_kernel(const int * __restrict__ xs,
     const int qx = active ? xs[i] : 0;
     const int qy = active ? ys[i] : 0;
     const int qz = active ? zs[i] : 0;
+    const int qI = active ? intensity[i] : 0;
 
+#if !USE_UNSORTED_ARRAY
     long long heap_dist[MAX_K];
     int       heap_idx [MAX_K];
     int       heap_size = 0;
+#else
+    long long dists[MAX_K];
+    unsigned char ints[MAX_K];
+    int count = 0;
+    long long max_dist = MY_LLONG_MAX;
+    int max_idx = 0;
+#endif
 
     for (int tile_start = 0; tile_start < n; tile_start += BLOCK_SIZE) {
         // Cooperative load: every thread loads one element of the tile.
@@ -211,7 +230,25 @@ __global__ void knn_kernel(const int * __restrict__ xs,
                 if (jj == i) continue;
                 long long dx = s_xs[t]-qx, dy = s_ys[t]-qy, dz = s_zs[t]-qz;
                 long long d2 = dx*dx + dy*dy + dz*dz;
+#if !USE_UNSORTED_ARRAY
                 HEAP_INSERT(heap_dist, heap_idx, heap_size, k, d2, jj);
+#else
+                if (count < k) {
+                    dists[count] = d2;
+                    ints[count]  = (unsigned char)(active ? intensity[jj] : 0);
+                    if (d2 > max_dist || count == 0) { max_dist = d2; max_idx = count; }
+                    count++;
+                } else if (d2 < max_dist) {
+                    dists[max_idx] = d2;
+                    ints[max_idx]  = (unsigned char)(active ? intensity[jj] : 0);
+                    long long new_max = -1; int new_max_idx = 0;
+                    #pragma unroll 4
+                    for (int x = 0; x < k; ++x) {
+                        if (dists[x] > new_max) { new_max = dists[x]; new_max_idx = x; }
+                    }
+                    max_dist = new_max; max_idx = new_max_idx;
+                }
+#endif
             }
         }
         __syncthreads();
@@ -219,10 +256,27 @@ __global__ void knn_kernel(const int * __restrict__ xs,
 
     if (!active) return;
 
+#if !USE_UNSORTED_ARRAY
     int hist[INTENSITY_LEVELS] = {};
     hist[intensity[i]]++;
     for (int t = 0; t < heap_size; ++t) hist[intensity[heap_idx[t]]]++;
     out[i] = equalize_point(hist, intensity[i], heap_size + 1);
+#else
+    // Dynamic CDF: no histogram array needed.
+    int min_int = qI;
+    for (int t = 0; t < count; ++t) if (ints[t] < min_int) min_int = ints[t];
+    int cdf = 1, cdf_min = (qI == min_int) ? 1 : 0;
+    for (int t = 0; t < count; ++t) {
+        if (ints[t] <= qI)   cdf++;
+        if (ints[t] == min_int) cdf_min++;
+    }
+    if (count + 1 == cdf_min) { out[i] = qI; }
+    else {
+        int val = __float2int_rn((float)(cdf - cdf_min) /
+                                 (float)(count + 1 - cdf_min) * (INTENSITY_LEVELS - 1));
+        out[i] = max(0, min(INTENSITY_LEVELS - 1, val));
+    }
+#endif
 }
 
 #else  // USE_TILED_KNN == 0: original non-tiled version
@@ -239,22 +293,65 @@ __global__ void knn_kernel(const int * __restrict__ xs,
     if (k == 0) { out[i] = intensity[i]; return; }
 
     const int qx = xs[i], qy = ys[i], qz = zs[i];
+    const int qI = intensity[i];
 
+#if !USE_UNSORTED_ARRAY
     long long heap_dist[MAX_K];
     int       heap_idx [MAX_K];
     int       heap_size = 0;
+#else
+    long long dists[MAX_K];
+    unsigned char ints[MAX_K];
+    int count = 0;
+    long long max_dist = MY_LLONG_MAX;
+    int max_idx = 0;
+#endif
 
     for (int j = 0; j < n; ++j) {
         if (j == i) continue;
         long long dx = xs[j]-qx, dy = ys[j]-qy, dz = zs[j]-qz;
         long long d2 = dx*dx + dy*dy + dz*dz;
+#if !USE_UNSORTED_ARRAY
         HEAP_INSERT(heap_dist, heap_idx, heap_size, k, d2, j);
+#else
+        if (count < k) {
+            dists[count] = d2;
+            ints[count]  = (unsigned char)intensity[j];
+            if (d2 > max_dist || count == 0) { max_dist = d2; max_idx = count; }
+            count++;
+        } else if (d2 < max_dist) {
+            dists[max_idx] = d2;
+            ints[max_idx]  = (unsigned char)intensity[j];
+            long long new_max = -1; int new_max_idx = 0;
+            #pragma unroll 4
+            for (int x = 0; x < k; ++x) {
+                if (dists[x] > new_max) { new_max = dists[x]; new_max_idx = x; }
+            }
+            max_dist = new_max; max_idx = new_max_idx;
+        }
+#endif
     }
 
+#if !USE_UNSORTED_ARRAY
     int hist[INTENSITY_LEVELS] = {};
     hist[intensity[i]]++;
     for (int t = 0; t < heap_size; ++t) hist[intensity[heap_idx[t]]]++;
     out[i] = equalize_point(hist, intensity[i], heap_size + 1);
+#else
+    int min_int = qI;
+    for (int t = 0; t < count; ++t) if (ints[t] < min_int) min_int = ints[t];
+    int cdf = 1, cdf_min = (qI == min_int) ? 1 : 0;
+    for (int t = 0; t < count; ++t) {
+        if (ints[t] <= qI)      cdf++;
+        if (ints[t] == min_int) cdf_min++;
+    }
+    if (count + 1 == cdf_min) { out[i] = qI; }
+    else {
+        int val = __float2int_rn((float)(cdf - cdf_min) /
+                                 (float)(count + 1 - cdf_min) * (INTENSITY_LEVELS - 1));
+        out[i] = max(0, min(INTENSITY_LEVELS - 1, val));
+    }
+#endif
 }
 #endif  // USE_TILED_KNN
 
