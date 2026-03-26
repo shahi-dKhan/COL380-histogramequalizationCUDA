@@ -141,8 +141,7 @@ __device__ __forceinline__ void heap_sift_down(long long *dist, int *idx, int k)
     }
 
 // Optimization 1 & 2: __launch_bounds__(128, 2) + shared memory tiling
-__launch_bounds__(128, 2)
-__global__ void knn_kernel(const int * __restrict__ xs,
+__global__ __launch_bounds__(128, 2) void knn_kernel(const int * __restrict__ xs,
                            const int * __restrict__ ys,
                            const int * __restrict__ zs,
                            const int * __restrict__ intensity,
@@ -423,9 +422,10 @@ void kmeans_accum_kernel(const int   * __restrict__ xs,
     const int i = blockIdx.x * blockDim.x + threadIdx.x;
     if (i >= n) return;
     const int c = assign[i];
-    atomicAdd(&sum_x[c], (unsigned long long)(xs[i]));
-    atomicAdd(&sum_y[c], (unsigned long long)(ys[i]));
-    atomicAdd(&sum_z[c], (unsigned long long)(zs[i]));
+    // Shift coords to positive to avoid sign-extension issues with unsigned accumulation
+    atomicAdd(&sum_x[c], (unsigned long long)(xs[i] + 10001));
+    atomicAdd(&sum_y[c], (unsigned long long)(ys[i] + 10001));
+    atomicAdd(&sum_z[c], (unsigned long long)(zs[i] + 10001));
     atomicAdd(&cnt[c], 1);
 }
 
@@ -436,9 +436,9 @@ void kmeans_update_kernel(int       *cx, int       *cy, int       *cz,
 {
     const int c = blockIdx.x * blockDim.x + threadIdx.x;
     if (c >= k || cnt[c] == 0) return;
-    cx[c] = static_cast<int>((long long)sum_x[c] / cnt[c]);
-    cy[c] = static_cast<int>((long long)sum_y[c] / cnt[c]);
-    cz[c] = static_cast<int>((long long)sum_z[c] / cnt[c]);
+    cx[c] = static_cast<int>((long long)sum_x[c] / cnt[c]) - 10001;
+    cy[c] = static_cast<int>((long long)sum_y[c] / cnt[c]) - 10001;
+    cz[c] = static_cast<int>((long long)sum_z[c] / cnt[c]) - 10001;
 }
 
 __global__
