@@ -8,6 +8,7 @@
 #include <fstream>
 #include <cfloat>
 #include <climits>
+#include <string>
 
 #define MY_LLONG_MAX 9223372036854775807LL
 #define CUDA_CHECK(call) \
@@ -54,37 +55,6 @@ struct DeviceBuffer{
 constexpr int INTENSITY_LEVELS = 256;
 constexpr int BLOCK_SIZE       = 128;
 constexpr int MAX_K            = 128;
-
-// ---------------------------------------------------------------------------
-//  Toggle: 1 = shared-memory tiled KNN (128x bandwidth reduction for the
-//              all-pairs distance loop), 0 = original non-tiled version.
-//  Can be overridden at compile time: nvcc -DUSE_TILED_KNN=0 ...
-// ---------------------------------------------------------------------------
-#ifndef USE_TILED_KNN
-#define USE_TILED_KNN 1
-#endif
-
-// ---------------------------------------------------------------------------
-//  Toggle: 1 = spatial-hash approximate KNN.  Hash table of size 2N with
-//              chaining replaces the flat 3D grid array, eliminating the 10M
-//              cell cap and keeping the table (ht_head + ht_next) at ~2.4 MB
-//              for N=100K regardless of coordinate range.
-//          0 = original uniform-grid version.
-//  Can be overridden at compile time: nvcc -DUSE_SPATIAL_HASH_APPROX=1 ...
-// ---------------------------------------------------------------------------
-#ifndef USE_SPATIAL_HASH_APPROX
-#define USE_SPATIAL_HASH_APPROX 0
-#endif
-
-// ---------------------------------------------------------------------------
-//  Toggle: 1 = Use unsorted array + dynamic CDF in Exact KNN.
-//              Avoids the 128-entry max-heap and the 256-bin histogram;
-//              trades O(k) linear scan for max against heap's O(log k).
-//          0 = Use original max-heap + full histogram (default).
-// ---------------------------------------------------------------------------
-#ifndef USE_UNSORTED_ARRAY
-#define USE_UNSORTED_ARRAY 0
-#endif
 
 struct PointCloud {
     int n, k, T;
@@ -175,112 +145,6 @@ __device__ __forceinline__ void heap_sift_down(long long *dist, int *idx, int k)
 //  k nearest in registers, builds histogram over self + k neighbours,
 //  equalizes with m = k+1.
 // ===========================================================================
-#if USE_TILED_KNN
-// Tiled version: block cooperatively loads BLOCK_SIZE points into shared
-// memory per tile, giving each thread BLOCK_SIZE reuses per load instead of 1.
-// Shared memory cost: 3 * BLOCK_SIZE * 4 = 1536 bytes — negligible.
-// All threads (including out-of-bounds ones) must participate in __syncthreads.
-__global__ void knn_kernel(const int * __restrict__ xs,
-                           const int * __restrict__ ys,
-                           const int * __restrict__ zs,
-                           const int * __restrict__ intensity,
-                           int       * __restrict__ out,
-                           int n, int k)
-{
-    __shared__ int s_xs[BLOCK_SIZE], s_ys[BLOCK_SIZE], s_zs[BLOCK_SIZE];
-
-    const int i = blockIdx.x * blockDim.x + threadIdx.x;
-
-    // k==0: uniform branch — all threads exit together, no syncthreads hazard.
-    if (k == 0) {
-        if (i < n) out[i] = intensity[i];
-        return;
-    }
-
-    const bool active = (i < n);
-    const int qx = active ? xs[i] : 0;
-    const int qy = active ? ys[i] : 0;
-    const int qz = active ? zs[i] : 0;
-    const int qI = active ? intensity[i] : 0;
-
-#if !USE_UNSORTED_ARRAY
-    long long heap_dist[MAX_K];
-    int       heap_idx [MAX_K];
-    int       heap_size = 0;
-#else
-    long long dists[MAX_K];
-    unsigned char ints[MAX_K];
-    int count = 0;
-    long long max_dist = MY_LLONG_MAX;
-    int max_idx = 0;
-#endif
-
-    for (int tile_start = 0; tile_start < n; tile_start += BLOCK_SIZE) {
-        // Cooperative load: every thread loads one element of the tile.
-        int j = tile_start + threadIdx.x;
-        s_xs[threadIdx.x] = (j < n) ? xs[j] : 0;
-        s_ys[threadIdx.x] = (j < n) ? ys[j] : 0;
-        s_zs[threadIdx.x] = (j < n) ? zs[j] : 0;
-        __syncthreads();
-
-        if (active) {
-            const int tile_len = min(BLOCK_SIZE, n - tile_start);
-            for (int t = 0; t < tile_len; ++t) {
-                const int jj = tile_start + t;
-                if (jj == i) continue;
-                long long dx = s_xs[t]-qx, dy = s_ys[t]-qy, dz = s_zs[t]-qz;
-                long long d2 = dx*dx + dy*dy + dz*dz;
-#if !USE_UNSORTED_ARRAY
-                HEAP_INSERT(heap_dist, heap_idx, heap_size, k, d2, jj);
-#else
-                if (count < k) {
-                    dists[count] = d2;
-                    ints[count]  = (unsigned char)(active ? intensity[jj] : 0);
-                    if (d2 > max_dist || count == 0) { max_dist = d2; max_idx = count; }
-                    count++;
-                } else if (d2 < max_dist) {
-                    dists[max_idx] = d2;
-                    ints[max_idx]  = (unsigned char)(active ? intensity[jj] : 0);
-                    long long new_max = -1; int new_max_idx = 0;
-                    #pragma unroll 4
-                    for (int x = 0; x < k; ++x) {
-                        if (dists[x] > new_max) { new_max = dists[x]; new_max_idx = x; }
-                    }
-                    max_dist = new_max; max_idx = new_max_idx;
-                }
-#endif
-            }
-        }
-        __syncthreads();
-    }
-
-    if (!active) return;
-
-#if !USE_UNSORTED_ARRAY
-    int hist[INTENSITY_LEVELS] = {};
-    hist[intensity[i]]++;
-    for (int t = 0; t < heap_size; ++t) hist[intensity[heap_idx[t]]]++;
-    out[i] = equalize_point(hist, intensity[i], heap_size + 1);
-#else
-    // Dynamic CDF: no histogram array needed.
-    int min_int = qI;
-    for (int t = 0; t < count; ++t) if (ints[t] < min_int) min_int = ints[t];
-    int cdf = 1, cdf_min = (qI == min_int) ? 1 : 0;
-    for (int t = 0; t < count; ++t) {
-        if (ints[t] <= qI)   cdf++;
-        if (ints[t] == min_int) cdf_min++;
-    }
-    if (count + 1 == cdf_min) { out[i] = qI; }
-    else {
-        int val = __float2int_rn((float)(cdf - cdf_min) /
-                                 (float)(count + 1 - cdf_min) * (INTENSITY_LEVELS - 1));
-        out[i] = max(0, min(INTENSITY_LEVELS - 1, val));
-    }
-#endif
-}
-
-#else  // USE_TILED_KNN == 0: original non-tiled version
-
 __global__ void knn_kernel(const int * __restrict__ xs,
                            const int * __restrict__ ys,
                            const int * __restrict__ zs,
@@ -293,67 +157,23 @@ __global__ void knn_kernel(const int * __restrict__ xs,
     if (k == 0) { out[i] = intensity[i]; return; }
 
     const int qx = xs[i], qy = ys[i], qz = zs[i];
-    const int qI = intensity[i];
 
-#if !USE_UNSORTED_ARRAY
     long long heap_dist[MAX_K];
     int       heap_idx [MAX_K];
     int       heap_size = 0;
-#else
-    long long dists[MAX_K];
-    unsigned char ints[MAX_K];
-    int count = 0;
-    long long max_dist = MY_LLONG_MAX;
-    int max_idx = 0;
-#endif
 
     for (int j = 0; j < n; ++j) {
         if (j == i) continue;
         long long dx = xs[j]-qx, dy = ys[j]-qy, dz = zs[j]-qz;
         long long d2 = dx*dx + dy*dy + dz*dz;
-#if !USE_UNSORTED_ARRAY
         HEAP_INSERT(heap_dist, heap_idx, heap_size, k, d2, j);
-#else
-        if (count < k) {
-            dists[count] = d2;
-            ints[count]  = (unsigned char)intensity[j];
-            if (d2 > max_dist || count == 0) { max_dist = d2; max_idx = count; }
-            count++;
-        } else if (d2 < max_dist) {
-            dists[max_idx] = d2;
-            ints[max_idx]  = (unsigned char)intensity[j];
-            long long new_max = -1; int new_max_idx = 0;
-            #pragma unroll 4
-            for (int x = 0; x < k; ++x) {
-                if (dists[x] > new_max) { new_max = dists[x]; new_max_idx = x; }
-            }
-            max_dist = new_max; max_idx = new_max_idx;
-        }
-#endif
     }
 
-#if !USE_UNSORTED_ARRAY
     int hist[INTENSITY_LEVELS] = {};
     hist[intensity[i]]++;
     for (int t = 0; t < heap_size; ++t) hist[intensity[heap_idx[t]]]++;
     out[i] = equalize_point(hist, intensity[i], heap_size + 1);
-#else
-    int min_int = qI;
-    for (int t = 0; t < count; ++t) if (ints[t] < min_int) min_int = ints[t];
-    int cdf = 1, cdf_min = (qI == min_int) ? 1 : 0;
-    for (int t = 0; t < count; ++t) {
-        if (ints[t] <= qI)      cdf++;
-        if (ints[t] == min_int) cdf_min++;
-    }
-    if (count + 1 == cdf_min) { out[i] = qI; }
-    else {
-        int val = __float2int_rn((float)(cdf - cdf_min) /
-                                 (float)(count + 1 - cdf_min) * (INTENSITY_LEVELS - 1));
-        out[i] = max(0, min(INTENSITY_LEVELS - 1, val));
-    }
-#endif
 }
-#endif  // USE_TILED_KNN
 
 std::vector<int> run_knn(const PointCloud &pc)
 {
@@ -371,14 +191,14 @@ std::vector<int> run_knn(const PointCloud &pc)
 }
 
 // ===========================================================================
-//  2. APPROXIMATE KNN -- Uniform Grid / Voxel Hashing
+//  2. APPROXIMATE KNN -- Uniform 3D Grid
 //
 //  Build (host, OpenMP):
 //    Choose cell size r so ~k/27 points fall per cell on average.
 //    Counting-sort points into cells.
 //
 //  Query (GPU):
-//    Dynamic expanding window: start at radius=1 (3x3x3), expand shell by
+//    Dynamic expanding shell: start at radius=1 (3x3x3), expand shell by
 //    shell until heap has k neighbours or max_radius is reached.
 //    Warp-level early exit via __all_sync when all threads in warp are full.
 // ===========================================================================
@@ -440,97 +260,7 @@ __global__ void approx_knn_kernel(const int * __restrict__ xs,
     out[i] = equalize_point(hist, intensity[i], heap_size + 1);
 }
 
-// ---------------------------------------------------------------------------
-//  Spatial hash for 3D integer cell coordinates.
-//  Avalanche mixing after XOR-combine gives good distribution over power-of-2
-//  table sizes; caller applies result & ht_mask.
-// ---------------------------------------------------------------------------
-__device__ __host__ __forceinline__
-unsigned int spatial_hash(int cx, int cy, int cz)
-{
-    unsigned int h = (unsigned int)cx * 73856093u
-                   ^ (unsigned int)cy * 19349663u
-                   ^ (unsigned int)cz * 83492791u;
-    h ^= h >> 16;
-    h *= 0x45d9f3bu;
-    h ^= h >> 16;
-    return h;
-}
-
-// ---------------------------------------------------------------------------
-//  APPROX KNN — Spatial Hash kernel
-//
-//  ht_head[ht_size] + ht_next[n] form a chained hash table keyed on cell
-//  coordinates.  For each shell cell (qcx+dx, qcy+dy, qcz+dz):
-//    - Hash the cell coords → bucket index.
-//    - Walk the chain; skip entries with different cell coords (hash collision)
-//      and self.
-//    - No bounds check needed: out-of-range cells have no entries (head = -1).
-// ---------------------------------------------------------------------------
-__global__ void approx_knn_hash_kernel(
-    const int * __restrict__ xs,
-    const int * __restrict__ ys,
-    const int * __restrict__ zs,
-    const int * __restrict__ intensity,
-    const int * __restrict__ pt_cx,
-    const int * __restrict__ pt_cy,
-    const int * __restrict__ pt_cz,
-    const int * __restrict__ ht_head,
-    const int * __restrict__ ht_next,
-    int       * __restrict__ out,
-    int ht_mask, int n, int k, int max_radius)
-{
-    const int i = blockIdx.x * blockDim.x + threadIdx.x;
-    if (i >= n) return;
-    if (k == 0) { out[i] = intensity[i]; return; }
-
-    const int qx = xs[i], qy = ys[i], qz = zs[i];
-    const int qcx = pt_cx[i], qcy = pt_cy[i], qcz = pt_cz[i];
-
-    long long heap_dist[MAX_K];
-    int       heap_idx [MAX_K];
-    int       heap_size = 0;
-
-    int prev = -1;
-    for (int radius = 1; radius <= max_radius; ++radius) {
-        for (int dz = -radius; dz <= radius; ++dz) {
-            for (int dy = -radius; dy <= radius; ++dy) {
-                for (int dx = -radius; dx <= radius; ++dx) {
-                    // Only process the new shell layer (skip inner cube).
-                    if (dx >= -prev && dx <= prev &&
-                        dy >= -prev && dy <= prev &&
-                        dz >= -prev && dz <= prev) continue;
-
-                    const int tcx = qcx + dx;
-                    const int tcy = qcy + dy;
-                    const int tcz = qcz + dz;
-                    const int h = (int)(spatial_hash(tcx, tcy, tcz) & (unsigned int)ht_mask);
-
-                    for (int j = ht_head[h]; j != -1; j = ht_next[j]) {
-                        // Resolve hash collision: verify cell coords match.
-                        if (pt_cx[j] != tcx || pt_cy[j] != tcy || pt_cz[j] != tcz) continue;
-                        if (j == i) continue;
-                        long long ddx = xs[j]-qx, ddy = ys[j]-qy, ddz = zs[j]-qz;
-                        HEAP_INSERT(heap_dist, heap_idx, heap_size, k,
-                                    ddx*ddx + ddy*ddy + ddz*ddz, j);
-                    }
-                }
-            }
-        }
-        prev = radius;
-        if (__all_sync(__activemask(), heap_size >= k)) break;
-    }
-
-    int hist[INTENSITY_LEVELS] = {};
-    hist[intensity[i]]++;
-    for (int t = 0; t < heap_size; ++t) hist[intensity[heap_idx[t]]]++;
-    out[i] = equalize_point(hist, intensity[i], heap_size + 1);
-}
-
-// ---------------------------------------------------------------------------
-//  Host-side driver: uniform grid (original)
-// ---------------------------------------------------------------------------
-static std::vector<int> run_approx_knn_grid(const PointCloud &pc)
+std::vector<int> run_approx_knn(const PointCloud &pc)
 {
     const int n = pc.n, k = pc.k;
 
@@ -612,93 +342,6 @@ static std::vector<int> run_approx_knn_grid(const PointCloud &pc)
     return result;
 }
 
-// ---------------------------------------------------------------------------
-//  Host-side driver: spatial hash
-// ---------------------------------------------------------------------------
-static std::vector<int> run_approx_knn_hash(const PointCloud &pc)
-{
-    const int n = pc.n, k = pc.k;
-
-    // Bounding box (used only for cell-size selection and cell coord origin).
-    int min_x = *std::min_element(pc.x.begin(), pc.x.end());
-    int max_x = *std::max_element(pc.x.begin(), pc.x.end());
-    int min_y = *std::min_element(pc.y.begin(), pc.y.end());
-    int max_y = *std::max_element(pc.y.begin(), pc.y.end());
-    int min_z = *std::min_element(pc.z.begin(), pc.z.end());
-    int max_z = *std::max_element(pc.z.begin(), pc.z.end());
-
-    // Same cell-size heuristic as the grid version: target k/27 pts/cell.
-    const long long vol = (long long)(max_x - min_x + 1)
-                        * (long long)(max_y - min_y + 1)
-                        * (long long)(max_z - min_z + 1);
-    const float pts_per_cell = std::max(1.0f, static_cast<float>(k) / 27.0f);
-    float r = std::cbrt(static_cast<float>(vol) / (static_cast<float>(n) / pts_per_cell));
-    r = std::max(r, 1.0f);
-    const float inv_r = 1.0f / r;
-
-    // Cell coordinates for every point (non-negative since origin = min).
-    std::vector<int> pt_cx(n), pt_cy(n), pt_cz(n);
-    #pragma omp parallel for schedule(static)
-    for (int i = 0; i < n; ++i) {
-        pt_cx[i] = static_cast<int>((pc.x[i] - min_x) * inv_r);
-        pt_cy[i] = static_cast<int>((pc.y[i] - min_y) * inv_r);
-        pt_cz[i] = static_cast<int>((pc.z[i] - min_z) * inv_r);
-    }
-
-    // Hash table: next power-of-2 above 2*n for cheap bitwise masking.
-    int ht_size = 1;
-    while (ht_size < 2 * n) ht_size <<= 1;
-    const int ht_mask = ht_size - 1;
-
-    // Build chained hash table on the host.
-    std::vector<int> ht_head(ht_size, -1);
-    std::vector<int> ht_next(n, -1);
-    for (int i = 0; i < n; ++i) {
-        int h = (int)(spatial_hash(pt_cx[i], pt_cy[i], pt_cz[i]) & (unsigned int)ht_mask);
-        ht_next[i]  = ht_head[h];
-        ht_head[h]  = i;
-    }
-
-    // max_radius: design ensures ~27 cells hold k pts, radius=1 → 3^3=27 cells.
-    float cells_needed = static_cast<float>(k) / pts_per_cell;
-    int max_radius = static_cast<int>(std::cbrt(cells_needed) / 2.0f) + 3;
-    max_radius = std::max(max_radius, 1);
-
-    DeviceBuffer<int> d_x(n), d_y(n), d_z(n), d_I(n), d_out(n);
-    DeviceBuffer<int> d_pt_cx(n), d_pt_cy(n), d_pt_cz(n);
-    DeviceBuffer<int> d_ht_head(ht_size), d_ht_next(n);
-
-    d_x.upload(pc.x);      d_y.upload(pc.y);      d_z.upload(pc.z);
-    d_I.upload(pc.intensity);
-    d_pt_cx.upload(pt_cx); d_pt_cy.upload(pt_cy); d_pt_cz.upload(pt_cz);
-    d_ht_head.upload(ht_head);
-    d_ht_next.upload(ht_next);
-
-    approx_knn_hash_kernel<<<(n + BLOCK_SIZE-1)/BLOCK_SIZE, BLOCK_SIZE>>>(
-        d_x.ptr, d_y.ptr, d_z.ptr, d_I.ptr,
-        d_pt_cx.ptr, d_pt_cy.ptr, d_pt_cz.ptr,
-        d_ht_head.ptr, d_ht_next.ptr, d_out.ptr,
-        ht_mask, n, k, max_radius);
-    CUDA_CHECK(cudaGetLastError());
-    CUDA_CHECK(cudaDeviceSynchronize());
-
-    std::vector<int> result(n);
-    d_out.download(result);
-    return result;
-}
-
-// ---------------------------------------------------------------------------
-//  Dispatcher: selected at compile time by USE_SPATIAL_HASH_APPROX.
-// ---------------------------------------------------------------------------
-std::vector<int> run_approx_knn(const PointCloud &pc)
-{
-#if USE_SPATIAL_HASH_APPROX
-    return run_approx_knn_hash(pc);
-#else
-    return run_approx_knn_grid(pc);
-#endif
-}
-
 // ===========================================================================
 //  3. K-MEANS CLUSTERING
 //
@@ -761,7 +404,6 @@ void kmeans_accum_kernel(const int   * __restrict__ xs,
     if (i >= n) return;
     const int c = assign[i];
     // Shift by INT_MAX+1 to make all coords non-negative before unsigned accumulation.
-    // Safe for any int coordinate: shifted range = [0, 2*INT_MAX+1] = [0, UINT_MAX]
     atomicAdd(&sum_x[c], (unsigned long long)((long long)xs[i] + (long long)INT_MAX + 1LL));
     atomicAdd(&sum_y[c], (unsigned long long)((long long)ys[i] + (long long)INT_MAX + 1LL));
     atomicAdd(&sum_z[c], (unsigned long long)((long long)zs[i] + (long long)INT_MAX + 1LL));
@@ -881,36 +523,39 @@ std::vector<int> run_kmeans(const PointCloud &pc)
 
 // ===========================================================================
 //  main
+//  Usage: ./a2 <input_file> knn|approx_knn|kmeans
 // ===========================================================================
 int main(int argc, char *argv[])
 {
-    if (argc < 2) {
-        std::cerr << "Usage: " << argv[0] << " <input_file>\n";
+    if (argc < 3) {
+        std::cerr << "Usage: " << argv[0] << " <input_file> knn|approx_knn|kmeans\n";
         return 1;
     }
+    const std::string mode = argv[2];
+    if (mode != "knn" && mode != "approx_knn" && mode != "kmeans") {
+        std::cerr << "Unknown mode: " << mode << "\n";
+        std::cerr << "Valid modes: knn, approx_knn, kmeans\n";
+        return 1;
+    }
+
     try {
         PointCloud pc = read_input(argv[1]);
-        std::cout << "N=" << pc.n << "  k=" << pc.k << "  T=" << pc.T << '\n';
 
         // Warm up CUDA context so the one-time ~2.5s driver init
-        // does not inflate the KNN timer (first cudaMalloc triggers init).
+        // does not inflate the algorithm timer.
         { void *tmp; CUDA_CHECK(cudaMalloc(&tmp, 4)); cudaFree(tmp);
           CUDA_CHECK(cudaDeviceSynchronize()); }
 
-        {
-            double t0 = omp_get_wtime();
+        double t0 = omp_get_wtime();
+        if (mode == "knn") {
             write_output("knn.txt", pc, run_knn(pc));
-            std::cout << "KNN:        " << omp_get_wtime() - t0 << " s\n";
-        }
-        {
-            double t0 = omp_get_wtime();
+            std::fprintf(stderr, "KNN: %.6f s\n", omp_get_wtime() - t0);
+        } else if (mode == "approx_knn") {
             write_output("approx_knn.txt", pc, run_approx_knn(pc));
-            std::cout << "Approx KNN: " << omp_get_wtime() - t0 << " s\n";
-        }
-        {
-            double t0 = omp_get_wtime();
+            std::fprintf(stderr, "Approx KNN: %.6f s\n", omp_get_wtime() - t0);
+        } else {
             write_output("kmeans.txt", pc, run_kmeans(pc));
-            std::cout << "K-Means:    " << omp_get_wtime() - t0 << " s\n";
+            std::fprintf(stderr, "K-Means: %.6f s\n", omp_get_wtime() - t0);
         }
     } catch (const std::exception &e) {
         std::cerr << "Error: " << e.what() << '\n';

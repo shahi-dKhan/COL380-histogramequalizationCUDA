@@ -29,36 +29,32 @@ echo ""
 #  CSV header
 # ---------------------------------------------------------------------------
 RESULTS="results.csv"
-echo "group,label,variant,n,k,T,dist,range,knn_s,approx_s,kmeans_s,approx_mae_vs_knn,knn_mae_vs_seq,kmeans_mae_vs_seq" > $RESULTS
+echo "group,label,n,k,T,dist,range,knn_s,approx_s,kmeans_s,approx_mae_vs_knn,knn_mae_vs_seq,kmeans_mae_vs_seq" > $RESULTS
 
 # ---------------------------------------------------------------------------
-#  run_case  group label n k T dist [run_seq=0] [range=10000] [bin=./histogram_eq] [variant=tiled]
+#  run_case  group label n k T dist [run_seq=0] [range=10000]
 # ---------------------------------------------------------------------------
 run_case() {
     local group=$1 label=$2 n=$3 k=$4 T=$5 dist=$6 run_seq=${7:-0} R=${8:-10000}
-    local bin=${9:-./histogram_eq} variant=${10:-tiled}
 
-    echo "[$group/$variant] $label  n=$n k=$k T=$T dist=$dist R=$R"
+    echo "[$group] $label  n=$n k=$k T=$T dist=$dist R=$R"
 
     python3 gen_input.py $n $k $T input.txt --dist $dist --seed 42 --range $R
 
-    $bin input.txt > _timing.txt 2>&1
+    ./a2 input.txt knn        > /dev/null 2> _t_knn.txt
     if [ $? -ne 0 ]; then
-        echo "  ERROR running $bin"
-        echo "$group,$label,$variant,$n,$k,$T,$dist,$R,ERROR,ERROR,ERROR,ERROR,N/A,N/A" >> $RESULTS
+        echo "  ERROR running knn"
+        echo "$group,$label,$n,$k,$T,$dist,$R,ERROR,ERROR,ERROR,ERROR,N/A,N/A" >> $RESULTS
         return
     fi
+    ./a2 input.txt approx_knn > /dev/null 2> _t_approx.txt
+    ./a2 input.txt kmeans     > /dev/null 2> _t_kmeans.txt
 
-    cat _timing.txt
+    cat _t_knn.txt _t_approx.txt _t_kmeans.txt
 
-    # Save outputs under variant-specific names so the two runs don't overwrite each other.
-    cp knn.txt        knn_${variant}.txt
-    cp approx_knn.txt approx_knn_${variant}.txt
-    cp kmeans.txt     kmeans_${variant}.txt
-
-    knn_s=$(grep    "^KNN:"        _timing.txt | awk '{print $2}')
-    approx_s=$(grep "^Approx KNN:" _timing.txt | awk '{print $3}')
-    kmeans_s=$(grep "^K-Means:"    _timing.txt | awk '{print $2}')
+    knn_s=$(grep    "^KNN:"        _t_knn.txt    | awk '{print $2}')
+    approx_s=$(grep "^Approx KNN:" _t_approx.txt | awk '{print $3}')
+    kmeans_s=$(grep "^K-Means:"    _t_kmeans.txt | awk '{print $2}')
 
     python3 - << PYEOF
 def mae(f1, f2):
@@ -69,118 +65,99 @@ def mae(f1, f2):
     except:
         return None
 
-approx_mae     = mae('approx_knn_${variant}.txt', 'knn_${variant}.txt')
+approx_mae     = mae('approx_knn.txt', 'knn.txt')
 knn_seq_mae    = None
 kmeans_seq_mae = None
 
 if $run_seq:
     import subprocess, sys as _sys
     subprocess.run([_sys.executable, 'sequential.py', 'input.txt'], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-    knn_seq_mae    = mae('knn_${variant}.txt',    'knn_seq.txt')
-    kmeans_seq_mae = mae('kmeans_${variant}.txt', 'kmeans_seq.txt')
+    knn_seq_mae    = mae('knn.txt',    'knn_seq.txt')
+    kmeans_seq_mae = mae('kmeans.txt', 'kmeans_seq.txt')
     print(f"  [seq] knn_mae={knn_seq_mae:.4f}  kmeans_mae={kmeans_seq_mae:.4f}")
 
 def fmt(v): return f'{v:.4f}' if v is not None else 'N/A'
 print(f"  approx_mae_vs_knn={fmt(approx_mae)}")
 
 with open('$RESULTS', 'a') as f:
-    f.write(f'$group,$label,$variant,$n,$k,$T,$dist,$R,$knn_s,$approx_s,$kmeans_s,'
+    f.write(f'$group,$label,$n,$k,$T,$dist,$R,$knn_s,$approx_s,$kmeans_s,'
             f'{fmt(approx_mae)},{fmt(knn_seq_mae)},{fmt(kmeans_seq_mae)}\n')
 PYEOF
     echo ""
 }
 
 # ===========================================================================
-#  Run all groups for both variants
+#  GROUP A — Scalability with N  (k=32, T=20, uniform)
 # ===========================================================================
-for VARIANT_SPEC in \
-    "tiled                  ./histogram_eq" \
-    "notiled                ./histogram_eq_notiled" \
-    "spatialhash            ./histogram_eq_spatialhash" \
-    "notiled_spatialhash    ./histogram_eq_notiled_spatialhash" \
-    "unsorted_tiled         ./histogram_eq_unsorted"; do
-    VARIANT=$(echo $VARIANT_SPEC | cut -d' ' -f1)
-    BIN=$(echo $VARIANT_SPEC     | cut -d' ' -f2)
+echo "========================================"
+echo " GROUP A: Vary N  (k=32, T=20, uniform)"
+echo "========================================"
+for n in 1000 5000 10000 25000 50000 100000; do
+    run_case "vary_n" "n${n}" $n 32 20 uniform 0 10000
+done
 
-    echo ""
-    echo "###################################################################"
-    echo "  VARIANT: $VARIANT  ($BIN)"
-    echo "###################################################################"
+# ===========================================================================
+#  GROUP B — Scalability with K  (n=10000, T=20, uniform)
+# ===========================================================================
+echo "========================================"
+echo " GROUP B: Vary K  (n=10000, T=20, uniform)"
+echo "========================================"
+for k in 1 4 8 16 32 64 128; do
+    run_case "vary_k" "k${k}" 10000 $k 20 uniform 0 10000
+done
 
-    # ===========================================================================
-    #  GROUP A — Scalability with N  (k=32, T=20, uniform)
-    # ===========================================================================
-    echo "========================================"
-    echo " GROUP A: Vary N  (k=32, T=20, uniform)"
-    echo "========================================"
-    for n in 1000 5000 10000 25000 50000 100000; do
-        run_case "vary_n" "n${n}" $n 32 20 uniform 0 10000 $BIN $VARIANT
-    done
+# ===========================================================================
+#  GROUP C — K-Means convergence  (n=10000, k=32, uniform)
+# ===========================================================================
+echo "========================================"
+echo " GROUP C: Vary T  (n=10000, k=32, uniform)"
+echo "========================================"
+for T in 1 5 10 20 50; do
+    run_case "vary_T" "T${T}" 10000 32 $T uniform 0 10000
+done
 
-    # ===========================================================================
-    #  GROUP B — Scalability with K  (n=10000, T=20, uniform)
-    # ===========================================================================
-    echo "========================================"
-    echo " GROUP B: Vary K  (n=10000, T=20, uniform)"
-    echo "========================================"
-    for k in 1 4 8 16 32 64 128; do
-        run_case "vary_k" "k${k}" 10000 $k 20 uniform 0 10000 $BIN $VARIANT
-    done
+# ===========================================================================
+#  GROUP D — Data distributions  (n=10000, k=32, T=20)
+# ===========================================================================
+echo "========================================"
+echo " GROUP D: Distributions  (n=10000, k=32, T=20)"
+echo "========================================"
+for dist in uniform dense clustered skewed; do
+    run_case "dist" "$dist" 10000 32 20 $dist 0 10000
+done
 
-    # ===========================================================================
-    #  GROUP C — K-Means convergence  (n=10000, k=32, uniform)
-    # ===========================================================================
-    echo "========================================"
-    echo " GROUP C: Vary T  (n=10000, k=32, uniform)"
-    echo "========================================"
-    for T in 1 5 10 20 50; do
-        run_case "vary_T" "T${T}" 10000 32 $T uniform 0 10000 $BIN $VARIANT
-    done
+# ===========================================================================
+#  GROUP E — Correctness vs sequential  (n=1000, seq is feasible here)
+# ===========================================================================
+echo "========================================"
+echo " GROUP E: Correctness  (n=1000, vs sequential)"
+echo "========================================"
+for k in 1 10 32 64 128; do
+    run_case "correctness" "k${k}_uniform" 1000 $k 20 uniform 1 10000
+done
+for dist in dense clustered skewed; do
+    run_case "correctness" "k32_${dist}" 1000 32 20 $dist 1 10000
+done
 
-    # ===========================================================================
-    #  GROUP D — Data distributions  (n=10000, k=32, T=20)
-    # ===========================================================================
-    echo "========================================"
-    echo " GROUP D: Distributions  (n=10000, k=32, T=20)"
-    echo "========================================"
-    for dist in uniform dense clustered skewed; do
-        run_case "dist" "$dist" 10000 32 20 $dist 0 10000 $BIN $VARIANT
-    done
+# ===========================================================================
+#  GROUP F — Large scale stress tests
+# ===========================================================================
+echo "========================================"
+echo " GROUP F: Large scale"
+echo "========================================"
+run_case "large" "n100k_k128_T50"      100000 128 50 uniform 0 10000
+run_case "large" "n100k_k32_uniform"   100000  32 20 uniform 0 10000
+run_case "large" "n100k_k32_dense"     100000  32 20 dense   0 10000
+run_case "large" "n100k_k32_clustered" 100000  32 20 clustered 0 10000
 
-    # ===========================================================================
-    #  GROUP E — Correctness vs sequential  (n=1000, seq is feasible here)
-    # ===========================================================================
-    echo "========================================"
-    echo " GROUP E: Correctness  (n=1000, vs sequential)"
-    echo "========================================"
-    for k in 1 10 32 64 128; do
-        run_case "correctness" "k${k}_uniform" 1000 $k 20 uniform 1 10000 $BIN $VARIANT
-    done
-    for dist in dense clustered skewed; do
-        run_case "correctness" "k32_${dist}" 1000 32 20 $dist 1 10000 $BIN $VARIANT
-    done
-
-    # ===========================================================================
-    #  GROUP F — Large scale stress tests
-    # ===========================================================================
-    echo "========================================"
-    echo " GROUP F: Large scale"
-    echo "========================================"
-    run_case "large" "n100k_k128_T50"      100000 128 50 uniform 0 10000  $BIN $VARIANT
-    run_case "large" "n100k_k32_uniform"   100000  32 20 uniform 0 10000  $BIN $VARIANT
-    run_case "large" "n100k_k32_dense"     100000  32 20 dense   0 10000  $BIN $VARIANT
-    run_case "large" "n100k_k32_clustered" 100000  32 20 clustered 0 10000 $BIN $VARIANT
-
-    # ===========================================================================
-    #  GROUP G — Coordinate range variation  (n=10000, k=32, T=20, uniform)
-    # ===========================================================================
-    echo "========================================"
-    echo " GROUP G: Vary coordinate range  (n=10000, k=32, T=20, uniform)"
-    echo "========================================"
-    for R in 100 1000 10000 100000 1000000; do
-        run_case "vary_range" "R${R}" 10000 32 20 uniform 0 $R $BIN $VARIANT
-    done
-
+# ===========================================================================
+#  GROUP G — Coordinate range variation  (n=10000, k=32, T=20, uniform)
+# ===========================================================================
+echo "========================================"
+echo " GROUP G: Vary coordinate range  (n=10000, k=32, T=20, uniform)"
+echo "========================================"
+for R in 100 1000 10000 100000 1000000; do
+    run_case "vary_range" "R${R}" 10000 32 20 uniform 0 $R
 done
 
 # ---------------------------------------------------------------------------
@@ -205,10 +182,10 @@ for g, rs in groups.items():
     print(f"\n{'='*68}")
     print(f"  {g}")
     print(f"{'='*68}")
-    print(f"  {'label':<28} {'variant':<9} {'range':>9} {'knn_s':>9} {'approx_s':>10} {'kmeans_s':>10} {'approx_mae':>11}")
-    print(f"  {'-'*28} {'-'*9} {'-'*9} {'-'*9} {'-'*10} {'-'*10} {'-'*11}")
+    print(f"  {'label':<28} {'range':>9} {'knn_s':>9} {'approx_s':>10} {'kmeans_s':>10} {'approx_mae':>11}")
+    print(f"  {'-'*28} {'-'*9} {'-'*9} {'-'*10} {'-'*10} {'-'*11}")
     for r in rs:
-        print(f"  {r['label']:<28} {r['variant']:<9} {r['range']:>9} {r['knn_s']:>9} {r['approx_s']:>10} {r['kmeans_s']:>10} {r['approx_mae_vs_knn']:>11}")
+        print(f"  {r['label']:<28} {r['range']:>9} {r['knn_s']:>9} {r['approx_s']:>10} {r['kmeans_s']:>10} {r['approx_mae_vs_knn']:>11}")
 PYEOF
 
 echo ""
