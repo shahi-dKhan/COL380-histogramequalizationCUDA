@@ -4,7 +4,7 @@
 #PBS -e error.log
 #PBS -P col7880.ee1221163.course
 #PBS -l select=1:ncpus=8:ngpus=1:mem=16G
-#PBS -l walltime=02:00:00
+#PBS -l walltime=04:00:00
 
 module purge
 module load compiler/gcc/9.1.0
@@ -93,7 +93,11 @@ PYEOF
 # ===========================================================================
 #  Run all groups for both variants
 # ===========================================================================
-for VARIANT_SPEC in "tiled ./histogram_eq" "notiled ./histogram_eq_notiled"; do
+for VARIANT_SPEC in \
+    "tiled                  ./histogram_eq" \
+    "notiled                ./histogram_eq_notiled" \
+    "spatialhash            ./histogram_eq_spatialhash" \
+    "notiled_spatialhash    ./histogram_eq_notiled_spatialhash"; do
     VARIANT=$(echo $VARIANT_SPEC | cut -d' ' -f1)
     BIN=$(echo $VARIANT_SPEC     | cut -d' ' -f2)
 
