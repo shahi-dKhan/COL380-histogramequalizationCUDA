@@ -1460,3 +1460,2825 @@ Full data: results.csv
 ========================================
  DONE
 ========================================
+========================================
+ BUILD
+========================================
+rm -f histogram_eq histogram_eq_notiled *.txt results.csv
+nvcc -O3 -arch=sm_35 -Xcompiler -fopenmp -DUSE_TILED_KNN=1 solution.cu -o histogram_eq
+nvcc -O3 -arch=sm_35 -Xcompiler -fopenmp -DUSE_TILED_KNN=0 solution.cu -o histogram_eq_notiled
+Thu Mar 26 22:54:45 2026       
++-----------------------------------------------------------------------------+
+| NVIDIA-SMI 470.82.01    Driver Version: 470.82.01    CUDA Version: 11.4     |
+|-------------------------------+----------------------+----------------------+
+| GPU  Name        Persistence-M| Bus-Id        Disp.A | Volatile Uncorr. ECC |
+| Fan  Temp  Perf  Pwr:Usage/Cap|         Memory-Usage | GPU-Util  Compute M. |
+|                               |                      |               MIG M. |
+|===============================+======================+======================|
+|   0  Tesla K40m          Off  | 00000000:84:00.0 Off |                    0 |
+| N/A   26C    P0    63W / 235W |      0MiB / 11441MiB |     96%      Default |
+|                               |                      |                  N/A |
++-------------------------------+----------------------+----------------------+
+                                                                               
++-----------------------------------------------------------------------------+
+| Processes:                                                                  |
+|  GPU   GI   CI        PID   Type   Process name                  GPU Memory |
+|        ID   ID                                                   Usage      |
+|=============================================================================|
+|  No running processes found                                                 |
++-----------------------------------------------------------------------------+
+
+
+###################################################################
+  VARIANT: tiled  (./histogram_eq)
+###################################################################
+========================================
+ GROUP A: Vary N  (k=32, T=20, uniform)
+========================================
+[vary_n/tiled] n1000  n=1000 k=32 T=20 dist=uniform R=10000
+Dataset written to input.txt  [n=1000, k=32, T=20, dist=uniform, seed=42, R=10000]
+N=1000  k=32  T=20
+KNN:        2.27996 s
+Approx KNN: 0.00612593 s
+K-Means:    0.0154049 s
+  approx_mae_vs_knn=0.2490
+
+[vary_n/tiled] n5000  n=5000 k=32 T=20 dist=uniform R=10000
+Dataset written to input.txt  [n=5000, k=32, T=20, dist=uniform, seed=42, R=10000]
+N=5000  k=32  T=20
+KNN:        2.29789 s
+Approx KNN: 0.00885391 s
+K-Means:    0.00466299 s
+  approx_mae_vs_knn=0.2224
+
+[vary_n/tiled] n10000  n=10000 k=32 T=20 dist=uniform R=10000
+Dataset written to input.txt  [n=10000, k=32, T=20, dist=uniform, seed=42, R=10000]
+N=10000  k=32  T=20
+KNN:        2.31786 s
+Approx KNN: 0.012454 s
+K-Means:    0.00672293 s
+  approx_mae_vs_knn=0.1774
+
+[vary_n/tiled] n25000  n=25000 k=32 T=20 dist=uniform R=10000
+Dataset written to input.txt  [n=25000, k=32, T=20, dist=uniform, seed=42, R=10000]
+N=25000  k=32  T=20
+KNN:        2.40114 s
+Approx KNN: 0.0325499 s
+K-Means:    0.0122101 s
+  approx_mae_vs_knn=0.1021
+
+[vary_n/tiled] n50000  n=50000 k=32 T=20 dist=uniform R=10000
+Dataset written to input.txt  [n=50000, k=32, T=20, dist=uniform, seed=42, R=10000]
+N=50000  k=32  T=20
+KNN:        2.62683 s
+Approx KNN: 0.0681701 s
+K-Means:    0.0220778 s
+  approx_mae_vs_knn=0.0734
+
+[vary_n/tiled] n100000  n=100000 k=32 T=20 dist=uniform R=10000
+Dataset written to input.txt  [n=100000, k=32, T=20, dist=uniform, seed=42, R=10000]
+N=100000  k=32  T=20
+KNN:        3.0749 s
+Approx KNN: 0.146556 s
+K-Means:    0.0414419 s
+  approx_mae_vs_knn=0.0566
+
+========================================
+ GROUP B: Vary K  (n=10000, T=20, uniform)
+========================================
+[vary_k/tiled] k1  n=10000 k=1 T=20 dist=uniform R=10000
+Dataset written to input.txt  [n=10000, k=1, T=20, dist=uniform, seed=42, R=10000]
+N=10000  k=1  T=20
+KNN:        2.28308 s
+Approx KNN: 0.00797796 s
+K-Means:    0.00584888 s
+  approx_mae_vs_knn=0.1020
+
+[vary_k/tiled] k4  n=10000 k=4 T=20 dist=uniform R=10000
+Dataset written to input.txt  [n=10000, k=4, T=20, dist=uniform, seed=42, R=10000]
+N=10000  k=4  T=20
+KNN:        2.29687 s
+Approx KNN: 0.00829387 s
+K-Means:    0.00622201 s
+  approx_mae_vs_knn=0.6178
+
+[vary_k/tiled] k8  n=10000 k=8 T=20 dist=uniform R=10000
+Dataset written to input.txt  [n=10000, k=8, T=20, dist=uniform, seed=42, R=10000]
+N=10000  k=8  T=20
+KNN:        2.28508 s
+Approx KNN: 0.00811696 s
+K-Means:    0.00639606 s
+  approx_mae_vs_knn=2.1660
+
+[vary_k/tiled] k16  n=10000 k=16 T=20 dist=uniform R=10000
+Dataset written to input.txt  [n=10000, k=16, T=20, dist=uniform, seed=42, R=10000]
+N=10000  k=16  T=20
+KNN:        2.30248 s
+Approx KNN: 0.00977683 s
+K-Means:    0.00635505 s
+  approx_mae_vs_knn=0.2478
+
+[vary_k/tiled] k32  n=10000 k=32 T=20 dist=uniform R=10000
+Dataset written to input.txt  [n=10000, k=32, T=20, dist=uniform, seed=42, R=10000]
+N=10000  k=32  T=20
+KNN:        2.31766 s
+Approx KNN: 0.0127602 s
+K-Means:    0.00662088 s
+  approx_mae_vs_knn=0.1774
+
+[vary_k/tiled] k64  n=10000 k=64 T=20 dist=uniform R=10000
+Dataset written to input.txt  [n=10000, k=64, T=20, dist=uniform, seed=42, R=10000]
+N=10000  k=64  T=20
+KNN:        2.37472 s
+Approx KNN: 0.022501 s
+K-Means:    0.00658989 s
+  approx_mae_vs_knn=0.1579
+
+[vary_k/tiled] k128  n=10000 k=128 T=20 dist=uniform R=10000
+Dataset written to input.txt  [n=10000, k=128, T=20, dist=uniform, seed=42, R=10000]
+N=10000  k=128  T=20
+KNN:        2.45544 s
+Approx KNN: 0.039428 s
+K-Means:    0.0072999 s
+  approx_mae_vs_knn=0.1490
+
+========================================
+ GROUP C: Vary T  (n=10000, k=32, uniform)
+========================================
+[vary_T/tiled] T1  n=10000 k=32 T=1 dist=uniform R=10000
+Dataset written to input.txt  [n=10000, k=32, T=1, dist=uniform, seed=42, R=10000]
+N=10000  k=32  T=1
+KNN:        2.3056 s
+Approx KNN: 0.01263 s
+K-Means:    0.00549197 s
+  approx_mae_vs_knn=0.1774
+
+[vary_T/tiled] T5  n=10000 k=32 T=5 dist=uniform R=10000
+Dataset written to input.txt  [n=10000, k=32, T=5, dist=uniform, seed=42, R=10000]
+N=10000  k=32  T=5
+KNN:        2.32424 s
+Approx KNN: 0.012495 s
+K-Means:    0.00540304 s
+  approx_mae_vs_knn=0.1774
+
+[vary_T/tiled] T10  n=10000 k=32 T=10 dist=uniform R=10000
+Dataset written to input.txt  [n=10000, k=32, T=10, dist=uniform, seed=42, R=10000]
+N=10000  k=32  T=10
+KNN:        2.31034 s
+Approx KNN: 0.0126591 s
+K-Means:    0.00572896 s
+  approx_mae_vs_knn=0.1774
+
+[vary_T/tiled] T20  n=10000 k=32 T=20 dist=uniform R=10000
+Dataset written to input.txt  [n=10000, k=32, T=20, dist=uniform, seed=42, R=10000]
+N=10000  k=32  T=20
+KNN:        2.31459 s
+Approx KNN: 0.0130351 s
+K-Means:    0.00635004 s
+  approx_mae_vs_knn=0.1774
+
+[vary_T/tiled] T50  n=10000 k=32 T=50 dist=uniform R=10000
+Dataset written to input.txt  [n=10000, k=32, T=50, dist=uniform, seed=42, R=10000]
+N=10000  k=32  T=50
+KNN:        2.31439 s
+Approx KNN: 0.0125709 s
+K-Means:    0.00857711 s
+  approx_mae_vs_knn=0.1774
+
+========================================
+ GROUP D: Distributions  (n=10000, k=32, T=20)
+========================================
+[dist/tiled] uniform  n=10000 k=32 T=20 dist=uniform R=10000
+Dataset written to input.txt  [n=10000, k=32, T=20, dist=uniform, seed=42, R=10000]
+N=10000  k=32  T=20
+KNN:        4.86689 s
+Approx KNN: 0.012413 s
+K-Means:    0.00645018 s
+  approx_mae_vs_knn=0.1774
+
+[dist/tiled] dense  n=10000 k=32 T=20 dist=dense R=10000
+Dataset written to input.txt  [n=10000, k=32, T=20, dist=dense, seed=42, R=10000]
+N=10000  k=32  T=20
+KNN:        2.31898 s
+Approx KNN: 0.0126131 s
+K-Means:    0.00652814 s
+  approx_mae_vs_knn=0.1694
+
+[dist/tiled] clustered  n=10000 k=32 T=20 dist=clustered R=10000
+Dataset written to input.txt  [n=10000, k=32, T=20, dist=clustered, seed=42, R=10000]
+N=10000  k=32  T=20
+KNN:        2.30611 s
+Approx KNN: 0.021692 s
+K-Means:    0.00640607 s
+  approx_mae_vs_knn=0.0000
+
+[dist/tiled] skewed  n=10000 k=32 T=20 dist=skewed R=10000
+Dataset written to input.txt  [n=10000, k=32, T=20, dist=skewed, seed=42, R=10000]
+N=10000  k=32  T=20
+KNN:        2.31078 s
+Approx KNN: 0.048862 s
+K-Means:    0.00699306 s
+  approx_mae_vs_knn=0.1548
+
+========================================
+ GROUP E: Correctness  (n=1000, vs sequential)
+========================================
+[correctness/tiled] k1_uniform  n=1000 k=1 T=20 dist=uniform R=10000
+Dataset written to input.txt  [n=1000, k=1, T=20, dist=uniform, seed=42, R=10000]
+N=1000  k=1  T=20
+KNN:        2.28134 s
+Approx KNN: 0.00419784 s
+K-Means:    0.00187016 s
+  [seq] knn_mae=0.0000  kmeans_mae=0.0000
+  approx_mae_vs_knn=0.0000
+
+[correctness/tiled] k10_uniform  n=1000 k=10 T=20 dist=uniform R=10000
+Dataset written to input.txt  [n=1000, k=10, T=20, dist=uniform, seed=42, R=10000]
+N=1000  k=10  T=20
+KNN:        2.28583 s
+Approx KNN: 0.0042851 s
+K-Means:    0.0029459 s
+  [seq] knn_mae=0.0000  kmeans_mae=1.0420
+  approx_mae_vs_knn=0.7770
+
+[correctness/tiled] k32_uniform  n=1000 k=32 T=20 dist=uniform R=10000
+Dataset written to input.txt  [n=1000, k=32, T=20, dist=uniform, seed=42, R=10000]
+N=1000  k=32  T=20
+KNN:        2.29546 s
+Approx KNN: 0.00621295 s
+K-Means:    0.00230789 s
+  [seq] knn_mae=0.0000  kmeans_mae=0.0000
+  approx_mae_vs_knn=0.2490
+
+[correctness/tiled] k64_uniform  n=1000 k=64 T=20 dist=uniform R=10000
+Dataset written to input.txt  [n=1000, k=64, T=20, dist=uniform, seed=42, R=10000]
+N=1000  k=64  T=20
+KNN:        2.27029 s
+Approx KNN: 0.00888991 s
+K-Means:    0.00255609 s
+  [seq] knn_mae=0.0000  kmeans_mae=1.9870
+  approx_mae_vs_knn=0.2660
+
+[correctness/tiled] k128_uniform  n=1000 k=128 T=20 dist=uniform R=10000
+Dataset written to input.txt  [n=1000, k=128, T=20, dist=uniform, seed=42, R=10000]
+N=1000  k=128  T=20
+KNN:        2.27589 s
+Approx KNN: 0.014554 s
+K-Means:    0.00288296 s
+  [seq] knn_mae=0.0000  kmeans_mae=0.0000
+  approx_mae_vs_knn=0.3110
+
+[correctness/tiled] k32_dense  n=1000 k=32 T=20 dist=dense R=10000
+Dataset written to input.txt  [n=1000, k=32, T=20, dist=dense, seed=42, R=10000]
+N=1000  k=32  T=20
+KNN:        2.25821 s
+Approx KNN: 0.0062778 s
+K-Means:    0.00304008 s
+  [seq] knn_mae=0.0000  kmeans_mae=1.6600
+  approx_mae_vs_knn=0.3280
+
+[correctness/tiled] k32_clustered  n=1000 k=32 T=20 dist=clustered R=10000
+Dataset written to input.txt  [n=1000, k=32, T=20, dist=clustered, seed=42, R=10000]
+N=1000  k=32  T=20
+KNN:        2.3026 s
+Approx KNN: 0.00674081 s
+K-Means:    0.00246787 s
+  [seq] knn_mae=0.0000  kmeans_mae=0.0000
+  approx_mae_vs_knn=0.0000
+
+[correctness/tiled] k32_skewed  n=1000 k=32 T=20 dist=skewed R=10000
+Dataset written to input.txt  [n=1000, k=32, T=20, dist=skewed, seed=42, R=10000]
+N=1000  k=32  T=20
+KNN:        2.29368 s
+Approx KNN: 0.012171 s
+K-Means:    0.00303102 s
+  [seq] knn_mae=0.0000  kmeans_mae=5.0810
+  approx_mae_vs_knn=0.1110
+
+========================================
+ GROUP F: Large scale
+========================================
+[large/tiled] n100k_k128_T50  n=100000 k=128 T=50 dist=uniform R=10000
+Dataset written to input.txt  [n=100000, k=128, T=50, dist=uniform, seed=42, R=10000]
+N=100000  k=128  T=50
+KNN:        6.28942 s
+Approx KNN: 0.584981 s
+K-Means:    0.0566239 s
+  approx_mae_vs_knn=0.0555
+
+[large/tiled] n100k_k32_uniform  n=100000 k=32 T=20 dist=uniform R=10000
+Dataset written to input.txt  [n=100000, k=32, T=20, dist=uniform, seed=42, R=10000]
+N=100000  k=32  T=20
+KNN:        3.07013 s
+Approx KNN: 0.147773 s
+K-Means:    0.042094 s
+  approx_mae_vs_knn=0.0566
+
+[large/tiled] n100k_k32_dense  n=100000 k=32 T=20 dist=dense R=10000
+Dataset written to input.txt  [n=100000, k=32, T=20, dist=dense, seed=42, R=10000]
+N=100000  k=32  T=20
+KNN:        3.06249 s
+Approx KNN: 0.145426 s
+K-Means:    0.040107 s
+  approx_mae_vs_knn=0.0622
+
+[large/tiled] n100k_k32_clustered  n=100000 k=32 T=20 dist=clustered R=10000
+Dataset written to input.txt  [n=100000, k=32, T=20, dist=clustered, seed=42, R=10000]
+N=100000  k=32  T=20
+KNN:        3.05151 s
+Approx KNN: 0.43708 s
+K-Means:    0.0417871 s
+  approx_mae_vs_knn=0.0007
+
+========================================
+ GROUP G: Vary coordinate range  (n=10000, k=32, T=20, uniform)
+========================================
+[vary_range/tiled] R100  n=10000 k=32 T=20 dist=uniform R=100
+Dataset written to input.txt  [n=10000, k=32, T=20, dist=uniform, seed=42, R=100]
+N=10000  k=32  T=20
+KNN:        2.32996 s
+Approx KNN: 0.0130451 s
+K-Means:    0.00718188 s
+  approx_mae_vs_knn=0.2679
+
+[vary_range/tiled] R1000  n=10000 k=32 T=20 dist=uniform R=1000
+Dataset written to input.txt  [n=10000, k=32, T=20, dist=uniform, seed=42, R=1000]
+N=10000  k=32  T=20
+KNN:        2.30169 s
+Approx KNN: 0.0124812 s
+K-Means:    0.00630403 s
+  approx_mae_vs_knn=0.1694
+
+[vary_range/tiled] R10000  n=10000 k=32 T=20 dist=uniform R=10000
+Dataset written to input.txt  [n=10000, k=32, T=20, dist=uniform, seed=42, R=10000]
+N=10000  k=32  T=20
+KNN:        2.32406 s
+Approx KNN: 0.0127721 s
+K-Means:    0.00637484 s
+  approx_mae_vs_knn=0.1774
+
+[vary_range/tiled] R100000  n=10000 k=32 T=20 dist=uniform R=100000
+Dataset written to input.txt  [n=10000, k=32, T=20, dist=uniform, seed=42, R=100000]
+N=10000  k=32  T=20
+KNN:        2.31999 s
+Approx KNN: 0.01282 s
+K-Means:    0.006567 s
+  approx_mae_vs_knn=0.1713
+
+[vary_range/tiled] R1000000  n=10000 k=32 T=20 dist=uniform R=1000000
+Dataset written to input.txt  [n=10000, k=32, T=20, dist=uniform, seed=42, R=1000000]
+N=10000  k=32  T=20
+KNN:        2.30787 s
+Approx KNN: 0.0128391 s
+K-Means:    0.00665617 s
+  approx_mae_vs_knn=0.1583
+
+
+###################################################################
+  VARIANT: notiled  (./histogram_eq_notiled)
+###################################################################
+========================================
+ GROUP A: Vary N  (k=32, T=20, uniform)
+========================================
+[vary_n/notiled] n1000  n=1000 k=32 T=20 dist=uniform R=10000
+Dataset written to input.txt  [n=1000, k=32, T=20, dist=uniform, seed=42, R=10000]
+N=1000  k=32  T=20
+KNN:        2.29798 s
+Approx KNN: 0.00635004 s
+K-Means:    0.00243497 s
+  approx_mae_vs_knn=0.2490
+
+[vary_n/notiled] n5000  n=5000 k=32 T=20 dist=uniform R=10000
+Dataset written to input.txt  [n=5000, k=32, T=20, dist=uniform, seed=42, R=10000]
+N=5000  k=32  T=20
+KNN:        2.31463 s
+Approx KNN: 0.00868011 s
+K-Means:    0.00454092 s
+  approx_mae_vs_knn=0.2224
+
+[vary_n/notiled] n10000  n=10000 k=32 T=20 dist=uniform R=10000
+Dataset written to input.txt  [n=10000, k=32, T=20, dist=uniform, seed=42, R=10000]
+N=10000  k=32  T=20
+KNN:        2.32628 s
+Approx KNN: 0.012723 s
+K-Means:    0.00672603 s
+  approx_mae_vs_knn=0.1774
+
+[vary_n/notiled] n25000  n=25000 k=32 T=20 dist=uniform R=10000
+Dataset written to input.txt  [n=25000, k=32, T=20, dist=uniform, seed=42, R=10000]
+N=25000  k=32  T=20
+KNN:        2.44562 s
+Approx KNN: 0.033066 s
+K-Means:    0.013298 s
+  approx_mae_vs_knn=0.1021
+
+[vary_n/notiled] n50000  n=50000 k=32 T=20 dist=uniform R=10000
+Dataset written to input.txt  [n=50000, k=32, T=20, dist=uniform, seed=42, R=10000]
+N=50000  k=32  T=20
+KNN:        2.64601 s
+Approx KNN: 0.068954 s
+K-Means:    0.0220661 s
+  approx_mae_vs_knn=0.0734
+
+[vary_n/notiled] n100000  n=100000 k=32 T=20 dist=uniform R=10000
+Dataset written to input.txt  [n=100000, k=32, T=20, dist=uniform, seed=42, R=10000]
+N=100000  k=32  T=20
+KNN:        3.17623 s
+Approx KNN: 0.147476 s
+K-Means:    0.0413101 s
+  approx_mae_vs_knn=0.0566
+
+========================================
+ GROUP B: Vary K  (n=10000, T=20, uniform)
+========================================
+[vary_k/notiled] k1  n=10000 k=1 T=20 dist=uniform R=10000
+Dataset written to input.txt  [n=10000, k=1, T=20, dist=uniform, seed=42, R=10000]
+N=10000  k=1  T=20
+KNN:        2.30019 s
+Approx KNN: 0.00786686 s
+K-Means:    0.00574613 s
+  approx_mae_vs_knn=0.1020
+
+[vary_k/notiled] k4  n=10000 k=4 T=20 dist=uniform R=10000
+Dataset written to input.txt  [n=10000, k=4, T=20, dist=uniform, seed=42, R=10000]
+N=10000  k=4  T=20
+KNN:        2.29195 s
+Approx KNN: 0.00799012 s
+K-Means:    0.00669289 s
+  approx_mae_vs_knn=0.6178
+
+[vary_k/notiled] k8  n=10000 k=8 T=20 dist=uniform R=10000
+Dataset written to input.txt  [n=10000, k=8, T=20, dist=uniform, seed=42, R=10000]
+N=10000  k=8  T=20
+KNN:        2.30057 s
+Approx KNN: 0.00805306 s
+K-Means:    0.00650215 s
+  approx_mae_vs_knn=2.1660
+
+[vary_k/notiled] k16  n=10000 k=16 T=20 dist=uniform R=10000
+Dataset written to input.txt  [n=10000, k=16, T=20, dist=uniform, seed=42, R=10000]
+N=10000  k=16  T=20
+KNN:        2.29027 s
+Approx KNN: 0.00969386 s
+K-Means:    0.00634003 s
+  approx_mae_vs_knn=0.2478
+
+[vary_k/notiled] k32  n=10000 k=32 T=20 dist=uniform R=10000
+Dataset written to input.txt  [n=10000, k=32, T=20, dist=uniform, seed=42, R=10000]
+N=10000  k=32  T=20
+KNN:        2.33121 s
+Approx KNN: 0.0127439 s
+K-Means:    0.00704098 s
+  approx_mae_vs_knn=0.1774
+
+[vary_k/notiled] k64  n=10000 k=64 T=20 dist=uniform R=10000
+Dataset written to input.txt  [n=10000, k=64, T=20, dist=uniform, seed=42, R=10000]
+N=10000  k=64  T=20
+KNN:        2.36651 s
+Approx KNN: 0.0203898 s
+K-Means:    0.00659299 s
+  approx_mae_vs_knn=0.1579
+
+[vary_k/notiled] k128  n=10000 k=128 T=20 dist=uniform R=10000
+Dataset written to input.txt  [n=10000, k=128, T=20, dist=uniform, seed=42, R=10000]
+N=10000  k=128  T=20
+KNN:        2.45071 s
+Approx KNN: 0.039037 s
+K-Means:    0.007231 s
+  approx_mae_vs_knn=0.1490
+
+========================================
+ GROUP C: Vary T  (n=10000, k=32, uniform)
+========================================
+[vary_T/notiled] T1  n=10000 k=32 T=1 dist=uniform R=10000
+Dataset written to input.txt  [n=10000, k=32, T=1, dist=uniform, seed=42, R=10000]
+N=10000  k=32  T=1
+KNN:        2.32974 s
+Approx KNN: 0.0127201 s
+K-Means:    0.0050838 s
+  approx_mae_vs_knn=0.1774
+
+[vary_T/notiled] T5  n=10000 k=32 T=5 dist=uniform R=10000
+Dataset written to input.txt  [n=10000, k=32, T=5, dist=uniform, seed=42, R=10000]
+N=10000  k=32  T=5
+KNN:        4.88159 s
+Approx KNN: 0.012315 s
+K-Means:    0.0055511 s
+  approx_mae_vs_knn=0.1774
+
+[vary_T/notiled] T10  n=10000 k=32 T=10 dist=uniform R=10000
+Dataset written to input.txt  [n=10000, k=32, T=10, dist=uniform, seed=42, R=10000]
+N=10000  k=32  T=10
+KNN:        2.31624 s
+Approx KNN: 0.0124071 s
+K-Means:    0.00567698 s
+  approx_mae_vs_knn=0.1774
+
+[vary_T/notiled] T20  n=10000 k=32 T=20 dist=uniform R=10000
+Dataset written to input.txt  [n=10000, k=32, T=20, dist=uniform, seed=42, R=10000]
+N=10000  k=32  T=20
+KNN:        2.30906 s
+Approx KNN: 0.012486 s
+K-Means:    0.00637293 s
+  approx_mae_vs_knn=0.1774
+
+[vary_T/notiled] T50  n=10000 k=32 T=50 dist=uniform R=10000
+Dataset written to input.txt  [n=10000, k=32, T=50, dist=uniform, seed=42, R=10000]
+N=10000  k=32  T=50
+KNN:        2.31558 s
+Approx KNN: 0.0127409 s
+K-Means:    0.00873804 s
+  approx_mae_vs_knn=0.1774
+
+========================================
+ GROUP D: Distributions  (n=10000, k=32, T=20)
+========================================
+[dist/notiled] uniform  n=10000 k=32 T=20 dist=uniform R=10000
+Dataset written to input.txt  [n=10000, k=32, T=20, dist=uniform, seed=42, R=10000]
+N=10000  k=32  T=20
+KNN:        2.31492 s
+Approx KNN: 0.0126231 s
+K-Means:    0.00651693 s
+  approx_mae_vs_knn=0.1774
+
+[dist/notiled] dense  n=10000 k=32 T=20 dist=dense R=10000
+Dataset written to input.txt  [n=10000, k=32, T=20, dist=dense, seed=42, R=10000]
+N=10000  k=32  T=20
+KNN:        2.31183 s
+Approx KNN: 0.012284 s
+K-Means:    0.00619912 s
+  approx_mae_vs_knn=0.1694
+
+[dist/notiled] clustered  n=10000 k=32 T=20 dist=clustered R=10000
+Dataset written to input.txt  [n=10000, k=32, T=20, dist=clustered, seed=42, R=10000]
+N=10000  k=32  T=20
+KNN:        2.33018 s
+Approx KNN: 0.0217371 s
+K-Means:    0.00679898 s
+  approx_mae_vs_knn=0.0000
+
+[dist/notiled] skewed  n=10000 k=32 T=20 dist=skewed R=10000
+Dataset written to input.txt  [n=10000, k=32, T=20, dist=skewed, seed=42, R=10000]
+N=10000  k=32  T=20
+KNN:        2.31816 s
+Approx KNN: 0.0491879 s
+K-Means:    0.00657296 s
+  approx_mae_vs_knn=0.1548
+
+========================================
+ GROUP E: Correctness  (n=1000, vs sequential)
+========================================
+[correctness/notiled] k1_uniform  n=1000 k=1 T=20 dist=uniform R=10000
+Dataset written to input.txt  [n=1000, k=1, T=20, dist=uniform, seed=42, R=10000]
+N=1000  k=1  T=20
+KNN:        2.2772 s
+Approx KNN: 0.003685 s
+K-Means:    0.001827 s
+  [seq] knn_mae=0.0000  kmeans_mae=0.0000
+  approx_mae_vs_knn=0.0000
+
+[correctness/notiled] k10_uniform  n=1000 k=10 T=20 dist=uniform R=10000
+Dataset written to input.txt  [n=1000, k=10, T=20, dist=uniform, seed=42, R=10000]
+N=1000  k=10  T=20
+KNN:        2.28054 s
+Approx KNN: 0.00429416 s
+K-Means:    0.00282598 s
+  [seq] knn_mae=0.0000  kmeans_mae=1.0420
+  approx_mae_vs_knn=0.7770
+
+[correctness/notiled] k32_uniform  n=1000 k=32 T=20 dist=uniform R=10000
+Dataset written to input.txt  [n=1000, k=32, T=20, dist=uniform, seed=42, R=10000]
+N=1000  k=32  T=20
+KNN:        2.29023 s
+Approx KNN: 0.00627613 s
+K-Means:    0.00245404 s
+  [seq] knn_mae=0.0000  kmeans_mae=0.0000
+  approx_mae_vs_knn=0.2490
+
+[correctness/notiled] k64_uniform  n=1000 k=64 T=20 dist=uniform R=10000
+Dataset written to input.txt  [n=1000, k=64, T=20, dist=uniform, seed=42, R=10000]
+N=1000  k=64  T=20
+KNN:        2.27694 s
+Approx KNN: 0.00889802 s
+K-Means:    0.00282121 s
+  [seq] knn_mae=0.0000  kmeans_mae=1.9870
+  approx_mae_vs_knn=0.2660
+
+[correctness/notiled] k128_uniform  n=1000 k=128 T=20 dist=uniform R=10000
+Dataset written to input.txt  [n=1000, k=128, T=20, dist=uniform, seed=42, R=10000]
+N=1000  k=128  T=20
+KNN:        2.30438 s
+Approx KNN: 0.0145259 s
+K-Means:    0.00259209 s
+  [seq] knn_mae=0.0000  kmeans_mae=0.0000
+  approx_mae_vs_knn=0.3110
+
+[correctness/notiled] k32_dense  n=1000 k=32 T=20 dist=dense R=10000
+Dataset written to input.txt  [n=1000, k=32, T=20, dist=dense, seed=42, R=10000]
+N=1000  k=32  T=20
+KNN:        2.27376 s
+Approx KNN: 0.00629997 s
+K-Means:    0.00320506 s
+  [seq] knn_mae=0.0000  kmeans_mae=1.6600
+  approx_mae_vs_knn=0.3280
+
+[correctness/notiled] k32_clustered  n=1000 k=32 T=20 dist=clustered R=10000
+Dataset written to input.txt  [n=1000, k=32, T=20, dist=clustered, seed=42, R=10000]
+N=1000  k=32  T=20
+KNN:        2.27455 s
+Approx KNN: 0.00672507 s
+K-Means:    0.00254297 s
+  [seq] knn_mae=0.0000  kmeans_mae=0.0000
+  approx_mae_vs_knn=0.0000
+
+[correctness/notiled] k32_skewed  n=1000 k=32 T=20 dist=skewed R=10000
+Dataset written to input.txt  [n=1000, k=32, T=20, dist=skewed, seed=42, R=10000]
+N=1000  k=32  T=20
+KNN:        2.27502 s
+Approx KNN: 0.0122929 s
+K-Means:    0.00322199 s
+  [seq] knn_mae=0.0000  kmeans_mae=5.0810
+  approx_mae_vs_knn=0.1110
+
+========================================
+ GROUP F: Large scale
+========================================
+[large/notiled] n100k_k128_T50  n=100000 k=128 T=50 dist=uniform R=10000
+Dataset written to input.txt  [n=100000, k=128, T=50, dist=uniform, seed=42, R=10000]
+N=100000  k=128  T=50
+KNN:        6.36841 s
+Approx KNN: 0.587218 s
+K-Means:    0.056613 s
+  approx_mae_vs_knn=0.0555
+
+[large/notiled] n100k_k32_uniform  n=100000 k=32 T=20 dist=uniform R=10000
+Dataset written to input.txt  [n=100000, k=32, T=20, dist=uniform, seed=42, R=10000]
+N=100000  k=32  T=20
+KNN:        3.19202 s
+Approx KNN: 0.146884 s
+K-Means:    0.0413761 s
+  approx_mae_vs_knn=0.0566
+
+[large/notiled] n100k_k32_dense  n=100000 k=32 T=20 dist=dense R=10000
+Dataset written to input.txt  [n=100000, k=32, T=20, dist=dense, seed=42, R=10000]
+N=100000  k=32  T=20
+KNN:        3.19848 s
+Approx KNN: 0.145943 s
+K-Means:    0.0414009 s
+  approx_mae_vs_knn=0.0622
+
+[large/notiled] n100k_k32_clustered  n=100000 k=32 T=20 dist=clustered R=10000
+Dataset written to input.txt  [n=100000, k=32, T=20, dist=clustered, seed=42, R=10000]
+N=100000  k=32  T=20
+KNN:        3.15873 s
+Approx KNN: 0.434787 s
+K-Means:    0.0428798 s
+  approx_mae_vs_knn=0.0007
+
+========================================
+ GROUP G: Vary coordinate range  (n=10000, k=32, T=20, uniform)
+========================================
+[vary_range/notiled] R100  n=10000 k=32 T=20 dist=uniform R=100
+Dataset written to input.txt  [n=10000, k=32, T=20, dist=uniform, seed=42, R=100]
+N=10000  k=32  T=20
+KNN:        2.30944 s
+Approx KNN: 0.01298 s
+K-Means:    0.00696301 s
+  approx_mae_vs_knn=0.2679
+
+[vary_range/notiled] R1000  n=10000 k=32 T=20 dist=uniform R=1000
+Dataset written to input.txt  [n=10000, k=32, T=20, dist=uniform, seed=42, R=1000]
+N=10000  k=32  T=20
+KNN:        2.32954 s
+Approx KNN: 0.0123959 s
+K-Means:    0.00635099 s
+  approx_mae_vs_knn=0.1694
+
+[vary_range/notiled] R10000  n=10000 k=32 T=20 dist=uniform R=10000
+Dataset written to input.txt  [n=10000, k=32, T=20, dist=uniform, seed=42, R=10000]
+N=10000  k=32  T=20
+KNN:        2.30061 s
+Approx KNN: 0.012476 s
+K-Means:    0.00654507 s
+  approx_mae_vs_knn=0.1774
+
+[vary_range/notiled] R100000  n=10000 k=32 T=20 dist=uniform R=100000
+Dataset written to input.txt  [n=10000, k=32, T=20, dist=uniform, seed=42, R=100000]
+N=10000  k=32  T=20
+KNN:        2.32484 s
+Approx KNN: 0.0130661 s
+K-Means:    0.00680399 s
+  approx_mae_vs_knn=0.1713
+
+[vary_range/notiled] R1000000  n=10000 k=32 T=20 dist=uniform R=1000000
+Dataset written to input.txt  [n=10000, k=32, T=20, dist=uniform, seed=42, R=1000000]
+N=10000  k=32  T=20
+KNN:        2.30837 s
+Approx KNN: 0.012888 s
+K-Means:    0.00670815 s
+  approx_mae_vs_knn=0.1583
+
+
+###################################################################
+  VARIANT: spatialhash  (./histogram_eq_spatialhash)
+###################################################################
+========================================
+ GROUP A: Vary N  (k=32, T=20, uniform)
+========================================
+[vary_n/spatialhash] n1000  n=1000 k=32 T=20 dist=uniform R=10000
+Dataset written to input.txt  [n=1000, k=32, T=20, dist=uniform, seed=42, R=10000]
+  ERROR running ./histogram_eq_spatialhash
+[vary_n/spatialhash] n5000  n=5000 k=32 T=20 dist=uniform R=10000
+Dataset written to input.txt  [n=5000, k=32, T=20, dist=uniform, seed=42, R=10000]
+  ERROR running ./histogram_eq_spatialhash
+[vary_n/spatialhash] n10000  n=10000 k=32 T=20 dist=uniform R=10000
+Dataset written to input.txt  [n=10000, k=32, T=20, dist=uniform, seed=42, R=10000]
+  ERROR running ./histogram_eq_spatialhash
+[vary_n/spatialhash] n25000  n=25000 k=32 T=20 dist=uniform R=10000
+Dataset written to input.txt  [n=25000, k=32, T=20, dist=uniform, seed=42, R=10000]
+  ERROR running ./histogram_eq_spatialhash
+[vary_n/spatialhash] n50000  n=50000 k=32 T=20 dist=uniform R=10000
+Dataset written to input.txt  [n=50000, k=32, T=20, dist=uniform, seed=42, R=10000]
+  ERROR running ./histogram_eq_spatialhash
+[vary_n/spatialhash] n100000  n=100000 k=32 T=20 dist=uniform R=10000
+Dataset written to input.txt  [n=100000, k=32, T=20, dist=uniform, seed=42, R=10000]
+  ERROR running ./histogram_eq_spatialhash
+========================================
+ GROUP B: Vary K  (n=10000, T=20, uniform)
+========================================
+[vary_k/spatialhash] k1  n=10000 k=1 T=20 dist=uniform R=10000
+Dataset written to input.txt  [n=10000, k=1, T=20, dist=uniform, seed=42, R=10000]
+  ERROR running ./histogram_eq_spatialhash
+[vary_k/spatialhash] k4  n=10000 k=4 T=20 dist=uniform R=10000
+Dataset written to input.txt  [n=10000, k=4, T=20, dist=uniform, seed=42, R=10000]
+  ERROR running ./histogram_eq_spatialhash
+[vary_k/spatialhash] k8  n=10000 k=8 T=20 dist=uniform R=10000
+Dataset written to input.txt  [n=10000, k=8, T=20, dist=uniform, seed=42, R=10000]
+  ERROR running ./histogram_eq_spatialhash
+[vary_k/spatialhash] k16  n=10000 k=16 T=20 dist=uniform R=10000
+Dataset written to input.txt  [n=10000, k=16, T=20, dist=uniform, seed=42, R=10000]
+  ERROR running ./histogram_eq_spatialhash
+[vary_k/spatialhash] k32  n=10000 k=32 T=20 dist=uniform R=10000
+Dataset written to input.txt  [n=10000, k=32, T=20, dist=uniform, seed=42, R=10000]
+  ERROR running ./histogram_eq_spatialhash
+[vary_k/spatialhash] k64  n=10000 k=64 T=20 dist=uniform R=10000
+Dataset written to input.txt  [n=10000, k=64, T=20, dist=uniform, seed=42, R=10000]
+  ERROR running ./histogram_eq_spatialhash
+[vary_k/spatialhash] k128  n=10000 k=128 T=20 dist=uniform R=10000
+Dataset written to input.txt  [n=10000, k=128, T=20, dist=uniform, seed=42, R=10000]
+  ERROR running ./histogram_eq_spatialhash
+========================================
+ GROUP C: Vary T  (n=10000, k=32, uniform)
+========================================
+[vary_T/spatialhash] T1  n=10000 k=32 T=1 dist=uniform R=10000
+Dataset written to input.txt  [n=10000, k=32, T=1, dist=uniform, seed=42, R=10000]
+  ERROR running ./histogram_eq_spatialhash
+[vary_T/spatialhash] T5  n=10000 k=32 T=5 dist=uniform R=10000
+Dataset written to input.txt  [n=10000, k=32, T=5, dist=uniform, seed=42, R=10000]
+  ERROR running ./histogram_eq_spatialhash
+[vary_T/spatialhash] T10  n=10000 k=32 T=10 dist=uniform R=10000
+Dataset written to input.txt  [n=10000, k=32, T=10, dist=uniform, seed=42, R=10000]
+  ERROR running ./histogram_eq_spatialhash
+[vary_T/spatialhash] T20  n=10000 k=32 T=20 dist=uniform R=10000
+Dataset written to input.txt  [n=10000, k=32, T=20, dist=uniform, seed=42, R=10000]
+  ERROR running ./histogram_eq_spatialhash
+[vary_T/spatialhash] T50  n=10000 k=32 T=50 dist=uniform R=10000
+Dataset written to input.txt  [n=10000, k=32, T=50, dist=uniform, seed=42, R=10000]
+  ERROR running ./histogram_eq_spatialhash
+========================================
+ GROUP D: Distributions  (n=10000, k=32, T=20)
+========================================
+[dist/spatialhash] uniform  n=10000 k=32 T=20 dist=uniform R=10000
+Dataset written to input.txt  [n=10000, k=32, T=20, dist=uniform, seed=42, R=10000]
+  ERROR running ./histogram_eq_spatialhash
+[dist/spatialhash] dense  n=10000 k=32 T=20 dist=dense R=10000
+Dataset written to input.txt  [n=10000, k=32, T=20, dist=dense, seed=42, R=10000]
+  ERROR running ./histogram_eq_spatialhash
+[dist/spatialhash] clustered  n=10000 k=32 T=20 dist=clustered R=10000
+Dataset written to input.txt  [n=10000, k=32, T=20, dist=clustered, seed=42, R=10000]
+  ERROR running ./histogram_eq_spatialhash
+[dist/spatialhash] skewed  n=10000 k=32 T=20 dist=skewed R=10000
+Dataset written to input.txt  [n=10000, k=32, T=20, dist=skewed, seed=42, R=10000]
+  ERROR running ./histogram_eq_spatialhash
+========================================
+ GROUP E: Correctness  (n=1000, vs sequential)
+========================================
+[correctness/spatialhash] k1_uniform  n=1000 k=1 T=20 dist=uniform R=10000
+Dataset written to input.txt  [n=1000, k=1, T=20, dist=uniform, seed=42, R=10000]
+  ERROR running ./histogram_eq_spatialhash
+[correctness/spatialhash] k10_uniform  n=1000 k=10 T=20 dist=uniform R=10000
+Dataset written to input.txt  [n=1000, k=10, T=20, dist=uniform, seed=42, R=10000]
+  ERROR running ./histogram_eq_spatialhash
+[correctness/spatialhash] k32_uniform  n=1000 k=32 T=20 dist=uniform R=10000
+Dataset written to input.txt  [n=1000, k=32, T=20, dist=uniform, seed=42, R=10000]
+  ERROR running ./histogram_eq_spatialhash
+[correctness/spatialhash] k64_uniform  n=1000 k=64 T=20 dist=uniform R=10000
+Dataset written to input.txt  [n=1000, k=64, T=20, dist=uniform, seed=42, R=10000]
+  ERROR running ./histogram_eq_spatialhash
+[correctness/spatialhash] k128_uniform  n=1000 k=128 T=20 dist=uniform R=10000
+Dataset written to input.txt  [n=1000, k=128, T=20, dist=uniform, seed=42, R=10000]
+  ERROR running ./histogram_eq_spatialhash
+[correctness/spatialhash] k32_dense  n=1000 k=32 T=20 dist=dense R=10000
+Dataset written to input.txt  [n=1000, k=32, T=20, dist=dense, seed=42, R=10000]
+  ERROR running ./histogram_eq_spatialhash
+[correctness/spatialhash] k32_clustered  n=1000 k=32 T=20 dist=clustered R=10000
+Dataset written to input.txt  [n=1000, k=32, T=20, dist=clustered, seed=42, R=10000]
+  ERROR running ./histogram_eq_spatialhash
+[correctness/spatialhash] k32_skewed  n=1000 k=32 T=20 dist=skewed R=10000
+Dataset written to input.txt  [n=1000, k=32, T=20, dist=skewed, seed=42, R=10000]
+  ERROR running ./histogram_eq_spatialhash
+========================================
+ GROUP F: Large scale
+========================================
+[large/spatialhash] n100k_k128_T50  n=100000 k=128 T=50 dist=uniform R=10000
+Dataset written to input.txt  [n=100000, k=128, T=50, dist=uniform, seed=42, R=10000]
+  ERROR running ./histogram_eq_spatialhash
+[large/spatialhash] n100k_k32_uniform  n=100000 k=32 T=20 dist=uniform R=10000
+Dataset written to input.txt  [n=100000, k=32, T=20, dist=uniform, seed=42, R=10000]
+  ERROR running ./histogram_eq_spatialhash
+[large/spatialhash] n100k_k32_dense  n=100000 k=32 T=20 dist=dense R=10000
+Dataset written to input.txt  [n=100000, k=32, T=20, dist=dense, seed=42, R=10000]
+  ERROR running ./histogram_eq_spatialhash
+[large/spatialhash] n100k_k32_clustered  n=100000 k=32 T=20 dist=clustered R=10000
+Dataset written to input.txt  [n=100000, k=32, T=20, dist=clustered, seed=42, R=10000]
+  ERROR running ./histogram_eq_spatialhash
+========================================
+ GROUP G: Vary coordinate range  (n=10000, k=32, T=20, uniform)
+========================================
+[vary_range/spatialhash] R100  n=10000 k=32 T=20 dist=uniform R=100
+Dataset written to input.txt  [n=10000, k=32, T=20, dist=uniform, seed=42, R=100]
+  ERROR running ./histogram_eq_spatialhash
+[vary_range/spatialhash] R1000  n=10000 k=32 T=20 dist=uniform R=1000
+Dataset written to input.txt  [n=10000, k=32, T=20, dist=uniform, seed=42, R=1000]
+  ERROR running ./histogram_eq_spatialhash
+[vary_range/spatialhash] R10000  n=10000 k=32 T=20 dist=uniform R=10000
+Dataset written to input.txt  [n=10000, k=32, T=20, dist=uniform, seed=42, R=10000]
+  ERROR running ./histogram_eq_spatialhash
+[vary_range/spatialhash] R100000  n=10000 k=32 T=20 dist=uniform R=100000
+Dataset written to input.txt  [n=10000, k=32, T=20, dist=uniform, seed=42, R=100000]
+  ERROR running ./histogram_eq_spatialhash
+[vary_range/spatialhash] R1000000  n=10000 k=32 T=20 dist=uniform R=1000000
+Dataset written to input.txt  [n=10000, k=32, T=20, dist=uniform, seed=42, R=1000000]
+  ERROR running ./histogram_eq_spatialhash
+
+###################################################################
+  VARIANT: notiled_spatialhash  (./histogram_eq_notiled_spatialhash)
+###################################################################
+========================================
+ GROUP A: Vary N  (k=32, T=20, uniform)
+========================================
+[vary_n/notiled_spatialhash] n1000  n=1000 k=32 T=20 dist=uniform R=10000
+Dataset written to input.txt  [n=1000, k=32, T=20, dist=uniform, seed=42, R=10000]
+  ERROR running ./histogram_eq_notiled_spatialhash
+[vary_n/notiled_spatialhash] n5000  n=5000 k=32 T=20 dist=uniform R=10000
+Dataset written to input.txt  [n=5000, k=32, T=20, dist=uniform, seed=42, R=10000]
+  ERROR running ./histogram_eq_notiled_spatialhash
+[vary_n/notiled_spatialhash] n10000  n=10000 k=32 T=20 dist=uniform R=10000
+Dataset written to input.txt  [n=10000, k=32, T=20, dist=uniform, seed=42, R=10000]
+  ERROR running ./histogram_eq_notiled_spatialhash
+[vary_n/notiled_spatialhash] n25000  n=25000 k=32 T=20 dist=uniform R=10000
+Dataset written to input.txt  [n=25000, k=32, T=20, dist=uniform, seed=42, R=10000]
+  ERROR running ./histogram_eq_notiled_spatialhash
+[vary_n/notiled_spatialhash] n50000  n=50000 k=32 T=20 dist=uniform R=10000
+Dataset written to input.txt  [n=50000, k=32, T=20, dist=uniform, seed=42, R=10000]
+  ERROR running ./histogram_eq_notiled_spatialhash
+[vary_n/notiled_spatialhash] n100000  n=100000 k=32 T=20 dist=uniform R=10000
+Dataset written to input.txt  [n=100000, k=32, T=20, dist=uniform, seed=42, R=10000]
+  ERROR running ./histogram_eq_notiled_spatialhash
+========================================
+ GROUP B: Vary K  (n=10000, T=20, uniform)
+========================================
+[vary_k/notiled_spatialhash] k1  n=10000 k=1 T=20 dist=uniform R=10000
+Dataset written to input.txt  [n=10000, k=1, T=20, dist=uniform, seed=42, R=10000]
+  ERROR running ./histogram_eq_notiled_spatialhash
+[vary_k/notiled_spatialhash] k4  n=10000 k=4 T=20 dist=uniform R=10000
+Dataset written to input.txt  [n=10000, k=4, T=20, dist=uniform, seed=42, R=10000]
+  ERROR running ./histogram_eq_notiled_spatialhash
+[vary_k/notiled_spatialhash] k8  n=10000 k=8 T=20 dist=uniform R=10000
+Dataset written to input.txt  [n=10000, k=8, T=20, dist=uniform, seed=42, R=10000]
+  ERROR running ./histogram_eq_notiled_spatialhash
+[vary_k/notiled_spatialhash] k16  n=10000 k=16 T=20 dist=uniform R=10000
+Dataset written to input.txt  [n=10000, k=16, T=20, dist=uniform, seed=42, R=10000]
+  ERROR running ./histogram_eq_notiled_spatialhash
+[vary_k/notiled_spatialhash] k32  n=10000 k=32 T=20 dist=uniform R=10000
+Dataset written to input.txt  [n=10000, k=32, T=20, dist=uniform, seed=42, R=10000]
+  ERROR running ./histogram_eq_notiled_spatialhash
+[vary_k/notiled_spatialhash] k64  n=10000 k=64 T=20 dist=uniform R=10000
+Dataset written to input.txt  [n=10000, k=64, T=20, dist=uniform, seed=42, R=10000]
+  ERROR running ./histogram_eq_notiled_spatialhash
+[vary_k/notiled_spatialhash] k128  n=10000 k=128 T=20 dist=uniform R=10000
+Dataset written to input.txt  [n=10000, k=128, T=20, dist=uniform, seed=42, R=10000]
+  ERROR running ./histogram_eq_notiled_spatialhash
+========================================
+ GROUP C: Vary T  (n=10000, k=32, uniform)
+========================================
+[vary_T/notiled_spatialhash] T1  n=10000 k=32 T=1 dist=uniform R=10000
+Dataset written to input.txt  [n=10000, k=32, T=1, dist=uniform, seed=42, R=10000]
+  ERROR running ./histogram_eq_notiled_spatialhash
+[vary_T/notiled_spatialhash] T5  n=10000 k=32 T=5 dist=uniform R=10000
+Dataset written to input.txt  [n=10000, k=32, T=5, dist=uniform, seed=42, R=10000]
+  ERROR running ./histogram_eq_notiled_spatialhash
+[vary_T/notiled_spatialhash] T10  n=10000 k=32 T=10 dist=uniform R=10000
+Dataset written to input.txt  [n=10000, k=32, T=10, dist=uniform, seed=42, R=10000]
+  ERROR running ./histogram_eq_notiled_spatialhash
+[vary_T/notiled_spatialhash] T20  n=10000 k=32 T=20 dist=uniform R=10000
+Dataset written to input.txt  [n=10000, k=32, T=20, dist=uniform, seed=42, R=10000]
+  ERROR running ./histogram_eq_notiled_spatialhash
+[vary_T/notiled_spatialhash] T50  n=10000 k=32 T=50 dist=uniform R=10000
+Dataset written to input.txt  [n=10000, k=32, T=50, dist=uniform, seed=42, R=10000]
+  ERROR running ./histogram_eq_notiled_spatialhash
+========================================
+ GROUP D: Distributions  (n=10000, k=32, T=20)
+========================================
+[dist/notiled_spatialhash] uniform  n=10000 k=32 T=20 dist=uniform R=10000
+Dataset written to input.txt  [n=10000, k=32, T=20, dist=uniform, seed=42, R=10000]
+  ERROR running ./histogram_eq_notiled_spatialhash
+[dist/notiled_spatialhash] dense  n=10000 k=32 T=20 dist=dense R=10000
+Dataset written to input.txt  [n=10000, k=32, T=20, dist=dense, seed=42, R=10000]
+  ERROR running ./histogram_eq_notiled_spatialhash
+[dist/notiled_spatialhash] clustered  n=10000 k=32 T=20 dist=clustered R=10000
+Dataset written to input.txt  [n=10000, k=32, T=20, dist=clustered, seed=42, R=10000]
+  ERROR running ./histogram_eq_notiled_spatialhash
+[dist/notiled_spatialhash] skewed  n=10000 k=32 T=20 dist=skewed R=10000
+Dataset written to input.txt  [n=10000, k=32, T=20, dist=skewed, seed=42, R=10000]
+  ERROR running ./histogram_eq_notiled_spatialhash
+========================================
+ GROUP E: Correctness  (n=1000, vs sequential)
+========================================
+[correctness/notiled_spatialhash] k1_uniform  n=1000 k=1 T=20 dist=uniform R=10000
+Dataset written to input.txt  [n=1000, k=1, T=20, dist=uniform, seed=42, R=10000]
+  ERROR running ./histogram_eq_notiled_spatialhash
+[correctness/notiled_spatialhash] k10_uniform  n=1000 k=10 T=20 dist=uniform R=10000
+Dataset written to input.txt  [n=1000, k=10, T=20, dist=uniform, seed=42, R=10000]
+  ERROR running ./histogram_eq_notiled_spatialhash
+[correctness/notiled_spatialhash] k32_uniform  n=1000 k=32 T=20 dist=uniform R=10000
+Dataset written to input.txt  [n=1000, k=32, T=20, dist=uniform, seed=42, R=10000]
+  ERROR running ./histogram_eq_notiled_spatialhash
+[correctness/notiled_spatialhash] k64_uniform  n=1000 k=64 T=20 dist=uniform R=10000
+Dataset written to input.txt  [n=1000, k=64, T=20, dist=uniform, seed=42, R=10000]
+  ERROR running ./histogram_eq_notiled_spatialhash
+[correctness/notiled_spatialhash] k128_uniform  n=1000 k=128 T=20 dist=uniform R=10000
+Dataset written to input.txt  [n=1000, k=128, T=20, dist=uniform, seed=42, R=10000]
+  ERROR running ./histogram_eq_notiled_spatialhash
+[correctness/notiled_spatialhash] k32_dense  n=1000 k=32 T=20 dist=dense R=10000
+Dataset written to input.txt  [n=1000, k=32, T=20, dist=dense, seed=42, R=10000]
+  ERROR running ./histogram_eq_notiled_spatialhash
+[correctness/notiled_spatialhash] k32_clustered  n=1000 k=32 T=20 dist=clustered R=10000
+Dataset written to input.txt  [n=1000, k=32, T=20, dist=clustered, seed=42, R=10000]
+  ERROR running ./histogram_eq_notiled_spatialhash
+[correctness/notiled_spatialhash] k32_skewed  n=1000 k=32 T=20 dist=skewed R=10000
+Dataset written to input.txt  [n=1000, k=32, T=20, dist=skewed, seed=42, R=10000]
+  ERROR running ./histogram_eq_notiled_spatialhash
+========================================
+ GROUP F: Large scale
+========================================
+[large/notiled_spatialhash] n100k_k128_T50  n=100000 k=128 T=50 dist=uniform R=10000
+Dataset written to input.txt  [n=100000, k=128, T=50, dist=uniform, seed=42, R=10000]
+  ERROR running ./histogram_eq_notiled_spatialhash
+[large/notiled_spatialhash] n100k_k32_uniform  n=100000 k=32 T=20 dist=uniform R=10000
+Dataset written to input.txt  [n=100000, k=32, T=20, dist=uniform, seed=42, R=10000]
+  ERROR running ./histogram_eq_notiled_spatialhash
+[large/notiled_spatialhash] n100k_k32_dense  n=100000 k=32 T=20 dist=dense R=10000
+Dataset written to input.txt  [n=100000, k=32, T=20, dist=dense, seed=42, R=10000]
+  ERROR running ./histogram_eq_notiled_spatialhash
+[large/notiled_spatialhash] n100k_k32_clustered  n=100000 k=32 T=20 dist=clustered R=10000
+Dataset written to input.txt  [n=100000, k=32, T=20, dist=clustered, seed=42, R=10000]
+  ERROR running ./histogram_eq_notiled_spatialhash
+========================================
+ GROUP G: Vary coordinate range  (n=10000, k=32, T=20, uniform)
+========================================
+[vary_range/notiled_spatialhash] R100  n=10000 k=32 T=20 dist=uniform R=100
+Dataset written to input.txt  [n=10000, k=32, T=20, dist=uniform, seed=42, R=100]
+  ERROR running ./histogram_eq_notiled_spatialhash
+[vary_range/notiled_spatialhash] R1000  n=10000 k=32 T=20 dist=uniform R=1000
+Dataset written to input.txt  [n=10000, k=32, T=20, dist=uniform, seed=42, R=1000]
+  ERROR running ./histogram_eq_notiled_spatialhash
+[vary_range/notiled_spatialhash] R10000  n=10000 k=32 T=20 dist=uniform R=10000
+Dataset written to input.txt  [n=10000, k=32, T=20, dist=uniform, seed=42, R=10000]
+  ERROR running ./histogram_eq_notiled_spatialhash
+[vary_range/notiled_spatialhash] R100000  n=10000 k=32 T=20 dist=uniform R=100000
+Dataset written to input.txt  [n=10000, k=32, T=20, dist=uniform, seed=42, R=100000]
+  ERROR running ./histogram_eq_notiled_spatialhash
+[vary_range/notiled_spatialhash] R1000000  n=10000 k=32 T=20 dist=uniform R=1000000
+Dataset written to input.txt  [n=10000, k=32, T=20, dist=uniform, seed=42, R=1000000]
+  ERROR running ./histogram_eq_notiled_spatialhash
+========================================
+ RESULTS SUMMARY
+========================================
+
+====================================================================
+  vary_n
+====================================================================
+  label                        variant       range     knn_s   approx_s   kmeans_s  approx_mae
+  ---------------------------- --------- --------- --------- ---------- ---------- -----------
+  n1000                        tiled         10000   2.27996 0.00612593  0.0154049      0.2490
+  n5000                        tiled         10000   2.29789 0.00885391 0.00466299      0.2224
+  n10000                       tiled         10000   2.31786   0.012454 0.00672293      0.1774
+  n25000                       tiled         10000   2.40114  0.0325499  0.0122101      0.1021
+  n50000                       tiled         10000   2.62683  0.0681701  0.0220778      0.0734
+  n100000                      tiled         10000    3.0749   0.146556  0.0414419      0.0566
+  n1000                        notiled       10000   2.29798 0.00635004 0.00243497      0.2490
+  n5000                        notiled       10000   2.31463 0.00868011 0.00454092      0.2224
+  n10000                       notiled       10000   2.32628   0.012723 0.00672603      0.1774
+  n25000                       notiled       10000   2.44562   0.033066   0.013298      0.1021
+  n50000                       notiled       10000   2.64601   0.068954  0.0220661      0.0734
+  n100000                      notiled       10000   3.17623   0.147476  0.0413101      0.0566
+  n1000                        spatialhash     10000     ERROR      ERROR      ERROR       ERROR
+  n5000                        spatialhash     10000     ERROR      ERROR      ERROR       ERROR
+  n10000                       spatialhash     10000     ERROR      ERROR      ERROR       ERROR
+  n25000                       spatialhash     10000     ERROR      ERROR      ERROR       ERROR
+  n50000                       spatialhash     10000     ERROR      ERROR      ERROR       ERROR
+  n100000                      spatialhash     10000     ERROR      ERROR      ERROR       ERROR
+  n1000                        notiled_spatialhash     10000     ERROR      ERROR      ERROR       ERROR
+  n5000                        notiled_spatialhash     10000     ERROR      ERROR      ERROR       ERROR
+  n10000                       notiled_spatialhash     10000     ERROR      ERROR      ERROR       ERROR
+  n25000                       notiled_spatialhash     10000     ERROR      ERROR      ERROR       ERROR
+  n50000                       notiled_spatialhash     10000     ERROR      ERROR      ERROR       ERROR
+  n100000                      notiled_spatialhash     10000     ERROR      ERROR      ERROR       ERROR
+
+====================================================================
+  vary_k
+====================================================================
+  label                        variant       range     knn_s   approx_s   kmeans_s  approx_mae
+  ---------------------------- --------- --------- --------- ---------- ---------- -----------
+  k1                           tiled         10000   2.28308 0.00797796 0.00584888      0.1020
+  k4                           tiled         10000   2.29687 0.00829387 0.00622201      0.6178
+  k8                           tiled         10000   2.28508 0.00811696 0.00639606      2.1660
+  k16                          tiled         10000   2.30248 0.00977683 0.00635505      0.2478
+  k32                          tiled         10000   2.31766  0.0127602 0.00662088      0.1774
+  k64                          tiled         10000   2.37472   0.022501 0.00658989      0.1579
+  k128                         tiled         10000   2.45544   0.039428  0.0072999      0.1490
+  k1                           notiled       10000   2.30019 0.00786686 0.00574613      0.1020
+  k4                           notiled       10000   2.29195 0.00799012 0.00669289      0.6178
+  k8                           notiled       10000   2.30057 0.00805306 0.00650215      2.1660
+  k16                          notiled       10000   2.29027 0.00969386 0.00634003      0.2478
+  k32                          notiled       10000   2.33121  0.0127439 0.00704098      0.1774
+  k64                          notiled       10000   2.36651  0.0203898 0.00659299      0.1579
+  k128                         notiled       10000   2.45071   0.039037   0.007231      0.1490
+  k1                           spatialhash     10000     ERROR      ERROR      ERROR       ERROR
+  k4                           spatialhash     10000     ERROR      ERROR      ERROR       ERROR
+  k8                           spatialhash     10000     ERROR      ERROR      ERROR       ERROR
+  k16                          spatialhash     10000     ERROR      ERROR      ERROR       ERROR
+  k32                          spatialhash     10000     ERROR      ERROR      ERROR       ERROR
+  k64                          spatialhash     10000     ERROR      ERROR      ERROR       ERROR
+  k128                         spatialhash     10000     ERROR      ERROR      ERROR       ERROR
+  k1                           notiled_spatialhash     10000     ERROR      ERROR      ERROR       ERROR
+  k4                           notiled_spatialhash     10000     ERROR      ERROR      ERROR       ERROR
+  k8                           notiled_spatialhash     10000     ERROR      ERROR      ERROR       ERROR
+  k16                          notiled_spatialhash     10000     ERROR      ERROR      ERROR       ERROR
+  k32                          notiled_spatialhash     10000     ERROR      ERROR      ERROR       ERROR
+  k64                          notiled_spatialhash     10000     ERROR      ERROR      ERROR       ERROR
+  k128                         notiled_spatialhash     10000     ERROR      ERROR      ERROR       ERROR
+
+====================================================================
+  vary_T
+====================================================================
+  label                        variant       range     knn_s   approx_s   kmeans_s  approx_mae
+  ---------------------------- --------- --------- --------- ---------- ---------- -----------
+  T1                           tiled         10000    2.3056    0.01263 0.00549197      0.1774
+  T5                           tiled         10000   2.32424   0.012495 0.00540304      0.1774
+  T10                          tiled         10000   2.31034  0.0126591 0.00572896      0.1774
+  T20                          tiled         10000   2.31459  0.0130351 0.00635004      0.1774
+  T50                          tiled         10000   2.31439  0.0125709 0.00857711      0.1774
+  T1                           notiled       10000   2.32974  0.0127201  0.0050838      0.1774
+  T5                           notiled       10000   4.88159   0.012315  0.0055511      0.1774
+  T10                          notiled       10000   2.31624  0.0124071 0.00567698      0.1774
+  T20                          notiled       10000   2.30906   0.012486 0.00637293      0.1774
+  T50                          notiled       10000   2.31558  0.0127409 0.00873804      0.1774
+  T1                           spatialhash     10000     ERROR      ERROR      ERROR       ERROR
+  T5                           spatialhash     10000     ERROR      ERROR      ERROR       ERROR
+  T10                          spatialhash     10000     ERROR      ERROR      ERROR       ERROR
+  T20                          spatialhash     10000     ERROR      ERROR      ERROR       ERROR
+  T50                          spatialhash     10000     ERROR      ERROR      ERROR       ERROR
+  T1                           notiled_spatialhash     10000     ERROR      ERROR      ERROR       ERROR
+  T5                           notiled_spatialhash     10000     ERROR      ERROR      ERROR       ERROR
+  T10                          notiled_spatialhash     10000     ERROR      ERROR      ERROR       ERROR
+  T20                          notiled_spatialhash     10000     ERROR      ERROR      ERROR       ERROR
+  T50                          notiled_spatialhash     10000     ERROR      ERROR      ERROR       ERROR
+
+====================================================================
+  dist
+====================================================================
+  label                        variant       range     knn_s   approx_s   kmeans_s  approx_mae
+  ---------------------------- --------- --------- --------- ---------- ---------- -----------
+  uniform                      tiled         10000   4.86689   0.012413 0.00645018      0.1774
+  dense                        tiled         10000   2.31898  0.0126131 0.00652814      0.1694
+  clustered                    tiled         10000   2.30611   0.021692 0.00640607      0.0000
+  skewed                       tiled         10000   2.31078   0.048862 0.00699306      0.1548
+  uniform                      notiled       10000   2.31492  0.0126231 0.00651693      0.1774
+  dense                        notiled       10000   2.31183   0.012284 0.00619912      0.1694
+  clustered                    notiled       10000   2.33018  0.0217371 0.00679898      0.0000
+  skewed                       notiled       10000   2.31816  0.0491879 0.00657296      0.1548
+  uniform                      spatialhash     10000     ERROR      ERROR      ERROR       ERROR
+  dense                        spatialhash     10000     ERROR      ERROR      ERROR       ERROR
+  clustered                    spatialhash     10000     ERROR      ERROR      ERROR       ERROR
+  skewed                       spatialhash     10000     ERROR      ERROR      ERROR       ERROR
+  uniform                      notiled_spatialhash     10000     ERROR      ERROR      ERROR       ERROR
+  dense                        notiled_spatialhash     10000     ERROR      ERROR      ERROR       ERROR
+  clustered                    notiled_spatialhash     10000     ERROR      ERROR      ERROR       ERROR
+  skewed                       notiled_spatialhash     10000     ERROR      ERROR      ERROR       ERROR
+
+====================================================================
+  correctness
+====================================================================
+  label                        variant       range     knn_s   approx_s   kmeans_s  approx_mae
+  ---------------------------- --------- --------- --------- ---------- ---------- -----------
+  k1_uniform                   tiled         10000   2.28134 0.00419784 0.00187016      0.0000
+  k10_uniform                  tiled         10000   2.28583  0.0042851  0.0029459      0.7770
+  k32_uniform                  tiled         10000   2.29546 0.00621295 0.00230789      0.2490
+  k64_uniform                  tiled         10000   2.27029 0.00888991 0.00255609      0.2660
+  k128_uniform                 tiled         10000   2.27589   0.014554 0.00288296      0.3110
+  k32_dense                    tiled         10000   2.25821  0.0062778 0.00304008      0.3280
+  k32_clustered                tiled         10000    2.3026 0.00674081 0.00246787      0.0000
+  k32_skewed                   tiled         10000   2.29368   0.012171 0.00303102      0.1110
+  k1_uniform                   notiled       10000    2.2772   0.003685   0.001827      0.0000
+  k10_uniform                  notiled       10000   2.28054 0.00429416 0.00282598      0.7770
+  k32_uniform                  notiled       10000   2.29023 0.00627613 0.00245404      0.2490
+  k64_uniform                  notiled       10000   2.27694 0.00889802 0.00282121      0.2660
+  k128_uniform                 notiled       10000   2.30438  0.0145259 0.00259209      0.3110
+  k32_dense                    notiled       10000   2.27376 0.00629997 0.00320506      0.3280
+  k32_clustered                notiled       10000   2.27455 0.00672507 0.00254297      0.0000
+  k32_skewed                   notiled       10000   2.27502  0.0122929 0.00322199      0.1110
+  k1_uniform                   spatialhash     10000     ERROR      ERROR      ERROR       ERROR
+  k10_uniform                  spatialhash     10000     ERROR      ERROR      ERROR       ERROR
+  k32_uniform                  spatialhash     10000     ERROR      ERROR      ERROR       ERROR
+  k64_uniform                  spatialhash     10000     ERROR      ERROR      ERROR       ERROR
+  k128_uniform                 spatialhash     10000     ERROR      ERROR      ERROR       ERROR
+  k32_dense                    spatialhash     10000     ERROR      ERROR      ERROR       ERROR
+  k32_clustered                spatialhash     10000     ERROR      ERROR      ERROR       ERROR
+  k32_skewed                   spatialhash     10000     ERROR      ERROR      ERROR       ERROR
+  k1_uniform                   notiled_spatialhash     10000     ERROR      ERROR      ERROR       ERROR
+  k10_uniform                  notiled_spatialhash     10000     ERROR      ERROR      ERROR       ERROR
+  k32_uniform                  notiled_spatialhash     10000     ERROR      ERROR      ERROR       ERROR
+  k64_uniform                  notiled_spatialhash     10000     ERROR      ERROR      ERROR       ERROR
+  k128_uniform                 notiled_spatialhash     10000     ERROR      ERROR      ERROR       ERROR
+  k32_dense                    notiled_spatialhash     10000     ERROR      ERROR      ERROR       ERROR
+  k32_clustered                notiled_spatialhash     10000     ERROR      ERROR      ERROR       ERROR
+  k32_skewed                   notiled_spatialhash     10000     ERROR      ERROR      ERROR       ERROR
+
+====================================================================
+  large
+====================================================================
+  label                        variant       range     knn_s   approx_s   kmeans_s  approx_mae
+  ---------------------------- --------- --------- --------- ---------- ---------- -----------
+  n100k_k128_T50               tiled         10000   6.28942   0.584981  0.0566239      0.0555
+  n100k_k32_uniform            tiled         10000   3.07013   0.147773   0.042094      0.0566
+  n100k_k32_dense              tiled         10000   3.06249   0.145426   0.040107      0.0622
+  n100k_k32_clustered          tiled         10000   3.05151    0.43708  0.0417871      0.0007
+  n100k_k128_T50               notiled       10000   6.36841   0.587218   0.056613      0.0555
+  n100k_k32_uniform            notiled       10000   3.19202   0.146884  0.0413761      0.0566
+  n100k_k32_dense              notiled       10000   3.19848   0.145943  0.0414009      0.0622
+  n100k_k32_clustered          notiled       10000   3.15873   0.434787  0.0428798      0.0007
+  n100k_k128_T50               spatialhash     10000     ERROR      ERROR      ERROR       ERROR
+  n100k_k32_uniform            spatialhash     10000     ERROR      ERROR      ERROR       ERROR
+  n100k_k32_dense              spatialhash     10000     ERROR      ERROR      ERROR       ERROR
+  n100k_k32_clustered          spatialhash     10000     ERROR      ERROR      ERROR       ERROR
+  n100k_k128_T50               notiled_spatialhash     10000     ERROR      ERROR      ERROR       ERROR
+  n100k_k32_uniform            notiled_spatialhash     10000     ERROR      ERROR      ERROR       ERROR
+  n100k_k32_dense              notiled_spatialhash     10000     ERROR      ERROR      ERROR       ERROR
+  n100k_k32_clustered          notiled_spatialhash     10000     ERROR      ERROR      ERROR       ERROR
+
+====================================================================
+  vary_range
+====================================================================
+  label                        variant       range     knn_s   approx_s   kmeans_s  approx_mae
+  ---------------------------- --------- --------- --------- ---------- ---------- -----------
+  R100                         tiled           100   2.32996  0.0130451 0.00718188      0.2679
+  R1000                        tiled          1000   2.30169  0.0124812 0.00630403      0.1694
+  R10000                       tiled         10000   2.32406  0.0127721 0.00637484      0.1774
+  R100000                      tiled        100000   2.31999    0.01282   0.006567      0.1713
+  R1000000                     tiled       1000000   2.30787  0.0128391 0.00665617      0.1583
+  R100                         notiled         100   2.30944    0.01298 0.00696301      0.2679
+  R1000                        notiled        1000   2.32954  0.0123959 0.00635099      0.1694
+  R10000                       notiled       10000   2.30061   0.012476 0.00654507      0.1774
+  R100000                      notiled      100000   2.32484  0.0130661 0.00680399      0.1713
+  R1000000                     notiled     1000000   2.30837   0.012888 0.00670815      0.1583
+  R100                         spatialhash       100     ERROR      ERROR      ERROR       ERROR
+  R1000                        spatialhash      1000     ERROR      ERROR      ERROR       ERROR
+  R10000                       spatialhash     10000     ERROR      ERROR      ERROR       ERROR
+  R100000                      spatialhash    100000     ERROR      ERROR      ERROR       ERROR
+  R1000000                     spatialhash   1000000     ERROR      ERROR      ERROR       ERROR
+  R100                         notiled_spatialhash       100     ERROR      ERROR      ERROR       ERROR
+  R1000                        notiled_spatialhash      1000     ERROR      ERROR      ERROR       ERROR
+  R10000                       notiled_spatialhash     10000     ERROR      ERROR      ERROR       ERROR
+  R100000                      notiled_spatialhash    100000     ERROR      ERROR      ERROR       ERROR
+  R1000000                     notiled_spatialhash   1000000     ERROR      ERROR      ERROR       ERROR
+
+Full data: results.csv
+========================================
+ DONE
+========================================
+========================================
+ BUILD
+========================================
+rm -f histogram_eq histogram_eq_notiled histogram_eq_spatialhash histogram_eq_notiled_spatialhash *.txt results.csv
+nvcc -O3 -arch=sm_35 -Xcompiler -fopenmp -DUSE_TILED_KNN=1 -DUSE_SPATIAL_HASH_APPROX=0 solution.cu -o histogram_eq
+nvcc -O3 -arch=sm_35 -Xcompiler -fopenmp -DUSE_TILED_KNN=0 -DUSE_SPATIAL_HASH_APPROX=0 solution.cu -o histogram_eq_notiled
+nvcc -O3 -arch=sm_35 -Xcompiler -fopenmp -DUSE_TILED_KNN=1 -DUSE_SPATIAL_HASH_APPROX=1 solution.cu -o histogram_eq_spatialhash
+nvcc -O3 -arch=sm_35 -Xcompiler -fopenmp -DUSE_TILED_KNN=0 -DUSE_SPATIAL_HASH_APPROX=1 solution.cu -o histogram_eq_notiled_spatialhash
+Fri Mar 27 00:15:42 2026       
++---------------------------------------------------------------------------------------+
+| NVIDIA-SMI 535.129.03             Driver Version: 535.129.03   CUDA Version: 12.2     |
+|-----------------------------------------+----------------------+----------------------+
+| GPU  Name                 Persistence-M | Bus-Id        Disp.A | Volatile Uncorr. ECC |
+| Fan  Temp   Perf          Pwr:Usage/Cap |         Memory-Usage | GPU-Util  Compute M. |
+|                                         |                      |               MIG M. |
+|=========================================+======================+======================|
+|   0  NVIDIA A100-PCIE-40GB          Off | 00000000:C0:00.0 Off |                    0 |
+| N/A   44C    P0              40W / 250W |      4MiB / 40960MiB |      5%      Default |
+|                                         |                      |             Disabled |
++-----------------------------------------+----------------------+----------------------+
+                                                                                         
++---------------------------------------------------------------------------------------+
+| Processes:                                                                            |
+|  GPU   GI   CI        PID   Type   Process name                            GPU Memory |
+|        ID   ID                                                             Usage      |
+|=======================================================================================|
+|  No running processes found                                                           |
++---------------------------------------------------------------------------------------+
+
+
+###################################################################
+  VARIANT: tiled  (./histogram_eq)
+###################################################################
+========================================
+ GROUP A: Vary N  (k=32, T=20, uniform)
+========================================
+[vary_n/tiled] n1000  n=1000 k=32 T=20 dist=uniform R=10000
+Dataset written to input.txt  [n=1000, k=32, T=20, dist=uniform, seed=42, R=10000]
+N=1000  k=32  T=20
+KNN:        3.03992 s
+Approx KNN: 0.0210619 s
+K-Means:    0.00952506 s
+  approx_mae_vs_knn=0.2490
+
+[vary_n/tiled] n5000  n=5000 k=32 T=20 dist=uniform R=10000
+Dataset written to input.txt  [n=5000, k=32, T=20, dist=uniform, seed=42, R=10000]
+N=5000  k=32  T=20
+KNN:        2.63212 s
+Approx KNN: 0.0105741 s
+K-Means:    0.00639796 s
+  approx_mae_vs_knn=0.2224
+
+[vary_n/tiled] n10000  n=10000 k=32 T=20 dist=uniform R=10000
+Dataset written to input.txt  [n=10000, k=32, T=20, dist=uniform, seed=42, R=10000]
+N=10000  k=32  T=20
+KNN:        2.64775 s
+Approx KNN: 0.0227361 s
+K-Means:    0.00696301 s
+  approx_mae_vs_knn=0.1774
+
+[vary_n/tiled] n25000  n=25000 k=32 T=20 dist=uniform R=10000
+Dataset written to input.txt  [n=25000, k=32, T=20, dist=uniform, seed=42, R=10000]
+N=25000  k=32  T=20
+KNN:        2.69495 s
+Approx KNN: 0.021754 s
+K-Means:    0.010494 s
+  approx_mae_vs_knn=0.1021
+
+[vary_n/tiled] n50000  n=50000 k=32 T=20 dist=uniform R=10000
+Dataset written to input.txt  [n=50000, k=32, T=20, dist=uniform, seed=42, R=10000]
+N=50000  k=32  T=20
+KNN:        2.69114 s
+Approx KNN: 0.033983 s
+K-Means:    0.0171449 s
+  approx_mae_vs_knn=0.0734
+
+[vary_n/tiled] n100000  n=100000 k=32 T=20 dist=uniform R=10000
+Dataset written to input.txt  [n=100000, k=32, T=20, dist=uniform, seed=42, R=10000]
+N=100000  k=32  T=20
+KNN:        2.73126 s
+Approx KNN: 0.0480559 s
+K-Means:    0.0296419 s
+  approx_mae_vs_knn=0.0566
+
+========================================
+ GROUP B: Vary K  (n=10000, T=20, uniform)
+========================================
+[vary_k/tiled] k1  n=10000 k=1 T=20 dist=uniform R=10000
+Dataset written to input.txt  [n=10000, k=1, T=20, dist=uniform, seed=42, R=10000]
+N=10000  k=1  T=20
+KNN:        2.63259 s
+Approx KNN: 0.0163081 s
+K-Means:    0.00576401 s
+  approx_mae_vs_knn=0.1020
+
+[vary_k/tiled] k4  n=10000 k=4 T=20 dist=uniform R=10000
+Dataset written to input.txt  [n=10000, k=4, T=20, dist=uniform, seed=42, R=10000]
+N=10000  k=4  T=20
+KNN:        2.64939 s
+Approx KNN: 0.0157731 s
+K-Means:    0.011548 s
+  approx_mae_vs_knn=0.6178
+
+[vary_k/tiled] k8  n=10000 k=8 T=20 dist=uniform R=10000
+Dataset written to input.txt  [n=10000, k=8, T=20, dist=uniform, seed=42, R=10000]
+N=10000  k=8  T=20
+KNN:        5.45333 s
+Approx KNN: 0.0117991 s
+K-Means:    0.00633597 s
+  approx_mae_vs_knn=2.1660
+
+[vary_k/tiled] k16  n=10000 k=16 T=20 dist=uniform R=10000
+Dataset written to input.txt  [n=10000, k=16, T=20, dist=uniform, seed=42, R=10000]
+N=10000  k=16  T=20
+KNN:        5.18631 s
+Approx KNN: 0.02052 s
+K-Means:    0.00756598 s
+  approx_mae_vs_knn=0.2478
+
+[vary_k/tiled] k32  n=10000 k=32 T=20 dist=uniform R=10000
+Dataset written to input.txt  [n=10000, k=32, T=20, dist=uniform, seed=42, R=10000]
+N=10000  k=32  T=20
+KNN:        2.87106 s
+Approx KNN: 0.0178962 s
+K-Means:    0.00616598 s
+  approx_mae_vs_knn=0.1774
+
+[vary_k/tiled] k64  n=10000 k=64 T=20 dist=uniform R=10000
+Dataset written to input.txt  [n=10000, k=64, T=20, dist=uniform, seed=42, R=10000]
+N=10000  k=64  T=20
+KNN:        2.68682 s
+Approx KNN: 0.014262 s
+K-Means:    0.00696397 s
+  approx_mae_vs_knn=0.1579
+
+[vary_k/tiled] k128  n=10000 k=128 T=20 dist=uniform R=10000
+Dataset written to input.txt  [n=10000, k=128, T=20, dist=uniform, seed=42, R=10000]
+N=10000  k=128  T=20
+KNN:        2.72076 s
+Approx KNN: 0.0208809 s
+K-Means:    0.00680995 s
+  approx_mae_vs_knn=0.1490
+
+========================================
+ GROUP C: Vary T  (n=10000, k=32, uniform)
+========================================
+[vary_T/tiled] T1  n=10000 k=32 T=1 dist=uniform R=10000
+Dataset written to input.txt  [n=10000, k=32, T=1, dist=uniform, seed=42, R=10000]
+N=10000  k=32  T=1
+KNN:        2.66386 s
+Approx KNN: 0.012243 s
+K-Means:    0.00513101 s
+  approx_mae_vs_knn=0.1774
+
+[vary_T/tiled] T5  n=10000 k=32 T=5 dist=uniform R=10000
+Dataset written to input.txt  [n=10000, k=32, T=5, dist=uniform, seed=42, R=10000]
+N=10000  k=32  T=5
+KNN:        2.6953 s
+Approx KNN: 0.023098 s
+K-Means:    0.00550199 s
+  approx_mae_vs_knn=0.1774
+
+[vary_T/tiled] T10  n=10000 k=32 T=10 dist=uniform R=10000
+Dataset written to input.txt  [n=10000, k=32, T=10, dist=uniform, seed=42, R=10000]
+N=10000  k=32  T=10
+KNN:        2.67613 s
+Approx KNN: 0.0162029 s
+K-Means:    0.00901914 s
+  approx_mae_vs_knn=0.1774
+
+[vary_T/tiled] T20  n=10000 k=32 T=20 dist=uniform R=10000
+Dataset written to input.txt  [n=10000, k=32, T=20, dist=uniform, seed=42, R=10000]
+N=10000  k=32  T=20
+KNN:        2.66507 s
+Approx KNN: 0.0109231 s
+K-Means:    0.00591397 s
+  approx_mae_vs_knn=0.1774
+
+[vary_T/tiled] T50  n=10000 k=32 T=50 dist=uniform R=10000
+Dataset written to input.txt  [n=10000, k=32, T=50, dist=uniform, seed=42, R=10000]
+N=10000  k=32  T=50
+KNN:        2.6617 s
+Approx KNN: 0.0216939 s
+K-Means:    0.00778198 s
+  approx_mae_vs_knn=0.1774
+
+========================================
+ GROUP D: Distributions  (n=10000, k=32, T=20)
+========================================
+[dist/tiled] uniform  n=10000 k=32 T=20 dist=uniform R=10000
+Dataset written to input.txt  [n=10000, k=32, T=20, dist=uniform, seed=42, R=10000]
+N=10000  k=32  T=20
+KNN:        2.63176 s
+Approx KNN: 0.0152931 s
+K-Means:    0.00538206 s
+  approx_mae_vs_knn=0.1774
+
+[dist/tiled] dense  n=10000 k=32 T=20 dist=dense R=10000
+Dataset written to input.txt  [n=10000, k=32, T=20, dist=dense, seed=42, R=10000]
+N=10000  k=32  T=20
+KNN:        5.33891 s
+Approx KNN: 0.0169649 s
+K-Means:    0.00646996 s
+  approx_mae_vs_knn=0.1694
+
+[dist/tiled] clustered  n=10000 k=32 T=20 dist=clustered R=10000
+Dataset written to input.txt  [n=10000, k=32, T=20, dist=clustered, seed=42, R=10000]
+N=10000  k=32  T=20
+KNN:        2.63615 s
+Approx KNN: 0.0222189 s
+K-Means:    0.00593305 s
+  approx_mae_vs_knn=0.0000
+
+[dist/tiled] skewed  n=10000 k=32 T=20 dist=skewed R=10000
+Dataset written to input.txt  [n=10000, k=32, T=20, dist=skewed, seed=42, R=10000]
+N=10000  k=32  T=20
+KNN:        2.63464 s
+Approx KNN: 0.022212 s
+K-Means:    0.00677204 s
+  approx_mae_vs_knn=0.1548
+
+========================================
+ GROUP E: Correctness  (n=1000, vs sequential)
+========================================
+[correctness/tiled] k1_uniform  n=1000 k=1 T=20 dist=uniform R=10000
+Dataset written to input.txt  [n=1000, k=1, T=20, dist=uniform, seed=42, R=10000]
+N=1000  k=1  T=20
+KNN:        2.63921 s
+Approx KNN: 0.0140409 s
+K-Means:    0.00271177 s
+  [seq] knn_mae=0.0000  kmeans_mae=0.0000
+  approx_mae_vs_knn=0.0000
+
+[correctness/tiled] k10_uniform  n=1000 k=10 T=20 dist=uniform R=10000
+Dataset written to input.txt  [n=1000, k=10, T=20, dist=uniform, seed=42, R=10000]
+N=1000  k=10  T=20
+KNN:        2.64861 s
+Approx KNN: 0.0177069 s
+K-Means:    0.00360394 s
+  [seq] knn_mae=0.0000  kmeans_mae=1.0420
+  approx_mae_vs_knn=0.7770
+
+[correctness/tiled] k32_uniform  n=1000 k=32 T=20 dist=uniform R=10000
+Dataset written to input.txt  [n=1000, k=32, T=20, dist=uniform, seed=42, R=10000]
+N=1000  k=32  T=20
+KNN:        2.64642 s
+Approx KNN: 0.017544 s
+K-Means:    0.00309896 s
+  [seq] knn_mae=0.0000  kmeans_mae=0.0000
+  approx_mae_vs_knn=0.2490
+
+[correctness/tiled] k64_uniform  n=1000 k=64 T=20 dist=uniform R=10000
+Dataset written to input.txt  [n=1000, k=64, T=20, dist=uniform, seed=42, R=10000]
+N=1000  k=64  T=20
+KNN:        2.63993 s
+Approx KNN: 0.014818 s
+K-Means:    0.00318885 s
+  [seq] knn_mae=0.0000  kmeans_mae=1.9870
+  approx_mae_vs_knn=0.2660
+
+[correctness/tiled] k128_uniform  n=1000 k=128 T=20 dist=uniform R=10000
+Dataset written to input.txt  [n=1000, k=128, T=20, dist=uniform, seed=42, R=10000]
+N=1000  k=128  T=20
+KNN:        2.65057 s
+Approx KNN: 0.022332 s
+K-Means:    0.00476289 s
+  [seq] knn_mae=0.0000  kmeans_mae=0.0000
+  approx_mae_vs_knn=0.3110
+
+[correctness/tiled] k32_dense  n=1000 k=32 T=20 dist=dense R=10000
+Dataset written to input.txt  [n=1000, k=32, T=20, dist=dense, seed=42, R=10000]
+N=1000  k=32  T=20
+KNN:        2.64321 s
+Approx KNN: 0.015063 s
+K-Means:    0.00277781 s
+  [seq] knn_mae=0.0000  kmeans_mae=1.6600
+  approx_mae_vs_knn=0.3280
+
+[correctness/tiled] k32_clustered  n=1000 k=32 T=20 dist=clustered R=10000
+Dataset written to input.txt  [n=1000, k=32, T=20, dist=clustered, seed=42, R=10000]
+N=1000  k=32  T=20
+KNN:        4.8281 s
+Approx KNN: 0.036056 s
+K-Means:    0.00636697 s
+  [seq] knn_mae=0.0000  kmeans_mae=0.0000
+  approx_mae_vs_knn=0.0000
+
+[correctness/tiled] k32_skewed  n=1000 k=32 T=20 dist=skewed R=10000
+Dataset written to input.txt  [n=1000, k=32, T=20, dist=skewed, seed=42, R=10000]
+N=1000  k=32  T=20
+KNN:        2.66958 s
+Approx KNN: 0.0237541 s
+K-Means:    0.00517511 s
+  [seq] knn_mae=0.0000  kmeans_mae=5.0810
+  approx_mae_vs_knn=0.1110
+
+========================================
+ GROUP F: Large scale
+========================================
+[large/tiled] n100k_k128_T50  n=100000 k=128 T=50 dist=uniform R=10000
+Dataset written to input.txt  [n=100000, k=128, T=50, dist=uniform, seed=42, R=10000]
+N=100000  k=128  T=50
+KNN:        2.94535 s
+Approx KNN: 0.066416 s
+K-Means:    0.0317481 s
+  approx_mae_vs_knn=0.0555
+
+[large/tiled] n100k_k32_uniform  n=100000 k=32 T=20 dist=uniform R=10000
+Dataset written to input.txt  [n=100000, k=32, T=20, dist=uniform, seed=42, R=10000]
+N=100000  k=32  T=20
+KNN:        2.7521 s
+Approx KNN: 0.038692 s
+K-Means:    0.028507 s
+  approx_mae_vs_knn=0.0566
+
+[large/tiled] n100k_k32_dense  n=100000 k=32 T=20 dist=dense R=10000
+Dataset written to input.txt  [n=100000, k=32, T=20, dist=dense, seed=42, R=10000]
+N=100000  k=32  T=20
+KNN:        2.73749 s
+Approx KNN: 0.042366 s
+K-Means:    0.0315371 s
+  approx_mae_vs_knn=0.0622
+
+[large/tiled] n100k_k32_clustered  n=100000 k=32 T=20 dist=clustered R=10000
+Dataset written to input.txt  [n=100000, k=32, T=20, dist=clustered, seed=42, R=10000]
+N=100000  k=32  T=20
+KNN:        2.78488 s
+Approx KNN: 0.048794 s
+K-Means:    0.029125 s
+  approx_mae_vs_knn=0.0007
+
+========================================
+ GROUP G: Vary coordinate range  (n=10000, k=32, T=20, uniform)
+========================================
+[vary_range/tiled] R100  n=10000 k=32 T=20 dist=uniform R=100
+Dataset written to input.txt  [n=10000, k=32, T=20, dist=uniform, seed=42, R=100]
+N=10000  k=32  T=20
+KNN:        2.64892 s
+Approx KNN: 0.021652 s
+K-Means:    0.00729704 s
+  approx_mae_vs_knn=0.2679
+
+[vary_range/tiled] R1000  n=10000 k=32 T=20 dist=uniform R=1000
+Dataset written to input.txt  [n=10000, k=32, T=20, dist=uniform, seed=42, R=1000]
+N=10000  k=32  T=20
+KNN:        2.64863 s
+Approx KNN: 0.0347979 s
+K-Means:    0.00632715 s
+  approx_mae_vs_knn=0.1694
+
+[vary_range/tiled] R10000  n=10000 k=32 T=20 dist=uniform R=10000
+Dataset written to input.txt  [n=10000, k=32, T=20, dist=uniform, seed=42, R=10000]
+N=10000  k=32  T=20
+KNN:        2.6432 s
+Approx KNN: 0.0126479 s
+K-Means:    0.006603 s
+  approx_mae_vs_knn=0.1774
+
+[vary_range/tiled] R100000  n=10000 k=32 T=20 dist=uniform R=100000
+Dataset written to input.txt  [n=10000, k=32, T=20, dist=uniform, seed=42, R=100000]
+N=10000  k=32  T=20
+KNN:        2.66974 s
+Approx KNN: 0.0205739 s
+K-Means:    0.00687718 s
+  approx_mae_vs_knn=0.1713
+
+[vary_range/tiled] R1000000  n=10000 k=32 T=20 dist=uniform R=1000000
+Dataset written to input.txt  [n=10000, k=32, T=20, dist=uniform, seed=42, R=1000000]
+N=10000  k=32  T=20
+KNN:        2.64838 s
+Approx KNN: 0.012325 s
+K-Means:    0.0060029 s
+  approx_mae_vs_knn=0.1583
+
+
+###################################################################
+  VARIANT: notiled  (./histogram_eq_notiled)
+###################################################################
+========================================
+ GROUP A: Vary N  (k=32, T=20, uniform)
+========================================
+[vary_n/notiled] n1000  n=1000 k=32 T=20 dist=uniform R=10000
+Dataset written to input.txt  [n=1000, k=32, T=20, dist=uniform, seed=42, R=10000]
+N=1000  k=32  T=20
+KNN:        8.00351 s
+Approx KNN: 0.0117931 s
+K-Means:    0.00753403 s
+  approx_mae_vs_knn=0.2490
+
+[vary_n/notiled] n5000  n=5000 k=32 T=20 dist=uniform R=10000
+Dataset written to input.txt  [n=5000, k=32, T=20, dist=uniform, seed=42, R=10000]
+N=5000  k=32  T=20
+KNN:        6.25499 s
+Approx KNN: 0.0191011 s
+K-Means:    0.005059 s
+  approx_mae_vs_knn=0.2224
+
+[vary_n/notiled] n10000  n=10000 k=32 T=20 dist=uniform R=10000
+Dataset written to input.txt  [n=10000, k=32, T=20, dist=uniform, seed=42, R=10000]
+N=10000  k=32  T=20
+KNN:        5.13615 s
+Approx KNN: 0.024292 s
+K-Means:    0.0072968 s
+  approx_mae_vs_knn=0.1774
+
+[vary_n/notiled] n25000  n=25000 k=32 T=20 dist=uniform R=10000
+Dataset written to input.txt  [n=25000, k=32, T=20, dist=uniform, seed=42, R=10000]
+N=25000  k=32  T=20
+KNN:        2.6538 s
+Approx KNN: 0.0270259 s
+K-Means:    0.0101869 s
+  approx_mae_vs_knn=0.1021
+
+[vary_n/notiled] n50000  n=50000 k=32 T=20 dist=uniform R=10000
+Dataset written to input.txt  [n=50000, k=32, T=20, dist=uniform, seed=42, R=10000]
+N=50000  k=32  T=20
+KNN:        2.67351 s
+Approx KNN: 0.0329828 s
+K-Means:    0.0163381 s
+  approx_mae_vs_knn=0.0734
+
+[vary_n/notiled] n100000  n=100000 k=32 T=20 dist=uniform R=10000
+Dataset written to input.txt  [n=100000, k=32, T=20, dist=uniform, seed=42, R=10000]
+N=100000  k=32  T=20
+KNN:        4.87395 s
+Approx KNN: 0.050704 s
+K-Means:    0.0309649 s
+  approx_mae_vs_knn=0.0566
+
+========================================
+ GROUP B: Vary K  (n=10000, T=20, uniform)
+========================================
+[vary_k/notiled] k1  n=10000 k=1 T=20 dist=uniform R=10000
+Dataset written to input.txt  [n=10000, k=1, T=20, dist=uniform, seed=42, R=10000]
+N=10000  k=1  T=20
+KNN:        2.71136 s
+Approx KNN: 0.0218 s
+K-Means:    0.00592113 s
+  approx_mae_vs_knn=0.1020
+
+[vary_k/notiled] k4  n=10000 k=4 T=20 dist=uniform R=10000
+Dataset written to input.txt  [n=10000, k=4, T=20, dist=uniform, seed=42, R=10000]
+N=10000  k=4  T=20
+KNN:        2.73711 s
+Approx KNN: 0.017024 s
+K-Means:    0.00623393 s
+  approx_mae_vs_knn=0.6178
+
+[vary_k/notiled] k8  n=10000 k=8 T=20 dist=uniform R=10000
+Dataset written to input.txt  [n=10000, k=8, T=20, dist=uniform, seed=42, R=10000]
+N=10000  k=8  T=20
+KNN:        2.71199 s
+Approx KNN: 0.017046 s
+K-Means:    0.00675988 s
+  approx_mae_vs_knn=2.1660
+
+[vary_k/notiled] k16  n=10000 k=16 T=20 dist=uniform R=10000
+Dataset written to input.txt  [n=10000, k=16, T=20, dist=uniform, seed=42, R=10000]
+N=10000  k=16  T=20
+KNN:        2.70733 s
+Approx KNN: 0.01736 s
+K-Means:    0.00807309 s
+  approx_mae_vs_knn=0.2478
+
+[vary_k/notiled] k32  n=10000 k=32 T=20 dist=uniform R=10000
+Dataset written to input.txt  [n=10000, k=32, T=20, dist=uniform, seed=42, R=10000]
+N=10000  k=32  T=20
+KNN:        2.74797 s
+Approx KNN: 0.0210311 s
+K-Means:    0.00704885 s
+  approx_mae_vs_knn=0.1774
+
+[vary_k/notiled] k64  n=10000 k=64 T=20 dist=uniform R=10000
+Dataset written to input.txt  [n=10000, k=64, T=20, dist=uniform, seed=42, R=10000]
+N=10000  k=64  T=20
+KNN:        3.35945 s
+Approx KNN: 0.0159731 s
+K-Means:    0.0064559 s
+  approx_mae_vs_knn=0.1579
+
+[vary_k/notiled] k128  n=10000 k=128 T=20 dist=uniform R=10000
+Dataset written to input.txt  [n=10000, k=128, T=20, dist=uniform, seed=42, R=10000]
+N=10000  k=128  T=20
+KNN:        2.6727 s
+Approx KNN: 0.0161221 s
+K-Means:    0.00611782 s
+  approx_mae_vs_knn=0.1490
+
+========================================
+ GROUP C: Vary T  (n=10000, k=32, uniform)
+========================================
+[vary_T/notiled] T1  n=10000 k=32 T=1 dist=uniform R=10000
+Dataset written to input.txt  [n=10000, k=32, T=1, dist=uniform, seed=42, R=10000]
+N=10000  k=32  T=1
+KNN:        2.64944 s
+Approx KNN: 0.0163 s
+K-Means:    0.00548887 s
+  approx_mae_vs_knn=0.1774
+
+[vary_T/notiled] T5  n=10000 k=32 T=5 dist=uniform R=10000
+Dataset written to input.txt  [n=10000, k=32, T=5, dist=uniform, seed=42, R=10000]
+N=10000  k=32  T=5
+KNN:        2.66193 s
+Approx KNN: 0.0163071 s
+K-Means:    0.00547504 s
+  approx_mae_vs_knn=0.1774
+
+[vary_T/notiled] T10  n=10000 k=32 T=10 dist=uniform R=10000
+Dataset written to input.txt  [n=10000, k=32, T=10, dist=uniform, seed=42, R=10000]
+N=10000  k=32  T=10
+KNN:        5.48354 s
+Approx KNN: 0.0142808 s
+K-Means:    0.007128 s
+  approx_mae_vs_knn=0.1774
+
+[vary_T/notiled] T20  n=10000 k=32 T=20 dist=uniform R=10000
+Dataset written to input.txt  [n=10000, k=32, T=20, dist=uniform, seed=42, R=10000]
+N=10000  k=32  T=20
+KNN:        5.14012 s
+Approx KNN: 0.0117459 s
+K-Means:    0.00710201 s
+  approx_mae_vs_knn=0.1774
+
+[vary_T/notiled] T50  n=10000 k=32 T=50 dist=uniform R=10000
+Dataset written to input.txt  [n=10000, k=32, T=50, dist=uniform, seed=42, R=10000]
+N=10000  k=32  T=50
+KNN:        4.71706 s
+Approx KNN: 0.0121539 s
+K-Means:    0.0094471 s
+  approx_mae_vs_knn=0.1774
+
+========================================
+ GROUP D: Distributions  (n=10000, k=32, T=20)
+========================================
+[dist/notiled] uniform  n=10000 k=32 T=20 dist=uniform R=10000
+Dataset written to input.txt  [n=10000, k=32, T=20, dist=uniform, seed=42, R=10000]
+N=10000  k=32  T=20
+KNN:        2.90816 s
+Approx KNN: 0.0221379 s
+K-Means:    0.00600314 s
+  approx_mae_vs_knn=0.1774
+
+[dist/notiled] dense  n=10000 k=32 T=20 dist=dense R=10000
+Dataset written to input.txt  [n=10000, k=32, T=20, dist=dense, seed=42, R=10000]
+N=10000  k=32  T=20
+KNN:        2.68907 s
+Approx KNN: 0.012924 s
+K-Means:    0.00657392 s
+  approx_mae_vs_knn=0.1694
+
+[dist/notiled] clustered  n=10000 k=32 T=20 dist=clustered R=10000
+Dataset written to input.txt  [n=10000, k=32, T=20, dist=clustered, seed=42, R=10000]
+N=10000  k=32  T=20
+KNN:        2.66845 s
+Approx KNN: 0.0180759 s
+K-Means:    0.007025 s
+  approx_mae_vs_knn=0.0000
+
+[dist/notiled] skewed  n=10000 k=32 T=20 dist=skewed R=10000
+Dataset written to input.txt  [n=10000, k=32, T=20, dist=skewed, seed=42, R=10000]
+N=10000  k=32  T=20
+KNN:        2.63942 s
+Approx KNN: 0.0228989 s
+K-Means:    0.00657701 s
+  approx_mae_vs_knn=0.1548
+
+========================================
+ GROUP E: Correctness  (n=1000, vs sequential)
+========================================
+[correctness/notiled] k1_uniform  n=1000 k=1 T=20 dist=uniform R=10000
+Dataset written to input.txt  [n=1000, k=1, T=20, dist=uniform, seed=42, R=10000]
+N=1000  k=1  T=20
+KNN:        2.63726 s
+Approx KNN: 0.0122368 s
+K-Means:    0.002918 s
+  [seq] knn_mae=0.0000  kmeans_mae=0.0000
+  approx_mae_vs_knn=0.0000
+
+[correctness/notiled] k10_uniform  n=1000 k=10 T=20 dist=uniform R=10000
+Dataset written to input.txt  [n=1000, k=10, T=20, dist=uniform, seed=42, R=10000]
+N=1000  k=10  T=20
+KNN:        2.65376 s
+Approx KNN: 0.00803113 s
+K-Means:    0.00450706 s
+  [seq] knn_mae=0.0000  kmeans_mae=1.0420
+  approx_mae_vs_knn=0.7770
+
+[correctness/notiled] k32_uniform  n=1000 k=32 T=20 dist=uniform R=10000
+Dataset written to input.txt  [n=1000, k=32, T=20, dist=uniform, seed=42, R=10000]
+N=1000  k=32  T=20
+KNN:        2.65308 s
+Approx KNN: 0.010505 s
+K-Means:    0.00416088 s
+  [seq] knn_mae=0.0000  kmeans_mae=0.0000
+  approx_mae_vs_knn=0.2490
+
+[correctness/notiled] k64_uniform  n=1000 k=64 T=20 dist=uniform R=10000
+Dataset written to input.txt  [n=1000, k=64, T=20, dist=uniform, seed=42, R=10000]
+N=1000  k=64  T=20
+KNN:        5.48172 s
+Approx KNN: 0.0102432 s
+K-Means:    0.00375795 s
+  [seq] knn_mae=0.0000  kmeans_mae=1.9870
+  approx_mae_vs_knn=0.2660
+
+[correctness/notiled] k128_uniform  n=1000 k=128 T=20 dist=uniform R=10000
+Dataset written to input.txt  [n=1000, k=128, T=20, dist=uniform, seed=42, R=10000]
+N=1000  k=128  T=20
+KNN:        2.66254 s
+Approx KNN: 0.010489 s
+K-Means:    0.00363994 s
+  [seq] knn_mae=0.0000  kmeans_mae=0.0000
+  approx_mae_vs_knn=0.3110
+
+[correctness/notiled] k32_dense  n=1000 k=32 T=20 dist=dense R=10000
+Dataset written to input.txt  [n=1000, k=32, T=20, dist=dense, seed=42, R=10000]
+N=1000  k=32  T=20
+KNN:        4.58226 s
+Approx KNN: 0.00873208 s
+K-Means:    0.00395679 s
+  [seq] knn_mae=0.0000  kmeans_mae=1.6600
+  approx_mae_vs_knn=0.3280
+
+[correctness/notiled] k32_clustered  n=1000 k=32 T=20 dist=clustered R=10000
+Dataset written to input.txt  [n=1000, k=32, T=20, dist=clustered, seed=42, R=10000]
+N=1000  k=32  T=20
+KNN:        2.6427 s
+Approx KNN: 0.0175722 s
+K-Means:    0.00286794 s
+  [seq] knn_mae=0.0000  kmeans_mae=0.0000
+  approx_mae_vs_knn=0.0000
+
+[correctness/notiled] k32_skewed  n=1000 k=32 T=20 dist=skewed R=10000
+Dataset written to input.txt  [n=1000, k=32, T=20, dist=skewed, seed=42, R=10000]
+N=1000  k=32  T=20
+KNN:        2.66567 s
+Approx KNN: 0.0147381 s
+K-Means:    0.00431705 s
+  [seq] knn_mae=0.0000  kmeans_mae=5.0810
+  approx_mae_vs_knn=0.1110
+
+========================================
+ GROUP F: Large scale
+========================================
+[large/notiled] n100k_k128_T50  n=100000 k=128 T=50 dist=uniform R=10000
+Dataset written to input.txt  [n=100000, k=128, T=50, dist=uniform, seed=42, R=10000]
+N=100000  k=128  T=50
+KNN:        2.90847 s
+Approx KNN: 0.0624311 s
+K-Means:    0.0292211 s
+  approx_mae_vs_knn=0.0555
+
+[large/notiled] n100k_k32_uniform  n=100000 k=32 T=20 dist=uniform R=10000
+Dataset written to input.txt  [n=100000, k=32, T=20, dist=uniform, seed=42, R=10000]
+N=100000  k=32  T=20
+KNN:        2.76769 s
+Approx KNN: 0.0416269 s
+K-Means:    0.0299351 s
+  approx_mae_vs_knn=0.0566
+
+[large/notiled] n100k_k32_dense  n=100000 k=32 T=20 dist=dense R=10000
+Dataset written to input.txt  [n=100000, k=32, T=20, dist=dense, seed=42, R=10000]
+N=100000  k=32  T=20
+KNN:        2.73503 s
+Approx KNN: 0.0481119 s
+K-Means:    0.0292771 s
+  approx_mae_vs_knn=0.0622
+
+[large/notiled] n100k_k32_clustered  n=100000 k=32 T=20 dist=clustered R=10000
+Dataset written to input.txt  [n=100000, k=32, T=20, dist=clustered, seed=42, R=10000]
+N=100000  k=32  T=20
+KNN:        2.76407 s
+Approx KNN: 0.053715 s
+K-Means:    0.0299459 s
+  approx_mae_vs_knn=0.0007
+
+========================================
+ GROUP G: Vary coordinate range  (n=10000, k=32, T=20, uniform)
+========================================
+[vary_range/notiled] R100  n=10000 k=32 T=20 dist=uniform R=100
+Dataset written to input.txt  [n=10000, k=32, T=20, dist=uniform, seed=42, R=100]
+N=10000  k=32  T=20
+KNN:        2.67587 s
+Approx KNN: 0.021987 s
+K-Means:    0.00666809 s
+  approx_mae_vs_knn=0.2679
+
+[vary_range/notiled] R1000  n=10000 k=32 T=20 dist=uniform R=1000
+Dataset written to input.txt  [n=10000, k=32, T=20, dist=uniform, seed=42, R=1000]
+N=10000  k=32  T=20
+KNN:        5.20354 s
+Approx KNN: 0.0118959 s
+K-Means:    0.00691009 s
+  approx_mae_vs_knn=0.1694
+
+[vary_range/notiled] R10000  n=10000 k=32 T=20 dist=uniform R=10000
+Dataset written to input.txt  [n=10000, k=32, T=20, dist=uniform, seed=42, R=10000]
+N=10000  k=32  T=20
+KNN:        2.63172 s
+Approx KNN: 0.0128438 s
+K-Means:    0.006464 s
+  approx_mae_vs_knn=0.1774
+
+[vary_range/notiled] R100000  n=10000 k=32 T=20 dist=uniform R=100000
+Dataset written to input.txt  [n=10000, k=32, T=20, dist=uniform, seed=42, R=100000]
+N=10000  k=32  T=20
+KNN:        2.6417 s
+Approx KNN: 0.0166471 s
+K-Means:    0.00715494 s
+  approx_mae_vs_knn=0.1713
+
+[vary_range/notiled] R1000000  n=10000 k=32 T=20 dist=uniform R=1000000
+Dataset written to input.txt  [n=10000, k=32, T=20, dist=uniform, seed=42, R=1000000]
+N=10000  k=32  T=20
+KNN:        2.67212 s
+Approx KNN: 0.0163031 s
+K-Means:    0.00639296 s
+  approx_mae_vs_knn=0.1583
+
+
+###################################################################
+  VARIANT: spatialhash  (./histogram_eq_spatialhash)
+###################################################################
+========================================
+ GROUP A: Vary N  (k=32, T=20, uniform)
+========================================
+[vary_n/spatialhash] n1000  n=1000 k=32 T=20 dist=uniform R=10000
+Dataset written to input.txt  [n=1000, k=32, T=20, dist=uniform, seed=42, R=10000]
+N=1000  k=32  T=20
+KNN:        2.65479 s
+Approx KNN: 0.0047369 s
+K-Means:    0.00307918 s
+  approx_mae_vs_knn=0.2490
+
+[vary_n/spatialhash] n5000  n=5000 k=32 T=20 dist=uniform R=10000
+Dataset written to input.txt  [n=5000, k=32, T=20, dist=uniform, seed=42, R=10000]
+N=5000  k=32  T=20
+KNN:        2.62512 s
+Approx KNN: 0.00862408 s
+K-Means:    0.00501394 s
+  approx_mae_vs_knn=0.2224
+
+[vary_n/spatialhash] n10000  n=10000 k=32 T=20 dist=uniform R=10000
+Dataset written to input.txt  [n=10000, k=32, T=20, dist=uniform, seed=42, R=10000]
+N=10000  k=32  T=20
+KNN:        2.65938 s
+Approx KNN: 0.0195079 s
+K-Means:    0.00712299 s
+  approx_mae_vs_knn=0.1774
+
+[vary_n/spatialhash] n25000  n=25000 k=32 T=20 dist=uniform R=10000
+Dataset written to input.txt  [n=25000, k=32, T=20, dist=uniform, seed=42, R=10000]
+N=25000  k=32  T=20
+KNN:        2.69329 s
+Approx KNN: 0.01407 s
+K-Means:    0.0100591 s
+  approx_mae_vs_knn=0.1021
+
+[vary_n/spatialhash] n50000  n=50000 k=32 T=20 dist=uniform R=10000
+Dataset written to input.txt  [n=50000, k=32, T=20, dist=uniform, seed=42, R=10000]
+N=50000  k=32  T=20
+KNN:        2.70894 s
+Approx KNN: 0.0324469 s
+K-Means:    0.0169871 s
+  approx_mae_vs_knn=0.0734
+
+[vary_n/spatialhash] n100000  n=100000 k=32 T=20 dist=uniform R=10000
+Dataset written to input.txt  [n=100000, k=32, T=20, dist=uniform, seed=42, R=10000]
+N=100000  k=32  T=20
+KNN:        2.74388 s
+Approx KNN: 0.045784 s
+K-Means:    0.0297599 s
+  approx_mae_vs_knn=0.0566
+
+========================================
+ GROUP B: Vary K  (n=10000, T=20, uniform)
+========================================
+[vary_k/spatialhash] k1  n=10000 k=1 T=20 dist=uniform R=10000
+Dataset written to input.txt  [n=10000, k=1, T=20, dist=uniform, seed=42, R=10000]
+N=10000  k=1  T=20
+KNN:        2.67687 s
+Approx KNN: 0.00767684 s
+K-Means:    0.00577593 s
+  approx_mae_vs_knn=0.1020
+
+[vary_k/spatialhash] k4  n=10000 k=4 T=20 dist=uniform R=10000
+Dataset written to input.txt  [n=10000, k=4, T=20, dist=uniform, seed=42, R=10000]
+N=10000  k=4  T=20
+KNN:        2.67433 s
+Approx KNN: 0.0172162 s
+K-Means:    0.00703979 s
+  approx_mae_vs_knn=0.6178
+
+[vary_k/spatialhash] k8  n=10000 k=8 T=20 dist=uniform R=10000
+Dataset written to input.txt  [n=10000, k=8, T=20, dist=uniform, seed=42, R=10000]
+N=10000  k=8  T=20
+KNN:        5.46534 s
+Approx KNN: 0.012253 s
+K-Means:    0.00741601 s
+  approx_mae_vs_knn=2.1660
+
+[vary_k/spatialhash] k16  n=10000 k=16 T=20 dist=uniform R=10000
+Dataset written to input.txt  [n=10000, k=16, T=20, dist=uniform, seed=42, R=10000]
+N=10000  k=16  T=20
+KNN:        2.65811 s
+Approx KNN: 0.019639 s
+K-Means:    0.006953 s
+  approx_mae_vs_knn=0.2478
+
+[vary_k/spatialhash] k32  n=10000 k=32 T=20 dist=uniform R=10000
+Dataset written to input.txt  [n=10000, k=32, T=20, dist=uniform, seed=42, R=10000]
+N=10000  k=32  T=20
+KNN:        2.64357 s
+Approx KNN: 0.0137661 s
+K-Means:    0.00642204 s
+  approx_mae_vs_knn=0.1774
+
+[vary_k/spatialhash] k64  n=10000 k=64 T=20 dist=uniform R=10000
+Dataset written to input.txt  [n=10000, k=64, T=20, dist=uniform, seed=42, R=10000]
+N=10000  k=64  T=20
+KNN:        2.64322 s
+Approx KNN: 0.0219769 s
+K-Means:    0.00677013 s
+  approx_mae_vs_knn=0.1583
+
+[vary_k/spatialhash] k128  n=10000 k=128 T=20 dist=uniform R=10000
+Dataset written to input.txt  [n=10000, k=128, T=20, dist=uniform, seed=42, R=10000]
+N=10000  k=128  T=20
+KNN:        2.69251 s
+Approx KNN: 0.0188439 s
+K-Means:    0.00629783 s
+  approx_mae_vs_knn=0.1490
+
+========================================
+ GROUP C: Vary T  (n=10000, k=32, uniform)
+========================================
+[vary_T/spatialhash] T1  n=10000 k=32 T=1 dist=uniform R=10000
+Dataset written to input.txt  [n=10000, k=32, T=1, dist=uniform, seed=42, R=10000]
+N=10000  k=32  T=1
+KNN:        2.64943 s
+Approx KNN: 0.017478 s
+K-Means:    0.00453305 s
+  approx_mae_vs_knn=0.1774
+
+[vary_T/spatialhash] T5  n=10000 k=32 T=5 dist=uniform R=10000
+Dataset written to input.txt  [n=10000, k=32, T=5, dist=uniform, seed=42, R=10000]
+N=10000  k=32  T=5
+KNN:        2.64946 s
+Approx KNN: 0.014168 s
+K-Means:    0.00545406 s
+  approx_mae_vs_knn=0.1774
+
+[vary_T/spatialhash] T10  n=10000 k=32 T=10 dist=uniform R=10000
+Dataset written to input.txt  [n=10000, k=32, T=10, dist=uniform, seed=42, R=10000]
+N=10000  k=32  T=10
+KNN:        2.64067 s
+Approx KNN: 0.014214 s
+K-Means:    0.00670695 s
+  approx_mae_vs_knn=0.1774
+
+[vary_T/spatialhash] T20  n=10000 k=32 T=20 dist=uniform R=10000
+Dataset written to input.txt  [n=10000, k=32, T=20, dist=uniform, seed=42, R=10000]
+N=10000  k=32  T=20
+KNN:        2.65849 s
+Approx KNN: 0.0153348 s
+K-Means:    0.00726795 s
+  approx_mae_vs_knn=0.1774
+
+[vary_T/spatialhash] T50  n=10000 k=32 T=50 dist=uniform R=10000
+Dataset written to input.txt  [n=10000, k=32, T=50, dist=uniform, seed=42, R=10000]
+N=10000  k=32  T=50
+KNN:        2.64351 s
+Approx KNN: 0.0173149 s
+K-Means:    0.00874496 s
+  approx_mae_vs_knn=0.1774
+
+========================================
+ GROUP D: Distributions  (n=10000, k=32, T=20)
+========================================
+[dist/spatialhash] uniform  n=10000 k=32 T=20 dist=uniform R=10000
+Dataset written to input.txt  [n=10000, k=32, T=20, dist=uniform, seed=42, R=10000]
+N=10000  k=32  T=20
+KNN:        5.52228 s
+Approx KNN: 0.0129008 s
+K-Means:    0.0059371 s
+  approx_mae_vs_knn=0.1774
+
+[dist/spatialhash] dense  n=10000 k=32 T=20 dist=dense R=10000
+Dataset written to input.txt  [n=10000, k=32, T=20, dist=dense, seed=42, R=10000]
+N=10000  k=32  T=20
+KNN:        2.65862 s
+Approx KNN: 0.0135748 s
+K-Means:    0.00602007 s
+  approx_mae_vs_knn=0.1686
+
+[dist/spatialhash] clustered  n=10000 k=32 T=20 dist=clustered R=10000
+Dataset written to input.txt  [n=10000, k=32, T=20, dist=clustered, seed=42, R=10000]
+N=10000  k=32  T=20
+KNN:        5.4888 s
+Approx KNN: 0.0157859 s
+K-Means:    0.00712609 s
+  approx_mae_vs_knn=0.0000
+
+[dist/spatialhash] skewed  n=10000 k=32 T=20 dist=skewed R=10000
+Dataset written to input.txt  [n=10000, k=32, T=20, dist=skewed, seed=42, R=10000]
+N=10000  k=32  T=20
+KNN:        2.64898 s
+Approx KNN: 0.0394499 s
+K-Means:    0.00622082 s
+  approx_mae_vs_knn=0.1556
+
+========================================
+ GROUP E: Correctness  (n=1000, vs sequential)
+========================================
+[correctness/spatialhash] k1_uniform  n=1000 k=1 T=20 dist=uniform R=10000
+Dataset written to input.txt  [n=1000, k=1, T=20, dist=uniform, seed=42, R=10000]
+N=1000  k=1  T=20
+KNN:        2.65255 s
+Approx KNN: 0.00494695 s
+K-Means:    0.00393105 s
+  [seq] knn_mae=0.0000  kmeans_mae=0.0000
+  approx_mae_vs_knn=0.0000
+
+[correctness/spatialhash] k10_uniform  n=1000 k=10 T=20 dist=uniform R=10000
+Dataset written to input.txt  [n=1000, k=10, T=20, dist=uniform, seed=42, R=10000]
+N=1000  k=10  T=20
+KNN:        2.66341 s
+Approx KNN: 0.013541 s
+K-Means:    0.00394011 s
+  [seq] knn_mae=0.0000  kmeans_mae=1.0420
+  approx_mae_vs_knn=0.7770
+
+[correctness/spatialhash] k32_uniform  n=1000 k=32 T=20 dist=uniform R=10000
+Dataset written to input.txt  [n=1000, k=32, T=20, dist=uniform, seed=42, R=10000]
+N=1000  k=32  T=20
+KNN:        2.6378 s
+Approx KNN: 0.0176368 s
+K-Means:    0.00267911 s
+  [seq] knn_mae=0.0000  kmeans_mae=0.0000
+  approx_mae_vs_knn=0.2490
+
+[correctness/spatialhash] k64_uniform  n=1000 k=64 T=20 dist=uniform R=10000
+Dataset written to input.txt  [n=1000, k=64, T=20, dist=uniform, seed=42, R=10000]
+N=1000  k=64  T=20
+KNN:        2.63713 s
+Approx KNN: 0.015619 s
+K-Means:    0.00354505 s
+  [seq] knn_mae=0.0000  kmeans_mae=1.9870
+  approx_mae_vs_knn=0.2660
+
+[correctness/spatialhash] k128_uniform  n=1000 k=128 T=20 dist=uniform R=10000
+Dataset written to input.txt  [n=1000, k=128, T=20, dist=uniform, seed=42, R=10000]
+N=1000  k=128  T=20
+KNN:        2.62724 s
+Approx KNN: 0.015898 s
+K-Means:    0.00323415 s
+  [seq] knn_mae=0.0000  kmeans_mae=0.0000
+  approx_mae_vs_knn=0.3110
+
+[correctness/spatialhash] k32_dense  n=1000 k=32 T=20 dist=dense R=10000
+Dataset written to input.txt  [n=1000, k=32, T=20, dist=dense, seed=42, R=10000]
+N=1000  k=32  T=20
+KNN:        2.6432 s
+Approx KNN: 0.012769 s
+K-Means:    0.00525498 s
+  [seq] knn_mae=0.0000  kmeans_mae=1.6600
+  approx_mae_vs_knn=0.3200
+
+[correctness/spatialhash] k32_clustered  n=1000 k=32 T=20 dist=clustered R=10000
+Dataset written to input.txt  [n=1000, k=32, T=20, dist=clustered, seed=42, R=10000]
+N=1000  k=32  T=20
+KNN:        2.68012 s
+Approx KNN: 0.0103419 s
+K-Means:    0.0042541 s
+  [seq] knn_mae=0.0000  kmeans_mae=0.0000
+  approx_mae_vs_knn=0.0000
+
+[correctness/spatialhash] k32_skewed  n=1000 k=32 T=20 dist=skewed R=10000
+Dataset written to input.txt  [n=1000, k=32, T=20, dist=skewed, seed=42, R=10000]
+N=1000  k=32  T=20
+KNN:        5.53702 s
+Approx KNN: 0.0117249 s
+K-Means:    0.00427103 s
+  [seq] knn_mae=0.0000  kmeans_mae=5.0810
+  approx_mae_vs_knn=0.1110
+
+========================================
+ GROUP F: Large scale
+========================================
+[large/spatialhash] n100k_k128_T50  n=100000 k=128 T=50 dist=uniform R=10000
+Dataset written to input.txt  [n=100000, k=128, T=50, dist=uniform, seed=42, R=10000]
+N=100000  k=128  T=50
+KNN:        2.9304 s
+Approx KNN: 0.0814312 s
+K-Means:    0.0301151 s
+  approx_mae_vs_knn=0.0555
+
+[large/spatialhash] n100k_k32_uniform  n=100000 k=32 T=20 dist=uniform R=10000
+Dataset written to input.txt  [n=100000, k=32, T=20, dist=uniform, seed=42, R=10000]
+N=100000  k=32  T=20
+KNN:        2.75014 s
+Approx KNN: 0.044214 s
+K-Means:    0.0286169 s
+  approx_mae_vs_knn=0.0566
+
+[large/spatialhash] n100k_k32_dense  n=100000 k=32 T=20 dist=dense R=10000
+Dataset written to input.txt  [n=100000, k=32, T=20, dist=dense, seed=42, R=10000]
+N=100000  k=32  T=20
+KNN:        2.75506 s
+Approx KNN: 0.044625 s
+K-Means:    0.027113 s
+  approx_mae_vs_knn=0.0621
+
+[large/spatialhash] n100k_k32_clustered  n=100000 k=32 T=20 dist=clustered R=10000
+Dataset written to input.txt  [n=100000, k=32, T=20, dist=clustered, seed=42, R=10000]
+N=100000  k=32  T=20
+KNN:        2.7561 s
+Approx KNN: 0.058599 s
+K-Means:    0.030293 s
+  approx_mae_vs_knn=0.0006
+
+========================================
+ GROUP G: Vary coordinate range  (n=10000, k=32, T=20, uniform)
+========================================
+[vary_range/spatialhash] R100  n=10000 k=32 T=20 dist=uniform R=100
+Dataset written to input.txt  [n=10000, k=32, T=20, dist=uniform, seed=42, R=100]
+N=10000  k=32  T=20
+KNN:        2.63325 s
+Approx KNN: 0.0191531 s
+K-Means:    0.00631213 s
+  approx_mae_vs_knn=0.2706
+
+[vary_range/spatialhash] R1000  n=10000 k=32 T=20 dist=uniform R=1000
+Dataset written to input.txt  [n=10000, k=32, T=20, dist=uniform, seed=42, R=1000]
+N=10000  k=32  T=20
+KNN:        2.63504 s
+Approx KNN: 0.0133722 s
+K-Means:    0.00600791 s
+  approx_mae_vs_knn=0.1686
+
+[vary_range/spatialhash] R10000  n=10000 k=32 T=20 dist=uniform R=10000
+Dataset written to input.txt  [n=10000, k=32, T=20, dist=uniform, seed=42, R=10000]
+N=10000  k=32  T=20
+KNN:        2.67649 s
+Approx KNN: 0.014997 s
+K-Means:    0.00695896 s
+  approx_mae_vs_knn=0.1774
+
+[vary_range/spatialhash] R100000  n=10000 k=32 T=20 dist=uniform R=100000
+Dataset written to input.txt  [n=10000, k=32, T=20, dist=uniform, seed=42, R=100000]
+N=10000  k=32  T=20
+KNN:        2.627 s
+Approx KNN: 0.0172851 s
+K-Means:    0.00641799 s
+  approx_mae_vs_knn=0.1713
+
+[vary_range/spatialhash] R1000000  n=10000 k=32 T=20 dist=uniform R=1000000
+Dataset written to input.txt  [n=10000, k=32, T=20, dist=uniform, seed=42, R=1000000]
+N=10000  k=32  T=20
+KNN:        2.64809 s
+Approx KNN: 0.018369 s
+K-Means:    0.00800014 s
+  approx_mae_vs_knn=0.1583
+
+
+###################################################################
+  VARIANT: notiled_spatialhash  (./histogram_eq_notiled_spatialhash)
+###################################################################
+========================================
+ GROUP A: Vary N  (k=32, T=20, uniform)
+========================================
+[vary_n/notiled_spatialhash] n1000  n=1000 k=32 T=20 dist=uniform R=10000
+Dataset written to input.txt  [n=1000, k=32, T=20, dist=uniform, seed=42, R=10000]
+N=1000  k=32  T=20
+KNN:        2.67918 s
+Approx KNN: 0.017612 s
+K-Means:    0.00319695 s
+  approx_mae_vs_knn=0.2490
+
+[vary_n/notiled_spatialhash] n5000  n=5000 k=32 T=20 dist=uniform R=10000
+Dataset written to input.txt  [n=5000, k=32, T=20, dist=uniform, seed=42, R=10000]
+N=5000  k=32  T=20
+KNN:        2.62254 s
+Approx KNN: 0.00830984 s
+K-Means:    0.00518203 s
+  approx_mae_vs_knn=0.2224
+
+[vary_n/notiled_spatialhash] n10000  n=10000 k=32 T=20 dist=uniform R=10000
+Dataset written to input.txt  [n=10000, k=32, T=20, dist=uniform, seed=42, R=10000]
+N=10000  k=32  T=20
+KNN:        2.65352 s
+Approx KNN: 0.0130742 s
+K-Means:    0.0060668 s
+  approx_mae_vs_knn=0.1774
+
+[vary_n/notiled_spatialhash] n25000  n=25000 k=32 T=20 dist=uniform R=10000
+Dataset written to input.txt  [n=25000, k=32, T=20, dist=uniform, seed=42, R=10000]
+N=25000  k=32  T=20
+KNN:        5.51584 s
+Approx KNN: 0.0189948 s
+K-Means:    0.00998116 s
+  approx_mae_vs_knn=0.1021
+
+[vary_n/notiled_spatialhash] n50000  n=50000 k=32 T=20 dist=uniform R=10000
+Dataset written to input.txt  [n=50000, k=32, T=20, dist=uniform, seed=42, R=10000]
+N=50000  k=32  T=20
+KNN:        2.71326 s
+Approx KNN: 0.0318801 s
+K-Means:    0.0167909 s
+  approx_mae_vs_knn=0.0734
+
+[vary_n/notiled_spatialhash] n100000  n=100000 k=32 T=20 dist=uniform R=10000
+Dataset written to input.txt  [n=100000, k=32, T=20, dist=uniform, seed=42, R=10000]
+N=100000  k=32  T=20
+KNN:        2.73494 s
+Approx KNN: 0.0396559 s
+K-Means:    0.030148 s
+  approx_mae_vs_knn=0.0566
+
+========================================
+ GROUP B: Vary K  (n=10000, T=20, uniform)
+========================================
+[vary_k/notiled_spatialhash] k1  n=10000 k=1 T=20 dist=uniform R=10000
+Dataset written to input.txt  [n=10000, k=1, T=20, dist=uniform, seed=42, R=10000]
+N=10000  k=1  T=20
+KNN:        2.65393 s
+Approx KNN: 0.0157442 s
+K-Means:    0.00568819 s
+  approx_mae_vs_knn=0.1020
+
+[vary_k/notiled_spatialhash] k4  n=10000 k=4 T=20 dist=uniform R=10000
+Dataset written to input.txt  [n=10000, k=4, T=20, dist=uniform, seed=42, R=10000]
+N=10000  k=4  T=20
+KNN:        5.48587 s
+Approx KNN: 0.010989 s
+K-Means:    0.00623918 s
+  approx_mae_vs_knn=0.6178
+
+[vary_k/notiled_spatialhash] k8  n=10000 k=8 T=20 dist=uniform R=10000
+Dataset written to input.txt  [n=10000, k=8, T=20, dist=uniform, seed=42, R=10000]
+N=10000  k=8  T=20
+KNN:        2.6668 s
+Approx KNN: 0.01724 s
+K-Means:    0.00588393 s
+  approx_mae_vs_knn=2.1660
+
+[vary_k/notiled_spatialhash] k16  n=10000 k=16 T=20 dist=uniform R=10000
+Dataset written to input.txt  [n=10000, k=16, T=20, dist=uniform, seed=42, R=10000]
+N=10000  k=16  T=20
+KNN:        2.64581 s
+Approx KNN: 0.0158491 s
+K-Means:    0.00588202 s
+  approx_mae_vs_knn=0.2478
+
+[vary_k/notiled_spatialhash] k32  n=10000 k=32 T=20 dist=uniform R=10000
+Dataset written to input.txt  [n=10000, k=32, T=20, dist=uniform, seed=42, R=10000]
+N=10000  k=32  T=20
+KNN:        2.67175 s
+Approx KNN: 0.0143142 s
+K-Means:    0.00677109 s
+  approx_mae_vs_knn=0.1774
+
+[vary_k/notiled_spatialhash] k64  n=10000 k=64 T=20 dist=uniform R=10000
+Dataset written to input.txt  [n=10000, k=64, T=20, dist=uniform, seed=42, R=10000]
+N=10000  k=64  T=20
+KNN:        2.66219 s
+Approx KNN: 0.0219212 s
+K-Means:    0.007236 s
+  approx_mae_vs_knn=0.1583
+
+[vary_k/notiled_spatialhash] k128  n=10000 k=128 T=20 dist=uniform R=10000
+Dataset written to input.txt  [n=10000, k=128, T=20, dist=uniform, seed=42, R=10000]
+N=10000  k=128  T=20
+KNN:        2.65954 s
+Approx KNN: 0.020612 s
+K-Means:    0.00659394 s
+  approx_mae_vs_knn=0.1490
+
+========================================
+ GROUP C: Vary T  (n=10000, k=32, uniform)
+========================================
+[vary_T/notiled_spatialhash] T1  n=10000 k=32 T=1 dist=uniform R=10000
+Dataset written to input.txt  [n=10000, k=32, T=1, dist=uniform, seed=42, R=10000]
+N=10000  k=32  T=1
+KNN:        2.6654 s
+Approx KNN: 0.0139549 s
+K-Means:    0.00488305 s
+  approx_mae_vs_knn=0.1774
+
+[vary_T/notiled_spatialhash] T5  n=10000 k=32 T=5 dist=uniform R=10000
+Dataset written to input.txt  [n=10000, k=32, T=5, dist=uniform, seed=42, R=10000]
+N=10000  k=32  T=5
+KNN:        5.5188 s
+Approx KNN: 0.0131838 s
+K-Means:    0.00579095 s
+  approx_mae_vs_knn=0.1774
+
+[vary_T/notiled_spatialhash] T10  n=10000 k=32 T=10 dist=uniform R=10000
+Dataset written to input.txt  [n=10000, k=32, T=10, dist=uniform, seed=42, R=10000]
+N=10000  k=32  T=10
+KNN:        2.65241 s
+Approx KNN: 0.0150452 s
+K-Means:    0.00556421 s
+  approx_mae_vs_knn=0.1774
+
+[vary_T/notiled_spatialhash] T20  n=10000 k=32 T=20 dist=uniform R=10000
+Dataset written to input.txt  [n=10000, k=32, T=20, dist=uniform, seed=42, R=10000]
+N=10000  k=32  T=20
+KNN:        2.66124 s
+Approx KNN: 0.0197608 s
+K-Means:    0.00648594 s
+  approx_mae_vs_knn=0.1774
+
+[vary_T/notiled_spatialhash] T50  n=10000 k=32 T=50 dist=uniform R=10000
+Dataset written to input.txt  [n=10000, k=32, T=50, dist=uniform, seed=42, R=10000]
+N=10000  k=32  T=50
+KNN:        2.62374 s
+Approx KNN: 0.0166268 s
+K-Means:    0.00792599 s
+  approx_mae_vs_knn=0.1774
+
+========================================
+ GROUP D: Distributions  (n=10000, k=32, T=20)
+========================================
+[dist/notiled_spatialhash] uniform  n=10000 k=32 T=20 dist=uniform R=10000
+Dataset written to input.txt  [n=10000, k=32, T=20, dist=uniform, seed=42, R=10000]
+N=10000  k=32  T=20
+KNN:        2.6828 s
+Approx KNN: 0.0152781 s
+K-Means:    0.00822091 s
+  approx_mae_vs_knn=0.1774
+
+[dist/notiled_spatialhash] dense  n=10000 k=32 T=20 dist=dense R=10000
+Dataset written to input.txt  [n=10000, k=32, T=20, dist=dense, seed=42, R=10000]
+N=10000  k=32  T=20
+KNN:        2.67913 s
+Approx KNN: 0.0173759 s
+K-Means:    0.00585008 s
+  approx_mae_vs_knn=0.1686
+
+[dist/notiled_spatialhash] clustered  n=10000 k=32 T=20 dist=clustered R=10000
+Dataset written to input.txt  [n=10000, k=32, T=20, dist=clustered, seed=42, R=10000]
+N=10000  k=32  T=20
+KNN:        2.67734 s
+Approx KNN: 0.0206349 s
+K-Means:    0.0065012 s
+  approx_mae_vs_knn=0.0000
+
+[dist/notiled_spatialhash] skewed  n=10000 k=32 T=20 dist=skewed R=10000
+Dataset written to input.txt  [n=10000, k=32, T=20, dist=skewed, seed=42, R=10000]
+N=10000  k=32  T=20
+KNN:        2.68378 s
+Approx KNN: 0.041357 s
+K-Means:    0.00850511 s
+  approx_mae_vs_knn=0.1556
+
+========================================
+ GROUP E: Correctness  (n=1000, vs sequential)
+========================================
+[correctness/notiled_spatialhash] k1_uniform  n=1000 k=1 T=20 dist=uniform R=10000
+Dataset written to input.txt  [n=1000, k=1, T=20, dist=uniform, seed=42, R=10000]
+N=1000  k=1  T=20
+KNN:        2.6663 s
+Approx KNN: 0.01419 s
+K-Means:    0.00412512 s
+  [seq] knn_mae=0.0000  kmeans_mae=0.0000
+  approx_mae_vs_knn=0.0000
+
+[correctness/notiled_spatialhash] k10_uniform  n=1000 k=10 T=20 dist=uniform R=10000
+Dataset written to input.txt  [n=1000, k=10, T=20, dist=uniform, seed=42, R=10000]
+N=1000  k=10  T=20
+KNN:        2.66824 s
+Approx KNN: 0.00780702 s
+K-Means:    0.00356793 s
+  [seq] knn_mae=0.0000  kmeans_mae=1.0420
+  approx_mae_vs_knn=0.7770
+
+[correctness/notiled_spatialhash] k32_uniform  n=1000 k=32 T=20 dist=uniform R=10000
+Dataset written to input.txt  [n=1000, k=32, T=20, dist=uniform, seed=42, R=10000]
+N=1000  k=32  T=20
+KNN:        2.65638 s
+Approx KNN: 0.00978613 s
+K-Means:    0.00254679 s
+  [seq] knn_mae=0.0000  kmeans_mae=0.0000
+  approx_mae_vs_knn=0.2490
+
+[correctness/notiled_spatialhash] k64_uniform  n=1000 k=64 T=20 dist=uniform R=10000
+Dataset written to input.txt  [n=1000, k=64, T=20, dist=uniform, seed=42, R=10000]
+N=1000  k=64  T=20
+KNN:        2.65645 s
+Approx KNN: 0.0119739 s
+K-Means:    0.00368905 s
+  [seq] knn_mae=0.0000  kmeans_mae=1.9870
+  approx_mae_vs_knn=0.2660
+
+[correctness/notiled_spatialhash] k128_uniform  n=1000 k=128 T=20 dist=uniform R=10000
+Dataset written to input.txt  [n=1000, k=128, T=20, dist=uniform, seed=42, R=10000]
+N=1000  k=128  T=20
+KNN:        5.1597 s
+Approx KNN: 0.0144651 s
+K-Means:    0.00398183 s
+  [seq] knn_mae=0.0000  kmeans_mae=0.0000
+  approx_mae_vs_knn=0.3110
+
+[correctness/notiled_spatialhash] k32_dense  n=1000 k=32 T=20 dist=dense R=10000
+Dataset written to input.txt  [n=1000, k=32, T=20, dist=dense, seed=42, R=10000]
+N=1000  k=32  T=20
+KNN:        2.67026 s
+Approx KNN: 0.00523305 s
+K-Means:    0.00342083 s
+  [seq] knn_mae=0.0000  kmeans_mae=1.6600
+  approx_mae_vs_knn=0.3200
+
+[correctness/notiled_spatialhash] k32_clustered  n=1000 k=32 T=20 dist=clustered R=10000
+Dataset written to input.txt  [n=1000, k=32, T=20, dist=clustered, seed=42, R=10000]
+N=1000  k=32  T=20
+KNN:        2.66371 s
+Approx KNN: 0.00490594 s
+K-Means:    0.00295806 s
+  [seq] knn_mae=0.0000  kmeans_mae=0.0000
+  approx_mae_vs_knn=0.0000
+
+[correctness/notiled_spatialhash] k32_skewed  n=1000 k=32 T=20 dist=skewed R=10000
+Dataset written to input.txt  [n=1000, k=32, T=20, dist=skewed, seed=42, R=10000]
+N=1000  k=32  T=20
+KNN:        2.67763 s
+Approx KNN: 0.015985 s
+K-Means:    0.00435305 s
+  [seq] knn_mae=0.0000  kmeans_mae=5.0810
+  approx_mae_vs_knn=0.1110
+
+========================================
+ GROUP F: Large scale
+========================================
+[large/notiled_spatialhash] n100k_k128_T50  n=100000 k=128 T=50 dist=uniform R=10000
+Dataset written to input.txt  [n=100000, k=128, T=50, dist=uniform, seed=42, R=10000]
+N=100000  k=128  T=50
+KNN:        2.89335 s
+Approx KNN: 0.072844 s
+K-Means:    0.0293891 s
+  approx_mae_vs_knn=0.0555
+
+[large/notiled_spatialhash] n100k_k32_uniform  n=100000 k=32 T=20 dist=uniform R=10000
+Dataset written to input.txt  [n=100000, k=32, T=20, dist=uniform, seed=42, R=10000]
+N=100000  k=32  T=20
+KNN:        2.76064 s
+Approx KNN: 0.049974 s
+K-Means:    0.0297651 s
+  approx_mae_vs_knn=0.0566
+
+[large/notiled_spatialhash] n100k_k32_dense  n=100000 k=32 T=20 dist=dense R=10000
+Dataset written to input.txt  [n=100000, k=32, T=20, dist=dense, seed=42, R=10000]
+N=100000  k=32  T=20
+KNN:        2.7709 s
+Approx KNN: 0.0451081 s
+K-Means:    0.028476 s
+  approx_mae_vs_knn=0.0621
+
+[large/notiled_spatialhash] n100k_k32_clustered  n=100000 k=32 T=20 dist=clustered R=10000
+Dataset written to input.txt  [n=100000, k=32, T=20, dist=clustered, seed=42, R=10000]
+N=100000  k=32  T=20
+KNN:        2.7201 s
+Approx KNN: 0.0544858 s
+K-Means:    0.0281758 s
+  approx_mae_vs_knn=0.0006
+
+========================================
+ GROUP G: Vary coordinate range  (n=10000, k=32, T=20, uniform)
+========================================
+[vary_range/notiled_spatialhash] R100  n=10000 k=32 T=20 dist=uniform R=100
+Dataset written to input.txt  [n=10000, k=32, T=20, dist=uniform, seed=42, R=100]
+N=10000  k=32  T=20
+KNN:        2.65502 s
+Approx KNN: 0.0161071 s
+K-Means:    0.00692582 s
+  approx_mae_vs_knn=0.2706
+
+[vary_range/notiled_spatialhash] R1000  n=10000 k=32 T=20 dist=uniform R=1000
+Dataset written to input.txt  [n=10000, k=32, T=20, dist=uniform, seed=42, R=1000]
+N=10000  k=32  T=20
+KNN:        2.63528 s
+Approx KNN: 0.017612 s
+K-Means:    0.00598311 s
+  approx_mae_vs_knn=0.1686
+
+[vary_range/notiled_spatialhash] R10000  n=10000 k=32 T=20 dist=uniform R=10000
+Dataset written to input.txt  [n=10000, k=32, T=20, dist=uniform, seed=42, R=10000]
+N=10000  k=32  T=20
+KNN:        2.79819 s
+Approx KNN: 0.0109761 s
+K-Means:    0.00665903 s
+  approx_mae_vs_knn=0.1774
+
+[vary_range/notiled_spatialhash] R100000  n=10000 k=32 T=20 dist=uniform R=100000
+Dataset written to input.txt  [n=10000, k=32, T=20, dist=uniform, seed=42, R=100000]
+N=10000  k=32  T=20
+KNN:        2.77327 s
+Approx KNN: 0.014571 s
+K-Means:    0.00613689 s
+  approx_mae_vs_knn=0.1713
+
+[vary_range/notiled_spatialhash] R1000000  n=10000 k=32 T=20 dist=uniform R=1000000
+Dataset written to input.txt  [n=10000, k=32, T=20, dist=uniform, seed=42, R=1000000]
+N=10000  k=32  T=20
+KNN:        5.06414 s
+Approx KNN: 0.0179448 s
+K-Means:    0.00693178 s
+  approx_mae_vs_knn=0.1583
+
+========================================
+ RESULTS SUMMARY
+========================================
+
+====================================================================
+  vary_n
+====================================================================
+  label                        variant       range     knn_s   approx_s   kmeans_s  approx_mae
+  ---------------------------- --------- --------- --------- ---------- ---------- -----------
+  n1000                        tiled         10000   3.03992  0.0210619 0.00952506      0.2490
+  n5000                        tiled         10000   2.63212  0.0105741 0.00639796      0.2224
+  n10000                       tiled         10000   2.64775  0.0227361 0.00696301      0.1774
+  n25000                       tiled         10000   2.69495   0.021754   0.010494      0.1021
+  n50000                       tiled         10000   2.69114   0.033983  0.0171449      0.0734
+  n100000                      tiled         10000   2.73126  0.0480559  0.0296419      0.0566
+  n1000                        notiled       10000   8.00351  0.0117931 0.00753403      0.2490
+  n5000                        notiled       10000   6.25499  0.0191011   0.005059      0.2224
+  n10000                       notiled       10000   5.13615   0.024292  0.0072968      0.1774
+  n25000                       notiled       10000    2.6538  0.0270259  0.0101869      0.1021
+  n50000                       notiled       10000   2.67351  0.0329828  0.0163381      0.0734
+  n100000                      notiled       10000   4.87395   0.050704  0.0309649      0.0566
+  n1000                        spatialhash     10000   2.65479  0.0047369 0.00307918      0.2490
+  n5000                        spatialhash     10000   2.62512 0.00862408 0.00501394      0.2224
+  n10000                       spatialhash     10000   2.65938  0.0195079 0.00712299      0.1774
+  n25000                       spatialhash     10000   2.69329    0.01407  0.0100591      0.1021
+  n50000                       spatialhash     10000   2.70894  0.0324469  0.0169871      0.0734
+  n100000                      spatialhash     10000   2.74388   0.045784  0.0297599      0.0566
+  n1000                        notiled_spatialhash     10000   2.67918   0.017612 0.00319695      0.2490
+  n5000                        notiled_spatialhash     10000   2.62254 0.00830984 0.00518203      0.2224
+  n10000                       notiled_spatialhash     10000   2.65352  0.0130742  0.0060668      0.1774
+  n25000                       notiled_spatialhash     10000   5.51584  0.0189948 0.00998116      0.1021
+  n50000                       notiled_spatialhash     10000   2.71326  0.0318801  0.0167909      0.0734
+  n100000                      notiled_spatialhash     10000   2.73494  0.0396559   0.030148      0.0566
+
+====================================================================
+  vary_k
+====================================================================
+  label                        variant       range     knn_s   approx_s   kmeans_s  approx_mae
+  ---------------------------- --------- --------- --------- ---------- ---------- -----------
+  k1                           tiled         10000   2.63259  0.0163081 0.00576401      0.1020
+  k4                           tiled         10000   2.64939  0.0157731   0.011548      0.6178
+  k8                           tiled         10000   5.45333  0.0117991 0.00633597      2.1660
+  k16                          tiled         10000   5.18631    0.02052 0.00756598      0.2478
+  k32                          tiled         10000   2.87106  0.0178962 0.00616598      0.1774
+  k64                          tiled         10000   2.68682   0.014262 0.00696397      0.1579
+  k128                         tiled         10000   2.72076  0.0208809 0.00680995      0.1490
+  k1                           notiled       10000   2.71136     0.0218 0.00592113      0.1020
+  k4                           notiled       10000   2.73711   0.017024 0.00623393      0.6178
+  k8                           notiled       10000   2.71199   0.017046 0.00675988      2.1660
+  k16                          notiled       10000   2.70733    0.01736 0.00807309      0.2478
+  k32                          notiled       10000   2.74797  0.0210311 0.00704885      0.1774
+  k64                          notiled       10000   3.35945  0.0159731  0.0064559      0.1579
+  k128                         notiled       10000    2.6727  0.0161221 0.00611782      0.1490
+  k1                           spatialhash     10000   2.67687 0.00767684 0.00577593      0.1020
+  k4                           spatialhash     10000   2.67433  0.0172162 0.00703979      0.6178
+  k8                           spatialhash     10000   5.46534   0.012253 0.00741601      2.1660
+  k16                          spatialhash     10000   2.65811   0.019639   0.006953      0.2478
+  k32                          spatialhash     10000   2.64357  0.0137661 0.00642204      0.1774
+  k64                          spatialhash     10000   2.64322  0.0219769 0.00677013      0.1583
+  k128                         spatialhash     10000   2.69251  0.0188439 0.00629783      0.1490
+  k1                           notiled_spatialhash     10000   2.65393  0.0157442 0.00568819      0.1020
+  k4                           notiled_spatialhash     10000   5.48587   0.010989 0.00623918      0.6178
+  k8                           notiled_spatialhash     10000    2.6668    0.01724 0.00588393      2.1660
+  k16                          notiled_spatialhash     10000   2.64581  0.0158491 0.00588202      0.2478
+  k32                          notiled_spatialhash     10000   2.67175  0.0143142 0.00677109      0.1774
+  k64                          notiled_spatialhash     10000   2.66219  0.0219212   0.007236      0.1583
+  k128                         notiled_spatialhash     10000   2.65954   0.020612 0.00659394      0.1490
+
+====================================================================
+  vary_T
+====================================================================
+  label                        variant       range     knn_s   approx_s   kmeans_s  approx_mae
+  ---------------------------- --------- --------- --------- ---------- ---------- -----------
+  T1                           tiled         10000   2.66386   0.012243 0.00513101      0.1774
+  T5                           tiled         10000    2.6953   0.023098 0.00550199      0.1774
+  T10                          tiled         10000   2.67613  0.0162029 0.00901914      0.1774
+  T20                          tiled         10000   2.66507  0.0109231 0.00591397      0.1774
+  T50                          tiled         10000    2.6617  0.0216939 0.00778198      0.1774
+  T1                           notiled       10000   2.64944     0.0163 0.00548887      0.1774
+  T5                           notiled       10000   2.66193  0.0163071 0.00547504      0.1774
+  T10                          notiled       10000   5.48354  0.0142808   0.007128      0.1774
+  T20                          notiled       10000   5.14012  0.0117459 0.00710201      0.1774
+  T50                          notiled       10000   4.71706  0.0121539  0.0094471      0.1774
+  T1                           spatialhash     10000   2.64943   0.017478 0.00453305      0.1774
+  T5                           spatialhash     10000   2.64946   0.014168 0.00545406      0.1774
+  T10                          spatialhash     10000   2.64067   0.014214 0.00670695      0.1774
+  T20                          spatialhash     10000   2.65849  0.0153348 0.00726795      0.1774
+  T50                          spatialhash     10000   2.64351  0.0173149 0.00874496      0.1774
+  T1                           notiled_spatialhash     10000    2.6654  0.0139549 0.00488305      0.1774
+  T5                           notiled_spatialhash     10000    5.5188  0.0131838 0.00579095      0.1774
+  T10                          notiled_spatialhash     10000   2.65241  0.0150452 0.00556421      0.1774
+  T20                          notiled_spatialhash     10000   2.66124  0.0197608 0.00648594      0.1774
+  T50                          notiled_spatialhash     10000   2.62374  0.0166268 0.00792599      0.1774
+
+====================================================================
+  dist
+====================================================================
+  label                        variant       range     knn_s   approx_s   kmeans_s  approx_mae
+  ---------------------------- --------- --------- --------- ---------- ---------- -----------
+  uniform                      tiled         10000   2.63176  0.0152931 0.00538206      0.1774
+  dense                        tiled         10000   5.33891  0.0169649 0.00646996      0.1694
+  clustered                    tiled         10000   2.63615  0.0222189 0.00593305      0.0000
+  skewed                       tiled         10000   2.63464   0.022212 0.00677204      0.1548
+  uniform                      notiled       10000   2.90816  0.0221379 0.00600314      0.1774
+  dense                        notiled       10000   2.68907   0.012924 0.00657392      0.1694
+  clustered                    notiled       10000   2.66845  0.0180759   0.007025      0.0000
+  skewed                       notiled       10000   2.63942  0.0228989 0.00657701      0.1548
+  uniform                      spatialhash     10000   5.52228  0.0129008  0.0059371      0.1774
+  dense                        spatialhash     10000   2.65862  0.0135748 0.00602007      0.1686
+  clustered                    spatialhash     10000    5.4888  0.0157859 0.00712609      0.0000
+  skewed                       spatialhash     10000   2.64898  0.0394499 0.00622082      0.1556
+  uniform                      notiled_spatialhash     10000    2.6828  0.0152781 0.00822091      0.1774
+  dense                        notiled_spatialhash     10000   2.67913  0.0173759 0.00585008      0.1686
+  clustered                    notiled_spatialhash     10000   2.67734  0.0206349  0.0065012      0.0000
+  skewed                       notiled_spatialhash     10000   2.68378   0.041357 0.00850511      0.1556
+
+====================================================================
+  correctness
+====================================================================
+  label                        variant       range     knn_s   approx_s   kmeans_s  approx_mae
+  ---------------------------- --------- --------- --------- ---------- ---------- -----------
+  k1_uniform                   tiled         10000   2.63921  0.0140409 0.00271177      0.0000
+  k10_uniform                  tiled         10000   2.64861  0.0177069 0.00360394      0.7770
+  k32_uniform                  tiled         10000   2.64642   0.017544 0.00309896      0.2490
+  k64_uniform                  tiled         10000   2.63993   0.014818 0.00318885      0.2660
+  k128_uniform                 tiled         10000   2.65057   0.022332 0.00476289      0.3110
+  k32_dense                    tiled         10000   2.64321   0.015063 0.00277781      0.3280
+  k32_clustered                tiled         10000    4.8281   0.036056 0.00636697      0.0000
+  k32_skewed                   tiled         10000   2.66958  0.0237541 0.00517511      0.1110
+  k1_uniform                   notiled       10000   2.63726  0.0122368   0.002918      0.0000
+  k10_uniform                  notiled       10000   2.65376 0.00803113 0.00450706      0.7770
+  k32_uniform                  notiled       10000   2.65308   0.010505 0.00416088      0.2490
+  k64_uniform                  notiled       10000   5.48172  0.0102432 0.00375795      0.2660
+  k128_uniform                 notiled       10000   2.66254   0.010489 0.00363994      0.3110
+  k32_dense                    notiled       10000   4.58226 0.00873208 0.00395679      0.3280
+  k32_clustered                notiled       10000    2.6427  0.0175722 0.00286794      0.0000
+  k32_skewed                   notiled       10000   2.66567  0.0147381 0.00431705      0.1110
+  k1_uniform                   spatialhash     10000   2.65255 0.00494695 0.00393105      0.0000
+  k10_uniform                  spatialhash     10000   2.66341   0.013541 0.00394011      0.7770
+  k32_uniform                  spatialhash     10000    2.6378  0.0176368 0.00267911      0.2490
+  k64_uniform                  spatialhash     10000   2.63713   0.015619 0.00354505      0.2660
+  k128_uniform                 spatialhash     10000   2.62724   0.015898 0.00323415      0.3110
+  k32_dense                    spatialhash     10000    2.6432   0.012769 0.00525498      0.3200
+  k32_clustered                spatialhash     10000   2.68012  0.0103419  0.0042541      0.0000
+  k32_skewed                   spatialhash     10000   5.53702  0.0117249 0.00427103      0.1110
+  k1_uniform                   notiled_spatialhash     10000    2.6663    0.01419 0.00412512      0.0000
+  k10_uniform                  notiled_spatialhash     10000   2.66824 0.00780702 0.00356793      0.7770
+  k32_uniform                  notiled_spatialhash     10000   2.65638 0.00978613 0.00254679      0.2490
+  k64_uniform                  notiled_spatialhash     10000   2.65645  0.0119739 0.00368905      0.2660
+  k128_uniform                 notiled_spatialhash     10000    5.1597  0.0144651 0.00398183      0.3110
+  k32_dense                    notiled_spatialhash     10000   2.67026 0.00523305 0.00342083      0.3200
+  k32_clustered                notiled_spatialhash     10000   2.66371 0.00490594 0.00295806      0.0000
+  k32_skewed                   notiled_spatialhash     10000   2.67763   0.015985 0.00435305      0.1110
+
+====================================================================
+  large
+====================================================================
+  label                        variant       range     knn_s   approx_s   kmeans_s  approx_mae
+  ---------------------------- --------- --------- --------- ---------- ---------- -----------
+  n100k_k128_T50               tiled         10000   2.94535   0.066416  0.0317481      0.0555
+  n100k_k32_uniform            tiled         10000    2.7521   0.038692   0.028507      0.0566
+  n100k_k32_dense              tiled         10000   2.73749   0.042366  0.0315371      0.0622
+  n100k_k32_clustered          tiled         10000   2.78488   0.048794   0.029125      0.0007
+  n100k_k128_T50               notiled       10000   2.90847  0.0624311  0.0292211      0.0555
+  n100k_k32_uniform            notiled       10000   2.76769  0.0416269  0.0299351      0.0566
+  n100k_k32_dense              notiled       10000   2.73503  0.0481119  0.0292771      0.0622
+  n100k_k32_clustered          notiled       10000   2.76407   0.053715  0.0299459      0.0007
+  n100k_k128_T50               spatialhash     10000    2.9304  0.0814312  0.0301151      0.0555
+  n100k_k32_uniform            spatialhash     10000   2.75014   0.044214  0.0286169      0.0566
+  n100k_k32_dense              spatialhash     10000   2.75506   0.044625   0.027113      0.0621
+  n100k_k32_clustered          spatialhash     10000    2.7561   0.058599   0.030293      0.0006
+  n100k_k128_T50               notiled_spatialhash     10000   2.89335   0.072844  0.0293891      0.0555
+  n100k_k32_uniform            notiled_spatialhash     10000   2.76064   0.049974  0.0297651      0.0566
+  n100k_k32_dense              notiled_spatialhash     10000    2.7709  0.0451081   0.028476      0.0621
+  n100k_k32_clustered          notiled_spatialhash     10000    2.7201  0.0544858  0.0281758      0.0006
+
+====================================================================
+  vary_range
+====================================================================
+  label                        variant       range     knn_s   approx_s   kmeans_s  approx_mae
+  ---------------------------- --------- --------- --------- ---------- ---------- -----------
+  R100                         tiled           100   2.64892   0.021652 0.00729704      0.2679
+  R1000                        tiled          1000   2.64863  0.0347979 0.00632715      0.1694
+  R10000                       tiled         10000    2.6432  0.0126479   0.006603      0.1774
+  R100000                      tiled        100000   2.66974  0.0205739 0.00687718      0.1713
+  R1000000                     tiled       1000000   2.64838   0.012325  0.0060029      0.1583
+  R100                         notiled         100   2.67587   0.021987 0.00666809      0.2679
+  R1000                        notiled        1000   5.20354  0.0118959 0.00691009      0.1694
+  R10000                       notiled       10000   2.63172  0.0128438   0.006464      0.1774
+  R100000                      notiled      100000    2.6417  0.0166471 0.00715494      0.1713
+  R1000000                     notiled     1000000   2.67212  0.0163031 0.00639296      0.1583
+  R100                         spatialhash       100   2.63325  0.0191531 0.00631213      0.2706
+  R1000                        spatialhash      1000   2.63504  0.0133722 0.00600791      0.1686
+  R10000                       spatialhash     10000   2.67649   0.014997 0.00695896      0.1774
+  R100000                      spatialhash    100000     2.627  0.0172851 0.00641799      0.1713
+  R1000000                     spatialhash   1000000   2.64809   0.018369 0.00800014      0.1583
+  R100                         notiled_spatialhash       100   2.65502  0.0161071 0.00692582      0.2706
+  R1000                        notiled_spatialhash      1000   2.63528   0.017612 0.00598311      0.1686
+  R10000                       notiled_spatialhash     10000   2.79819  0.0109761 0.00665903      0.1774
+  R100000                      notiled_spatialhash    100000   2.77327   0.014571 0.00613689      0.1713
+  R1000000                     notiled_spatialhash   1000000   5.06414  0.0179448 0.00693178      0.1583
+
+Full data: results.csv
+========================================
+ DONE
+========================================
