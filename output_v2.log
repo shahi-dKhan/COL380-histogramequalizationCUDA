@@ -1,0 +1,623 @@
+========================================
+ BUILD
+========================================
+rm -f histogram_eq knn.txt approx_knn.txt kmeans.txt
+nvcc solution.cu -O3 -arch=sm_35 -Xcompiler -fopenmp -o histogram_eq
+Thu Mar 26 13:46:44 2026       
++-----------------------------------------------------------------------------+
+| NVIDIA-SMI 470.82.01    Driver Version: 470.82.01    CUDA Version: 11.4     |
+|-------------------------------+----------------------+----------------------+
+| GPU  Name        Persistence-M| Bus-Id        Disp.A | Volatile Uncorr. ECC |
+| Fan  Temp  Perf  Pwr:Usage/Cap|         Memory-Usage | GPU-Util  Compute M. |
+|                               |                      |               MIG M. |
+|===============================+======================+======================|
+|   0  Tesla K40m          Off  | 00000000:84:00.0 Off |                    0 |
+| N/A   23C    P8    19W / 235W |      6MiB / 11441MiB |      0%      Default |
+|                               |                      |                  N/A |
++-------------------------------+----------------------+----------------------+
+                                                                               
++-----------------------------------------------------------------------------+
+| Processes:                                                                  |
+|  GPU   GI   CI        PID   Type   Process name                  GPU Memory |
+|        ID   ID                                                   Usage      |
+|=============================================================================|
+|    0   N/A  N/A      3436      G   /usr/bin/X                          5MiB |
++-----------------------------------------------------------------------------+
+
+========================================
+ TEST: edge_k1  (n=1000, k=1, T=10)
+========================================
+Dataset written to input.txt
+--- v1 ---
+N=1000  k=1  T=10
+KNN:        0.0872951 s
+Approx KNN: 0.0122881 s
+K-Means:    0.012392 s
+--- v2 ---
+v2 RUNTIME ERROR on edge_k1
+
+========================================
+ TEST: small  (n=1000, k=10, T=20)
+========================================
+Dataset written to input.txt
+--- v1 ---
+N=1000  k=10  T=20
+KNN:        0.077966 s
+Approx KNN: 0.00869608 s
+K-Means:    0.00381804 s
+--- v2 ---
+v2 RUNTIME ERROR on small
+
+========================================
+ TEST: medium  (n=10000, k=32, T=20)
+========================================
+Dataset written to input.txt
+--- v1 ---
+N=10000  k=32  T=20
+KNN:        0.111323 s
+Approx KNN: 0.011915 s
+K-Means:    0.00632 s
+--- v2 ---
+v2 RUNTIME ERROR on medium
+
+========================================
+ TEST: large  (n=100000, k=32, T=20)
+========================================
+Dataset written to input.txt
+--- v1 ---
+N=100000  k=32  T=20
+KNN:        0.97849 s
+Approx KNN: 0.16601 s
+K-Means:    0.040103 s
+--- v2 ---
+v2 RUNTIME ERROR on large
+
+========================================
+ TEST: max  (n=100000, k=128, T=50)
+========================================
+Dataset written to input.txt
+--- v1 ---
+N=100000  k=128  T=50
+KNN:        4.11747 s
+Approx KNN: 0.631085 s
+K-Means:    0.0651481 s
+--- v2 ---
+v2 RUNTIME ERROR on max
+
+========================================
+ ALL TESTS DONE
+========================================
+========================================
+ BUILD
+========================================
+rm -f histogram_eq knn.txt approx_knn.txt kmeans.txt
+nvcc solution.cu -O3 -arch=sm_35 -Xcompiler -fopenmp -o histogram_eq
+Thu Mar 26 13:58:02 2026       
++-----------------------------------------------------------------------------+
+| NVIDIA-SMI 525.105.17   Driver Version: 525.105.17   CUDA Version: 12.0     |
+|-------------------------------+----------------------+----------------------+
+| GPU  Name        Persistence-M| Bus-Id        Disp.A | Volatile Uncorr. ECC |
+| Fan  Temp  Perf  Pwr:Usage/Cap|         Memory-Usage | GPU-Util  Compute M. |
+|                               |                      |               MIG M. |
+|===============================+======================+======================|
+|   0  Tesla V100-PCIE...  Off  | 00000000:86:00.0 Off |                    0 |
+| N/A   33C    P0    37W / 250W |      0MiB / 32768MiB |      1%      Default |
+|                               |                      |                  N/A |
++-------------------------------+----------------------+----------------------+
+                                                                               
++-----------------------------------------------------------------------------+
+| Processes:                                                                  |
+|  GPU   GI   CI        PID   Type   Process name                  GPU Memory |
+|        ID   ID                                                   Usage      |
+|=============================================================================|
+|  No running processes found                                                 |
++-----------------------------------------------------------------------------+
+
+========================================
+ TEST: edge_k1  (n=1000, k=1, T=10)
+========================================
+Dataset written to input.txt
+--- v1 ---
+N=1000  k=1  T=10
+KNN:        1.62409 s
+Approx KNN: 0.00253296 s
+K-Means:    0.00146985 s
+--- v2 ---
+v2 RUNTIME ERROR on edge_k1
+
+========================================
+ TEST: small  (n=1000, k=10, T=20)
+========================================
+Dataset written to input.txt
+--- v1 ---
+N=1000  k=10  T=20
+KNN:        1.296 s
+Approx KNN: 0.00240517 s
+K-Means:    0.002563 s
+--- v2 ---
+v2 RUNTIME ERROR on small
+
+========================================
+ TEST: medium  (n=10000, k=32, T=20)
+========================================
+Dataset written to input.txt
+--- v1 ---
+N=10000  k=32  T=20
+KNN:        1.31 s
+Approx KNN: 0.00725198 s
+K-Means:    0.00648093 s
+--- v2 ---
+v2 RUNTIME ERROR on medium
+
+========================================
+ TEST: large  (n=100000, k=32, T=20)
+========================================
+Dataset written to input.txt
+--- v1 ---
+N=100000  k=32  T=20
+KNN:        1.49957 s
+Approx KNN: 0.0603151 s
+K-Means:    0.0462379 s
+--- v2 ---
+v2 RUNTIME ERROR on large
+
+========================================
+ TEST: max  (n=100000, k=128, T=50)
+========================================
+Dataset written to input.txt
+--- v1 ---
+N=100000  k=128  T=50
+KNN:        2.00228 s
+Approx KNN: 0.1406 s
+K-Means:    0.055136 s
+--- v2 ---
+v2 RUNTIME ERROR on max
+
+========================================
+ ALL TESTS DONE
+========================================
+========================================
+ BUILD
+========================================
+rm -f histogram_eq knn.txt approx_knn.txt kmeans.txt
+nvcc solution.cu -O3 -arch=sm_35 -Xcompiler -fopenmp -o histogram_eq
+Thu Mar 26 14:05:00 2026       
++-----------------------------------------------------------------------------+
+| NVIDIA-SMI 525.105.17   Driver Version: 525.105.17   CUDA Version: 12.0     |
+|-------------------------------+----------------------+----------------------+
+| GPU  Name        Persistence-M| Bus-Id        Disp.A | Volatile Uncorr. ECC |
+| Fan  Temp  Perf  Pwr:Usage/Cap|         Memory-Usage | GPU-Util  Compute M. |
+|                               |                      |               MIG M. |
+|===============================+======================+======================|
+|   0  Tesla V100-PCIE...  Off  | 00000000:86:00.0 Off |                    0 |
+| N/A   51C    P0    44W / 250W |      0MiB / 32768MiB |      1%      Default |
+|                               |                      |                  N/A |
++-------------------------------+----------------------+----------------------+
+                                                                               
++-----------------------------------------------------------------------------+
+| Processes:                                                                  |
+|  GPU   GI   CI        PID   Type   Process name                  GPU Memory |
+|        ID   ID                                                   Usage      |
+|=============================================================================|
+|  No running processes found                                                 |
++-----------------------------------------------------------------------------+
+
+========================================
+ TEST: edge_k1  (n=1000, k=1, T=10)
+========================================
+Dataset written to input.txt
+--- v1 ---
+N=1000  k=1  T=10
+KNN:        1.03884 s
+Approx KNN: 0.00286317 s
+K-Means:    0.00116181 s
+--- v2 ---
+v2 RUNTIME ERROR on edge_k1
+
+========================================
+ TEST: small  (n=1000, k=10, T=20)
+========================================
+Dataset written to input.txt
+--- v1 ---
+N=1000  k=10  T=20
+KNN:        0.975915 s
+Approx KNN: 0.00334311 s
+K-Means:    0.00227094 s
+--- v2 ---
+v2 RUNTIME ERROR on small
+
+========================================
+ TEST: medium  (n=10000, k=32, T=20)
+========================================
+Dataset written to input.txt
+--- v1 ---
+N=10000  k=32  T=20
+KNN:        1.00072 s
+Approx KNN: 0.00729895 s
+K-Means:    0.00523186 s
+--- v2 ---
+v2 RUNTIME ERROR on medium
+
+========================================
+ TEST: large  (n=100000, k=32, T=20)
+========================================
+Dataset written to input.txt
+--- v1 ---
+N=100000  k=32  T=20
+KNN:        1.1521 s
+Approx KNN: 0.0475612 s
+K-Means:    0.033191 s
+--- v2 ---
+v2 RUNTIME ERROR on large
+
+========================================
+ TEST: max  (n=100000, k=128, T=50)
+========================================
+Dataset written to input.txt
+--- v1 ---
+N=100000  k=128  T=50
+KNN:        1.91311 s
+Approx KNN: 0.128212 s
+K-Means:    0.042021 s
+--- v2 ---
+v2 RUNTIME ERROR on max
+
+========================================
+ ALL TESTS DONE
+========================================
+========================================
+ BUILD
+========================================
+rm -f histogram_eq histogram_eq_v2 knn.txt approx_knn.txt kmeans.txt knn_v2.txt approx_knn_v2.txt kmeans_v2.txt
+nvcc solution.cu -O3 -arch=sm_35 -Xcompiler -fopenmp -o histogram_eq
+nvcc solution_v2.cu -O3 -arch=sm_35 -Xcompiler -fopenmp -o histogram_eq_v2
+Thu Mar 26 14:17:03 2026       
++-----------------------------------------------------------------------------+
+| NVIDIA-SMI 525.105.17   Driver Version: 525.105.17   CUDA Version: 12.0     |
+|-------------------------------+----------------------+----------------------+
+| GPU  Name        Persistence-M| Bus-Id        Disp.A | Volatile Uncorr. ECC |
+| Fan  Temp  Perf  Pwr:Usage/Cap|         Memory-Usage | GPU-Util  Compute M. |
+|                               |                      |               MIG M. |
+|===============================+======================+======================|
+|   0  Tesla V100-PCIE...  Off  | 00000000:86:00.0 Off |                    0 |
+| N/A   33C    P0    36W / 250W |      0MiB / 32768MiB |      1%      Default |
+|                               |                      |                  N/A |
++-------------------------------+----------------------+----------------------+
+                                                                               
++-----------------------------------------------------------------------------+
+| Processes:                                                                  |
+|  GPU   GI   CI        PID   Type   Process name                  GPU Memory |
+|        ID   ID                                                   Usage      |
+|=============================================================================|
+|  No running processes found                                                 |
++-----------------------------------------------------------------------------+
+
+========================================
+ TEST: edge_k1  (n=1000, k=1, T=10)
+========================================
+Dataset written to input.txt
+--- v1 ---
+N=1000  k=1  T=10
+KNN:        1.15917 s
+Approx KNN: 0.00196195 s
+K-Means:    0.00142312 s
+--- v2 ---
+N=1000  k=1  T=10
+KNN:        1.40599 s
+Approx KNN: 0.00197101 s
+K-Means:    0.00141597 s
+  [v1 knn] format OK
+  [v1 approx_knn] format OK
+  [v1 kmeans] format OK
+  [v2 knn] format OK
+  [v2 approx_knn] format OK
+  [v2 kmeans] format OK
+  [knn      v1 vs v2] MAE = 0.0000  (expect 0)
+  [approx   v1 vs v2] MAE = 0.0000  (approx may differ)
+  [kmeans   v1 vs v2] MAE = 0.0000  (expect 0)
+  [v1 approx vs exact] MAE = 0.0000
+  [v2 approx vs exact] MAE = 0.0000
+  Running sequential reference...
+  Running sequential KNN    (n=1000, k=1)...
+  Running sequential K-Means (n=1000, k=1, T=10)...
+  [knn]    MAE vs sequential = 0.0000
+  [approx] MAE vs sequential = 0.0000
+  [kmeans] MAE vs sequential = 0.0000
+
+========================================
+ TEST: small  (n=1000, k=10, T=20)
+========================================
+Dataset written to input.txt
+--- v1 ---
+N=1000  k=10  T=20
+KNN:        1.29701 s
+Approx KNN: 0.00246501 s
+K-Means:    0.00268292 s
+--- v2 ---
+N=1000  k=10  T=20
+KNN:        1.16434 s
+Approx KNN: 0.00254416 s
+K-Means:    0.00252891 s
+  [v1 knn] format OK
+  [v1 approx_knn] format OK
+  [v1 kmeans] format OK
+  [v2 knn] format OK
+  [v2 approx_knn] format OK
+  [v2 kmeans] format OK
+  [knn      v1 vs v2] MAE = 0.0000  (expect 0)
+  [approx   v1 vs v2] MAE = 1.4830  (approx may differ)
+  [kmeans   v1 vs v2] MAE = 0.0000  (expect 0)
+  [v1 approx vs exact] MAE = 0.0000
+  [v2 approx vs exact] MAE = 1.4830
+  Running sequential reference...
+  Running sequential KNN    (n=1000, k=10)...
+  Running sequential K-Means (n=1000, k=10, T=20)...
+  [knn]    MAE vs sequential = 0.0000
+  [approx] MAE vs sequential = 0.0000
+  [kmeans] MAE vs sequential = 0.0000
+
+========================================
+ TEST: medium  (n=10000, k=32, T=20)
+========================================
+Dataset written to input.txt
+--- v1 ---
+N=10000  k=32  T=20
+KNN:        1.29906 s
+Approx KNN: 0.007375 s
+K-Means:    0.00654483 s
+--- v2 ---
+N=10000  k=32  T=20
+KNN:        1.17539 s
+Approx KNN: 0.00734615 s
+K-Means:    0.00605178 s
+  [v1 knn] format OK
+  [v1 approx_knn] format OK
+  [v1 kmeans] format OK
+  [v2 knn] format OK
+  [v2 approx_knn] format OK
+  [v2 kmeans] format OK
+  [knn      v1 vs v2] MAE = 0.0000  (expect 0)
+  [approx   v1 vs v2] MAE = 0.1417  (approx may differ)
+  [kmeans   v1 vs v2] MAE = 0.3879  (expect 0)
+  [v1 approx vs exact] MAE = 0.0000
+  [v2 approx vs exact] MAE = 0.1417
+  Running sequential reference...
+  Running sequential KNN    (n=10000, k=32)...
+  Running sequential K-Means (n=10000, k=32, T=20)...
+  [knn]    MAE vs sequential = 0.0000
+  [approx] MAE vs sequential = 0.0000
+  [kmeans] MAE vs sequential = 0.3584
+
+========================================
+ TEST: large  (n=100000, k=32, T=20)
+========================================
+Dataset written to input.txt
+--- v1 ---
+N=100000  k=32  T=20
+KNN:        1.36628 s
+Approx KNN: 0.0603149 s
+K-Means:    0.0463412 s
+--- v2 ---
+N=100000  k=32  T=20
+KNN:        2.22758 s
+Approx KNN: 0.0608261 s
+K-Means:    0.0427492 s
+  [v1 knn] format OK
+  [v1 approx_knn] format OK
+  [v1 kmeans] format OK
+  [v2 knn] format OK
+  [v2 approx_knn] format OK
+  [v2 kmeans] format OK
+  [knn      v1 vs v2] MAE = 0.0000  (expect 0)
+  [approx   v1 vs v2] MAE = 0.0529  (approx may differ)
+  [kmeans   v1 vs v2] MAE = 0.1061  (expect 0)
+  [v1 approx vs exact] MAE = 0.0001
+  [v2 approx vs exact] MAE = 0.0529
+
+========================================
+ TEST: max  (n=100000, k=128, T=50)
+========================================
+Dataset written to input.txt
+--- v1 ---
+N=100000  k=128  T=50
+KNN:        2.15974 s
+Approx KNN: 0.140459 s
+K-Means:    0.055438 s
+--- v2 ---
+N=100000  k=128  T=50
+KNN:        2.10308 s
+Approx KNN: 0.140522 s
+K-Means:    0.0469811 s
+  [v1 knn] format OK
+  [v1 approx_knn] format OK
+  [v1 kmeans] format OK
+  [v2 knn] format OK
+  [v2 approx_knn] format OK
+  [v2 kmeans] format OK
+  [knn      v1 vs v2] MAE = 0.0000  (expect 0)
+  [approx   v1 vs v2] MAE = 0.0523  (approx may differ)
+  [kmeans   v1 vs v2] MAE = 0.4707  (expect 0)
+  [v1 approx vs exact] MAE = 0.0000
+  [v2 approx vs exact] MAE = 0.0524
+
+========================================
+ ALL TESTS DONE
+========================================
+========================================
+ BUILD
+========================================
+rm -f histogram_eq histogram_eq_v2 knn.txt approx_knn.txt kmeans.txt knn_v2.txt approx_knn_v2.txt kmeans_v2.txt
+nvcc solution.cu -O3 -arch=sm_35 -Xcompiler -fopenmp -o histogram_eq
+nvcc solution_v2.cu -O3 -arch=sm_35 -Xcompiler -fopenmp -o histogram_eq_v2
+Thu Mar 26 14:30:42 2026       
++-----------------------------------------------------------------------------+
+| NVIDIA-SMI 470.82.01    Driver Version: 470.82.01    CUDA Version: 11.4     |
+|-------------------------------+----------------------+----------------------+
+| GPU  Name        Persistence-M| Bus-Id        Disp.A | Volatile Uncorr. ECC |
+| Fan  Temp  Perf  Pwr:Usage/Cap|         Memory-Usage | GPU-Util  Compute M. |
+|                               |                      |               MIG M. |
+|===============================+======================+======================|
+|   0  Tesla K40m          Off  | 00000000:84:00.0 Off |                    0 |
+| N/A   27C    P0    64W / 235W |      0MiB / 11441MiB |     99%      Default |
+|                               |                      |                  N/A |
++-------------------------------+----------------------+----------------------+
+                                                                               
++-----------------------------------------------------------------------------+
+| Processes:                                                                  |
+|  GPU   GI   CI        PID   Type   Process name                  GPU Memory |
+|        ID   ID                                                   Usage      |
+|=============================================================================|
+|  No running processes found                                                 |
++-----------------------------------------------------------------------------+
+
+========================================
+ TEST: edge_k1  (n=1000, k=1, T=10)
+========================================
+Dataset written to input.txt
+--- v1 ---
+N=1000  k=1  T=10
+KNN:        2.26327 s
+Approx KNN: 0.00364423 s
+K-Means:    0.00168324 s
+--- v2 ---
+N=1000  k=1  T=10
+KNN:        2.25818 s
+Approx KNN: 0.0225909 s
+K-Means:    0.00159407 s
+  [v1 knn] format OK
+  [v1 approx_knn] format OK
+  [v1 kmeans] format OK
+  [v2 knn] format OK
+  [v2 approx_knn] format OK
+  [v2 kmeans] format OK
+  [knn      v1 vs v2] MAE = 0.0000  (expect 0)
+  [approx   v1 vs v2] MAE = 0.0000  (approx may differ)
+  [kmeans   v1 vs v2] MAE = 0.0000  (expect 0)
+  [v1 approx vs exact] MAE = 0.0000
+  [v2 approx vs exact] MAE = 0.0000
+  Running sequential reference...
+  Running sequential KNN    (n=1000, k=1)...
+  Running sequential K-Means (n=1000, k=1, T=10)...
+  [knn]    MAE vs sequential = 0.0000
+  [approx] MAE vs sequential = 0.0000
+  [kmeans] MAE vs sequential = 0.0000
+
+========================================
+ TEST: small  (n=1000, k=10, T=20)
+========================================
+Dataset written to input.txt
+--- v1 ---
+N=1000  k=10  T=20
+KNN:        2.26 s
+Approx KNN: 0.00442195 s
+K-Means:    0.00306797 s
+--- v2 ---
+N=1000  k=10  T=20
+KNN:        2.26132 s
+Approx KNN: 0.00413299 s
+K-Means:    0.00295496 s
+  [v1 knn] format OK
+  [v1 approx_knn] format OK
+  [v1 kmeans] format OK
+  [v2 knn] format OK
+  [v2 approx_knn] format OK
+  [v2 kmeans] format OK
+  [knn      v1 vs v2] MAE = 0.0000  (expect 0)
+  [approx   v1 vs v2] MAE = 0.8710  (approx may differ)
+  [kmeans   v1 vs v2] MAE = 0.0000  (expect 0)
+  [v1 approx vs exact] MAE = 0.0000
+  [v2 approx vs exact] MAE = 0.8710
+  Running sequential reference...
+  Running sequential KNN    (n=1000, k=10)...
+  Running sequential K-Means (n=1000, k=10, T=20)...
+  [knn]    MAE vs sequential = 0.0000
+  [approx] MAE vs sequential = 0.0000
+  [kmeans] MAE vs sequential = 0.5300
+
+========================================
+ TEST: medium  (n=10000, k=32, T=20)
+========================================
+Dataset written to input.txt
+--- v1 ---
+N=10000  k=32  T=20
+KNN:        4.2282 s
+Approx KNN: 0.01284 s
+K-Means:    0.00726414 s
+--- v2 ---
+N=10000  k=32  T=20
+KNN:        2.29883 s
+Approx KNN: 0.012351 s
+K-Means:    0.00632501 s
+  [v1 knn] format OK
+  [v1 approx_knn] format OK
+  [v1 kmeans] format OK
+  [v2 knn] format OK
+  [v2 approx_knn] format OK
+  [v2 kmeans] format OK
+  [knn      v1 vs v2] MAE = 0.0000  (expect 0)
+  [approx   v1 vs v2] MAE = 0.1658  (approx may differ)
+  [kmeans   v1 vs v2] MAE = 0.0000  (expect 0)
+  [v1 approx vs exact] MAE = 0.0000
+  [v2 approx vs exact] MAE = 0.1658
+  Running sequential reference...
+  Running sequential KNN    (n=10000, k=32)...
+  Running sequential K-Means (n=10000, k=32, T=20)...
+  [knn]    MAE vs sequential = 0.0000
+  [approx] MAE vs sequential = 0.0000
+  [kmeans] MAE vs sequential = 0.8493
+
+========================================
+ TEST: large  (n=100000, k=32, T=20)
+========================================
+Dataset written to input.txt
+--- v1 ---
+N=100000  k=32  T=20
+KNN:        1.9899 s
+Approx KNN: 0.168602 s
+K-Means:    0.0444071 s
+--- v2 ---
+N=100000  k=32  T=20
+KNN:        3.05788 s
+Approx KNN: 0.146164 s
+K-Means:    0.0405631 s
+  [v1 knn] format OK
+  [v1 approx_knn] format OK
+  [v1 kmeans] format OK
+  [v2 knn] format OK
+  [v2 approx_knn] format OK
+  [v2 kmeans] format OK
+  [knn      v1 vs v2] MAE = 0.0000  (expect 0)
+  [approx   v1 vs v2] MAE = 0.0508  (approx may differ)
+  [kmeans   v1 vs v2] MAE = 0.0000  (expect 0)
+  [v1 approx vs exact] MAE = 0.0002
+  [v2 approx vs exact] MAE = 0.0510
+
+========================================
+ TEST: max  (n=100000, k=128, T=50)
+========================================
+Dataset written to input.txt
+--- v1 ---
+N=100000  k=128  T=50
+KNN:        6.22638 s
+Approx KNN: 0.64314 s
+K-Means:    0.0669551 s
+--- v2 ---
+N=100000  k=128  T=50
+KNN:        6.21097 s
+Approx KNN: 0.586846 s
+K-Means:    0.056566 s
+  [v1 knn] format OK
+  [v1 approx_knn] format OK
+  [v1 kmeans] format OK
+  [v2 knn] format OK
+  [v2 approx_knn] format OK
+  [v2 kmeans] format OK
+  [knn      v1 vs v2] MAE = 0.0000  (expect 0)
+  [approx   v1 vs v2] MAE = 0.0495  (approx may differ)
+  [kmeans   v1 vs v2] MAE = 0.0000  (expect 0)
+  [v1 approx vs exact] MAE = 0.0000
+  [v2 approx vs exact] MAE = 0.0495
+
+========================================
+ ALL TESTS DONE
+========================================

@@ -12,7 +12,7 @@ module load suite/nvidia-hpc-sdk/20.7/cuda11.0
 
 export OMP_NUM_THREADS=8
 
-cd $HOME/histogram_eq
+cd $HOME/histogram_eq/COL380-histogramequalizationCUDA
 
 echo "========================================"
 echo " BUILD"

@@ -8,17 +8,15 @@
 #include <fstream>
 #include <cfloat>
 #include <climits>
-//Task 1, the first thing we write in a cuda code is the CUDA_CHECK function, which checks for any errors in the CUDA Calls.
+
 #define MY_LLONG_MAX 9223372036854775807LL
 #define CUDA_CHECK(call) \
     do { \
         cudaError_t err = call; \
-        if(err!= cudaSuccess){ \
+        if(err != cudaSuccess){ \
             throw std::runtime_error("CUDA Error at " + std::string(__FILE__) + ":" + std::to_string(__LINE__) + " - " + cudaGetErrorString(err)); \
         } \
     } while(0)
-
-//Task 2, we would like to make a RAII wrapper for the CUDA memory management, which will make it easier to upload or download objects.
 
 template<typename T>
 struct DeviceBuffer{
@@ -28,17 +26,14 @@ struct DeviceBuffer{
         CUDA_CHECK(cudaMalloc(&ptr, size * sizeof(T)));
     }
     ~DeviceBuffer(){ if(ptr) cudaFree(ptr); }
-
-    DeviceBuffer(const DeviceBuffer&) = delete;   // Delete Copy COnstructor
-    DeviceBuffer& operator=(const DeviceBuffer&) = delete; // Delete Copy Assignment
+    DeviceBuffer(const DeviceBuffer&) = delete;
+    DeviceBuffer& operator=(const DeviceBuffer&) = delete;
     DeviceBuffer(DeviceBuffer&& other) noexcept : ptr(other.ptr), size(other.size){
         other.ptr = nullptr;
     }
-
     void upload(const std::vector<int>& hostData){
         CUDA_CHECK(cudaMemcpy(ptr, hostData.data(), size * sizeof(T), cudaMemcpyHostToDevice));
     }
-
     void download(std::vector<int>& hostData){
         CUDA_CHECK(cudaMemcpy(hostData.data(), ptr, size * sizeof(T), cudaMemcpyDeviceToHost));
     }
@@ -46,13 +41,18 @@ struct DeviceBuffer{
         CUDA_CHECK(cudaMemset(ptr, 0, size * sizeof(T)));
     }
     void copy_from(const DeviceBuffer& other){
-        if(size != other.size) throw std::runtime_error("Size mismatch in copyFrom");
+        if(size != other.size) throw std::runtime_error("Size mismatch in copy_from");
         CUDA_CHECK(cudaMemcpy(ptr, other.ptr, size * sizeof(T), cudaMemcpyDeviceToDevice));
+    }
+    T download_one() const {
+        T val;
+        CUDA_CHECK(cudaMemcpy(&val, ptr, sizeof(T), cudaMemcpyDeviceToHost));
+        return val;
     }
 };
 
 constexpr int INTENSITY_LEVELS = 256;
-constexpr int BLOCK_SIZE       = 256;
+constexpr int BLOCK_SIZE       = 128;
 constexpr int MAX_K            = 128;
 
 struct PointCloud {
@@ -138,12 +138,18 @@ __device__ __forceinline__ void heap_sift_down(long long *dist, int *idx, int k)
         heap_sift_down((dist), (idx), (k));            \
     }
 
+// ===========================================================================
+//  1. EXACT KNN
+//  Each thread scans all N points (skipping self), maintains a max-heap of
+//  k nearest in registers, builds histogram over self + k neighbours,
+//  equalizes with m = k+1.
+// ===========================================================================
 __global__ void knn_kernel(const int * __restrict__ xs,
-                const int * __restrict__ ys,
-                const int * __restrict__ zs,
-                const int * __restrict__ intensity,
-                int       * __restrict__ out,
-                int n, int k)
+                           const int * __restrict__ ys,
+                           const int * __restrict__ zs,
+                           const int * __restrict__ intensity,
+                           int       * __restrict__ out,
+                           int n, int k)
 {
     const int i = blockIdx.x * blockDim.x + threadIdx.x;
     if (i >= n) return;
@@ -165,7 +171,6 @@ __global__ void knn_kernel(const int * __restrict__ xs,
     int hist[INTENSITY_LEVELS] = {};
     hist[intensity[i]]++;
     for (int t = 0; t < heap_size; ++t) hist[intensity[heap_idx[t]]]++;
-
     out[i] = equalize_point(hist, intensity[i], heap_size + 1);
 }
 
@@ -184,142 +189,30 @@ std::vector<int> run_knn(const PointCloud &pc)
     return result;
 }
 
-// __global__ void approx_knn_kernel(const int * __restrict__ xs,
-//                        const int * __restrict__ ys,
-//                        const int * __restrict__ zs,
-//                        const int * __restrict__ intensity,
-//                        const int * __restrict__ sorted_ids,
-//                        const int * __restrict__ cell_start,
-//                        const int * __restrict__ cell_end,
-//                        int       * __restrict__ out,
-//                        int min_x, int min_y, int min_z,
-//                        float inv_r,
-//                        int nx, int ny, int nz,
-//                        int n, int k)
-// {
-//     const int i = blockIdx.x * blockDim.x + threadIdx.x;
-//     if (i >= n) return;
-//     if (k == 0) { out[i] = intensity[i]; return; }
-//     const int qx = xs[i], qy = ys[i], qz = zs[i];
-//     const int cx = min(nx-1,static_cast<int>((qx - min_x) * inv_r));
-//     const int cy = min(ny-1,static_cast<int>((qy - min_y) * inv_r));
-//     const int cz = min(nz-1,static_cast<int>((qz - min_z) * inv_r));
-//     long long heap_dist[MAX_K];
-//     int       heap_idx [MAX_K];
-//     int       heap_size = 0;
-
-//     for (int dz = -1; dz <= 1; ++dz) {
-//         int nz_ = cz + dz; if (nz_ < 0 || nz_ >= nz) continue;
-//         for (int dy = -1; dy <= 1; ++dy) {
-//             int ny_ = cy + dy; if (ny_ < 0 || ny_ >= ny) continue;
-//             for (int dx = -1; dx <= 1; ++dx) {
-//                 int nx_ = cx + dx; if (nx_ < 0 || nx_ >= nx) continue;
-//                 const int cell = nz_ * ny * nx + ny_ * nx + nx_;
-//                 for (int s = cell_start[cell]; s < cell_end[cell]; ++s) {
-//                     const int j = sorted_ids[s];
-//                     if (j == i) continue;
-//                     long long ddx = xs[j]-qx, ddy = ys[j]-qy, ddz = zs[j]-qz;
-//                     long long d2  = ddx*ddx + ddy*ddy + ddz*ddz;
-//                     HEAP_INSERT(heap_dist, heap_idx, heap_size, k, d2, j);
-//                 }
-//             }
-//         }
-//     }
-//     int hist[INTENSITY_LEVELS] = {};
-//     hist[intensity[i]]++;
-//     for (int t = 0; t < heap_size; ++t) hist[intensity[heap_idx[t]]]++;
-//     out[i] = equalize_point(hist, intensity[i], heap_size + 1);
-// }
-
-
-// __global__ void approx_knn_kernel(const int * __restrict__ xs,
-//                        const int * __restrict__ ys,
-//                        const int * __restrict__ zs,
-//                        const int * __restrict__ intensity,
-//                        const int * __restrict__ sorted_ids,
-//                        const int * __restrict__ cell_start,
-//                        const int * __restrict__ cell_end,
-//                        int       * __restrict__ out,
-//                        int min_x, int min_y, int min_z,
-//                        float inv_r,
-//                        int nx, int ny, int nz,
-//                        int n, int k)
-// {
-//     const int i = blockIdx.x * blockDim.x + threadIdx.x;
-//     if (i >= n) return;
-//     if (k == 0) { out[i] = intensity[i]; return; }
-
-//     const int qx = xs[i], qy = ys[i], qz = zs[i];
-//     const int cx = min(nx-1, static_cast<int>((qx - min_x) * inv_r));
-//     const int cy = min(ny-1, static_cast<int>((qy - min_y) * inv_r));
-//     const int cz = min(nz-1, static_cast<int>((qz - min_z) * inv_r));
-
-//     long long heap_dist[MAX_K];
-//     int       heap_idx [MAX_K];
-//     int       heap_size = 0;
-
-//     // Always search 5x5x5
-//     for (int dz = -2; dz <= 2; ++dz) {
-//         int nz_ = cz + dz; if (nz_ < 0 || nz_ >= nz) continue;
-//         for (int dy = -2; dy <= 2; ++dy) {
-//             int ny_ = cy + dy; if (ny_ < 0 || ny_ >= ny) continue;
-//             for (int dx = -2; dx <= 2; ++dx) {
-//                 int nx_ = cx + dx; if (nx_ < 0 || nx_ >= nx) continue;
-//                 const int cell = nz_ * ny * nx + ny_ * nx + nx_;
-//                 for (int s = cell_start[cell]; s < cell_end[cell]; ++s) {
-//                     const int j = sorted_ids[s];
-//                     if (j == i) continue;
-//                     long long ddx = xs[j]-qx, ddy = ys[j]-qy, ddz = zs[j]-qz;
-//                     long long d2  = ddx*ddx + ddy*ddy + ddz*ddz;
-//                     HEAP_INSERT(heap_dist, heap_idx, heap_size, k, d2, j);
-//                 }
-//             }
-//         }
-//     }
-
-//     // Expand to 7x7x7 shell only if still not full
-//     if (heap_size < k) {
-//         for (int dz = -3; dz <= 3; ++dz) {
-//             int nz_ = cz + dz; if (nz_ < 0 || nz_ >= nz) continue;
-//             for (int dy = -3; dy <= 3; ++dy) {
-//                 int ny_ = cy + dy; if (ny_ < 0 || ny_ >= ny) continue;
-//                 for (int dx = -3; dx <= 3; ++dx) {
-//                     if (dx >= -2 && dx <= 2 &&
-//                         dy >= -2 && dy <= 2 &&
-//                         dz >= -2 && dz <= 2) continue;  // already searched
-//                     int nx_ = cx + dx; if (nx_ < 0 || nx_ >= nx) continue;
-//                     const int cell = nz_ * ny * nx + ny_ * nx + nx_;
-//                     for (int s = cell_start[cell]; s < cell_end[cell]; ++s) {
-//                         const int j = sorted_ids[s];
-//                         if (j == i) continue;
-//                         long long ddx = xs[j]-qx, ddy = ys[j]-qy, ddz = zs[j]-qz;
-//                         long long d2  = ddx*ddx + ddy*ddy + ddz*ddz;
-//                         HEAP_INSERT(heap_dist, heap_idx, heap_size, k, d2, j);
-//                     }
-//                 }
-//             }
-//         }
-//     }
-
-//     int hist[INTENSITY_LEVELS] = {};
-//     hist[intensity[i]]++;
-//     for (int t = 0; t < heap_size; ++t) hist[intensity[heap_idx[t]]]++;
-//     out[i] = equalize_point(hist, intensity[i], heap_size + 1);
-// }
-
-
+// ===========================================================================
+//  2. APPROXIMATE KNN -- Uniform Grid / Voxel Hashing
+//
+//  Build (host, OpenMP):
+//    Choose cell size r so ~k/27 points fall per cell on average.
+//    Counting-sort points into cells.
+//
+//  Query (GPU):
+//    Dynamic expanding window: start at radius=1 (3x3x3), expand shell by
+//    shell until heap has k neighbours or max_radius is reached.
+//    Warp-level early exit via __all_sync when all threads in warp are full.
+// ===========================================================================
 __global__ void approx_knn_kernel(const int * __restrict__ xs,
-                       const int * __restrict__ ys,
-                       const int * __restrict__ zs,
-                       const int * __restrict__ intensity,
-                       const int * __restrict__ sorted_ids,
-                       const int * __restrict__ cell_start,
-                       const int * __restrict__ cell_end,
-                       int       * __restrict__ out,
-                       int min_x, int min_y, int min_z,
-                       float inv_r,
-                       int nx, int ny, int nz,
-                       int n, int k)
+                                   const int * __restrict__ ys,
+                                   const int * __restrict__ zs,
+                                   const int * __restrict__ intensity,
+                                   const int * __restrict__ sorted_ids,
+                                   const int * __restrict__ cell_start,
+                                   const int * __restrict__ cell_end,
+                                   int       * __restrict__ out,
+                                   int min_x, int min_y, int min_z,
+                                   float inv_r,
+                                   int nx, int ny, int nz,
+                                   int n, int k, int max_radius)
 {
     const int i = blockIdx.x * blockDim.x + threadIdx.x;
     if (i >= n) return;
@@ -334,15 +227,13 @@ __global__ void approx_knn_kernel(const int * __restrict__ xs,
     int       heap_idx [MAX_K];
     int       heap_size = 0;
 
-    int radius = 1;
     int prev = -1;
-    while (heap_size < k) {
+    for (int radius = 1; radius <= max_radius; ++radius) {
         for (int dz = -radius; dz <= radius; ++dz) {
             int nz_ = cz + dz; if (nz_ < 0 || nz_ >= nz) continue;
             for (int dy = -radius; dy <= radius; ++dy) {
                 int ny_ = cy + dy; if (ny_ < 0 || ny_ >= ny) continue;
                 for (int dx = -radius; dx <= radius; ++dx) {
-                    // skip inner cells already searched in previous radius
                     if (dx >= -prev && dx <= prev &&
                         dy >= -prev && dy <= prev &&
                         dz >= -prev && dz <= prev) continue;
@@ -359,42 +250,14 @@ __global__ void approx_knn_kernel(const int * __restrict__ xs,
             }
         }
         prev = radius;
-        radius++;
-        if (radius > nx && radius > ny && radius > nz) break;
+        if (__all_sync(__activemask(), heap_size >= k)) break;
     }
-    // After while loop — check one more shell to catch diagonal neighbors
-    // that are within the current k-th nearest distance
-    int final_shell = radius;  // radius was already incremented
-    for (int dz = -final_shell; dz <= final_shell; ++dz) {
-        int nz_ = cz + dz; if (nz_ < 0 || nz_ >= nz) continue;
-        for (int dy = -final_shell; dy <= final_shell; ++dy) {
-            int ny_ = cy + dy; if (ny_ < 0 || ny_ >= ny) continue;
-            for (int dx = -final_shell; dx <= final_shell; ++dx) {
-                // skip already searched cells
-                if (dx >= -(final_shell-1) && dx <= (final_shell-1) &&
-                    dy >= -(final_shell-1) && dy <= (final_shell-1) &&
-                    dz >= -(final_shell-1) && dz <= (final_shell-1)) continue;
-                int nx_ = cx + dx; if (nx_ < 0 || nx_ >= nx) continue;
-                const int cell = nz_ * ny * nx + ny_ * nx + nx_;
-                for (int s = cell_start[cell]; s < cell_end[cell]; ++s) {
-                    const int j = sorted_ids[s];
-                    if (j == i) continue;
-                    long long ddx = xs[j]-qx, ddy = ys[j]-qy, ddz = zs[j]-qz;
-                    long long d2  = ddx*ddx + ddy*ddy + ddz*ddz;
-                    // only insert if closer than current k-th nearest
-                    if (d2 < heap_dist[0]) {
-                        HEAP_INSERT(heap_dist, heap_idx, heap_size, k, d2, j);
-                    }
-                }
-            }
-        }
-    }
+
     int hist[INTENSITY_LEVELS] = {};
     hist[intensity[i]]++;
     for (int t = 0; t < heap_size; ++t) hist[intensity[heap_idx[t]]]++;
     out[i] = equalize_point(hist, intensity[i], heap_size + 1);
 }
-
 
 std::vector<int> run_approx_knn(const PointCloud &pc)
 {
@@ -438,7 +301,11 @@ std::vector<int> run_approx_knn(const PointCloud &pc)
         int cz = std::min(static_cast<int>((pc.z[i] - min_z) * inv_r), nz-1);
         cell_id[i] = cz * ny * nx + cy * nx + cx;
     }
-    for (int i = 0; i < n; ++i) ++count[cell_id[i]];
+    #pragma omp parallel for schedule(static)
+    for (int i = 0; i < n; ++i) {
+        #pragma omp atomic
+        ++count[cell_id[i]];
+    }
 
     std::vector<int> cell_start(total_cells), cell_end(total_cells);
     cell_start[0] = 0;
@@ -451,6 +318,11 @@ std::vector<int> run_approx_knn(const PointCloud &pc)
     for (int i = 0; i < n; ++i)
         sorted_ids[cell_start[cell_id[i]] + tmp[cell_id[i]]++] = i;
 
+    float cells_needed = static_cast<float>(k) * total_cells / static_cast<float>(n);
+    int max_radius = static_cast<int>(std::cbrt(cells_needed) / 2.0f) + 3;
+    max_radius = std::min(max_radius, std::max({nx, ny, nz}));
+    max_radius = std::max(max_radius, 1);
+
     DeviceBuffer<int> d_x(n), d_y(n), d_z(n), d_I(n), d_out(n);
     DeviceBuffer<int> d_sorted(n), d_cs(total_cells), d_ce(total_cells);
     d_x.upload(pc.x); d_y.upload(pc.y); d_z.upload(pc.z); d_I.upload(pc.intensity);
@@ -460,14 +332,24 @@ std::vector<int> run_approx_knn(const PointCloud &pc)
     approx_knn_kernel<<<(n + BLOCK_SIZE-1)/BLOCK_SIZE, BLOCK_SIZE>>>(
         d_x.ptr, d_y.ptr, d_z.ptr, d_I.ptr,
         d_sorted.ptr, d_cs.ptr, d_ce.ptr, d_out.ptr,
-        min_x, min_y, min_z, inv_r, nx, ny, nz, n, k);
+        min_x, min_y, min_z, inv_r, nx, ny, nz, n, k, max_radius);
     CUDA_CHECK(cudaGetLastError());
     CUDA_CHECK(cudaDeviceSynchronize());
+
     std::vector<int> result(n);
     d_out.download(result);
     return result;
 }
 
+// ===========================================================================
+//  3. K-MEANS CLUSTERING
+//
+//  Optimizations:
+//    - Centroids loaded into shared memory per block (reduces global mem reads)
+//    - GPU-side convergence flag via atomicExch (avoids full assignment download)
+//    - accum and update launched back-to-back with single sync
+//    - unsigned long long sums with INT_MAX shift for safe negative coord handling
+// ===========================================================================
 __global__
 void kmeans_assign_kernel(const int   * __restrict__ xs,
                           const int   * __restrict__ ys,
@@ -476,22 +358,34 @@ void kmeans_assign_kernel(const int   * __restrict__ xs,
                           const int   * __restrict__ cy,
                           const int   * __restrict__ cz,
                           int         * __restrict__ assign,
+                          int         * __restrict__ d_changed,
                           int n, int k)
 {
+    extern __shared__ int s_cent[];
+    int* scx = s_cent;
+    int* scy = s_cent + k;
+    int* scz = s_cent + 2*k;
+
+    for (int c = threadIdx.x; c < k; c += blockDim.x) {
+        scx[c] = cx[c]; scy[c] = cy[c]; scz[c] = cz[c];
+    }
+    __syncthreads();
+
     const int i = blockIdx.x * blockDim.x + threadIdx.x;
     if (i >= n) return;
+
     long long best = MY_LLONG_MAX; int bi = 0;
     for (int c = 0; c < k; ++c) {
-        long long dx = cx[c]-xs[i], dy = cy[c]-ys[i], dz = cz[c]-zs[i];
+        long long dx = scx[c]-xs[i], dy = scy[c]-ys[i], dz = scz[c]-zs[i];
         long long d2 = dx*dx + dy*dy + dz*dz;
-        if (d2 < best || 
-            (d2 == best && (cx[c] < cx[bi] || 
-                        (cx[c] == cx[bi] && cy[c] < cy[bi]) || 
-                        (cx[c] == cx[bi] && cy[c] == cy[bi] && cz[c] < cz[bi])))) {
-            best = d2;
-            bi = c;
+        if (d2 < best ||
+            (d2 == best && (scx[c] < scx[bi] ||
+                           (scx[c] == scx[bi] && scy[c] < scy[bi]) ||
+                           (scx[c] == scx[bi] && scy[c] == scy[bi] && scz[c] < scz[bi])))) {
+            best = d2; bi = c;
         }
     }
+    if (assign[i] != bi) atomicExch(d_changed, 1);
     assign[i] = bi;
 }
 
@@ -500,28 +394,35 @@ void kmeans_accum_kernel(const int   * __restrict__ xs,
                          const int   * __restrict__ ys,
                          const int   * __restrict__ zs,
                          const int   * __restrict__ assign,
-                         unsigned long long *sum_x, unsigned long long *sum_y, unsigned long long *sum_z,
-                         int   *cnt, int n)
+                         unsigned long long *sum_x,
+                         unsigned long long *sum_y,
+                         unsigned long long *sum_z,
+                         int *cnt, int n)
 {
     const int i = blockIdx.x * blockDim.x + threadIdx.x;
     if (i >= n) return;
     const int c = assign[i];
-    atomicAdd(&sum_x[c], (unsigned long long)(xs[i]));
-    atomicAdd(&sum_y[c], (unsigned long long)(ys[i]));
-    atomicAdd(&sum_z[c], (unsigned long long)(zs[i]));
+    // Shift by INT_MAX+1 to make all coords non-negative before unsigned accumulation.
+    // Safe for any int coordinate: shifted range = [0, 2*INT_MAX+1] = [0, UINT_MAX]
+    atomicAdd(&sum_x[c], (unsigned long long)((long long)xs[i] + (long long)INT_MAX + 1LL));
+    atomicAdd(&sum_y[c], (unsigned long long)((long long)ys[i] + (long long)INT_MAX + 1LL));
+    atomicAdd(&sum_z[c], (unsigned long long)((long long)zs[i] + (long long)INT_MAX + 1LL));
     atomicAdd(&cnt[c], 1);
 }
 
 __global__
-void kmeans_update_kernel(int       *cx, int       *cy, int       *cz,
-                          const unsigned long long *sum_x, const unsigned long long *sum_y, const unsigned long long *sum_z,
-                          const int   *cnt, int k)
+void kmeans_update_kernel(int *cx, int *cy, int *cz,
+                          const unsigned long long *sum_x,
+                          const unsigned long long *sum_y,
+                          const unsigned long long *sum_z,
+                          const int *cnt, int k)
 {
     const int c = blockIdx.x * blockDim.x + threadIdx.x;
     if (c >= k || cnt[c] == 0) return;
-    cx[c] = static_cast<int>((long long)sum_x[c] / cnt[c]);
-    cy[c] = static_cast<int>((long long)sum_y[c] / cnt[c]);
-    cz[c] = static_cast<int>((long long)sum_z[c] / cnt[c]);
+    // Divide first (unsigned), then shift back to signed
+    cx[c] = static_cast<int>((long long)(sum_x[c] / cnt[c]) - (long long)INT_MAX - 1LL);
+    cy[c] = static_cast<int>((long long)(sum_y[c] / cnt[c]) - (long long)INT_MAX - 1LL);
+    cz[c] = static_cast<int>((long long)(sum_z[c] / cnt[c]) - (long long)INT_MAX - 1LL);
 }
 
 __global__
@@ -555,48 +456,40 @@ std::vector<int> run_kmeans(const PointCloud &pc)
 
     std::vector<int> h_cx(k), h_cy(k), h_cz(k);
     for (int c = 0; c < k; ++c) {
-        h_cx[c] = static_cast<int>(pc.x[c]);
-        h_cy[c] = static_cast<int>(pc.y[c]);
-        h_cz[c] = static_cast<int>(pc.z[c]);
+        h_cx[c] = pc.x[c]; h_cy[c] = pc.y[c]; h_cz[c] = pc.z[c];
     }
 
-    DeviceBuffer<int>   d_x(n), d_y(n), d_z(n), d_I(n);
-    DeviceBuffer<int> d_cx(k), d_cy(k), d_cz(k);
+    DeviceBuffer<int>                d_x(n), d_y(n), d_z(n), d_I(n);
+    DeviceBuffer<int>                d_cx(k), d_cy(k), d_cz(k);
     DeviceBuffer<unsigned long long> d_sx(k), d_sy(k), d_sz(k);
-    DeviceBuffer<int>   d_cnt(k), d_assign(n);
-    DeviceBuffer<int>   d_hist(k * INTENSITY_LEVELS), d_csz(k), d_out(n);
+    DeviceBuffer<int>                d_cnt(k), d_assign(n);
+    DeviceBuffer<int>                d_hist(k * INTENSITY_LEVELS), d_csz(k), d_out(n);
+    DeviceBuffer<int>                d_changed(1);
 
     d_x.upload(pc.x); d_y.upload(pc.y); d_z.upload(pc.z); d_I.upload(pc.intensity);
     d_cx.upload(h_cx); d_cy.upload(h_cy); d_cz.upload(h_cz);
+    CUDA_CHECK(cudaMemset(d_assign.ptr, -1, n * sizeof(int)));
 
-    const int blk_n = (n + BLOCK_SIZE-1) / BLOCK_SIZE;
-    const int blk_k = (k + BLOCK_SIZE-1) / BLOCK_SIZE;
-
-    std::vector<int> h_assign(n), h_assign_prev(n, -1);
+    const int blk_n     = (n + BLOCK_SIZE-1) / BLOCK_SIZE;
+    const int blk_k     = (k + BLOCK_SIZE-1) / BLOCK_SIZE;
+    const int smem_bytes = 3 * k * sizeof(int);
 
     for (int iter = 0; iter < T; ++iter) {
-        kmeans_assign_kernel<<<blk_n, BLOCK_SIZE>>>(
+        d_changed.zero();
+        kmeans_assign_kernel<<<blk_n, BLOCK_SIZE, smem_bytes>>>(
             d_x.ptr, d_y.ptr, d_z.ptr,
             d_cx.ptr, d_cy.ptr, d_cz.ptr,
-            d_assign.ptr, n, k);
+            d_assign.ptr, d_changed.ptr, n, k);
         CUDA_CHECK(cudaGetLastError());
         CUDA_CHECK(cudaDeviceSynchronize());
 
-        d_assign.download(h_assign);
-        int changed = 0;
-        #pragma omp parallel for schedule(static) reduction(+: changed)
-        for (int i = 0; i < n; ++i)
-            if (h_assign[i] != h_assign_prev[i]) ++changed;
-        if (changed == 0) break;
-        h_assign_prev = h_assign;
+        if (d_changed.download_one() == 0) break;
 
         d_sx.zero(); d_sy.zero(); d_sz.zero(); d_cnt.zero();
         kmeans_accum_kernel<<<blk_n, BLOCK_SIZE>>>(
             d_x.ptr, d_y.ptr, d_z.ptr, d_assign.ptr,
             d_sx.ptr, d_sy.ptr, d_sz.ptr, d_cnt.ptr, n);
         CUDA_CHECK(cudaGetLastError());
-        CUDA_CHECK(cudaDeviceSynchronize());
-
         kmeans_update_kernel<<<blk_k, BLOCK_SIZE>>>(
             d_cx.ptr, d_cy.ptr, d_cz.ptr,
             d_sx.ptr, d_sy.ptr, d_sz.ptr, d_cnt.ptr, k);
@@ -605,12 +498,11 @@ std::vector<int> run_kmeans(const PointCloud &pc)
     }
 
     d_hist.zero();
-    kmeans_histogram_kernel<<<blk_n, BLOCK_SIZE>>>(
-        d_I.ptr, d_assign.ptr, d_hist.ptr, n);
+    kmeans_histogram_kernel<<<blk_n, BLOCK_SIZE>>>(d_I.ptr, d_assign.ptr, d_hist.ptr, n);
     CUDA_CHECK(cudaGetLastError());
     CUDA_CHECK(cudaDeviceSynchronize());
 
-    // Fresh cluster sizes (d_cnt may be stale if converged early)
+    // Recount cluster sizes — d_cnt may be stale if converged early
     d_cnt.zero(); d_sx.zero(); d_sy.zero(); d_sz.zero();
     kmeans_accum_kernel<<<blk_n, BLOCK_SIZE>>>(
         d_x.ptr, d_y.ptr, d_z.ptr, d_assign.ptr,
@@ -629,19 +521,18 @@ std::vector<int> run_kmeans(const PointCloud &pc)
     return result;
 }
 
-
+// ===========================================================================
+//  main
+// ===========================================================================
 int main(int argc, char *argv[])
 {
     if (argc < 2) {
         std::cerr << "Usage: " << argv[0] << " <input_file>\n";
         return 1;
     }
-
     try {
-        // No structured bindings -- not supported by this nvcc version
         PointCloud pc = read_input(argv[1]);
         std::cout << "N=" << pc.n << "  k=" << pc.k << "  T=" << pc.T << '\n';
-
         {
             double t0 = omp_get_wtime();
             write_output("knn.txt", pc, run_knn(pc));
@@ -657,11 +548,9 @@ int main(int argc, char *argv[])
             write_output("kmeans.txt", pc, run_kmeans(pc));
             std::cout << "K-Means:    " << omp_get_wtime() - t0 << " s\n";
         }
-
     } catch (const std::exception &e) {
         std::cerr << "Error: " << e.what() << '\n';
         return 1;
     }
     return 0;
 }
-
