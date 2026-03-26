@@ -58,8 +58,11 @@ constexpr int MAX_K            = 128;
 // ---------------------------------------------------------------------------
 //  Toggle: 1 = shared-memory tiled KNN (128x bandwidth reduction for the
 //              all-pairs distance loop), 0 = original non-tiled version.
+//  Can be overridden at compile time: nvcc -DUSE_TILED_KNN=0 ...
 // ---------------------------------------------------------------------------
+#ifndef USE_TILED_KNN
 #define USE_TILED_KNN 1
+#endif
 
 struct PointCloud {
     int n, k, T;

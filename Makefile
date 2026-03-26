@@ -1,12 +1,16 @@
-NVCC      = nvcc
-TARGET    = histogram_eq
+NVCC    = nvcc
+FLAGS   = -O3 -arch=sm_35 -Xcompiler -fopenmp
+TARGETS = histogram_eq histogram_eq_notiled
 
-all: $(TARGET)
+all: $(TARGETS)
 
-$(TARGET): solution.cu
-	$(NVCC) solution.cu -O3 -arch=sm_35 -Xcompiler -fopenmp -o $(TARGET)
+histogram_eq: solution.cu
+	$(NVCC) $(FLAGS) -DUSE_TILED_KNN=1 solution.cu -o $@
+
+histogram_eq_notiled: solution.cu
+	$(NVCC) $(FLAGS) -DUSE_TILED_KNN=0 solution.cu -o $@
 
 clean:
-	rm -f $(TARGET) *.txt results.csv
+	rm -f $(TARGETS) *.txt results.csv
 
 .PHONY: all clean
