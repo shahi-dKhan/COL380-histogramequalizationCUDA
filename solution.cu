@@ -55,6 +55,12 @@ constexpr int INTENSITY_LEVELS = 256;
 constexpr int BLOCK_SIZE       = 128;
 constexpr int MAX_K            = 128;
 
+// ---------------------------------------------------------------------------
+//  Toggle: 1 = shared-memory tiled KNN (128x bandwidth reduction for the
+//              all-pairs distance loop), 0 = original non-tiled version.
+// ---------------------------------------------------------------------------
+#define USE_TILED_KNN 1
+
 struct PointCloud {
     int n, k, T;
     std::vector<int> x, y, z, intensity;
@@ -144,6 +150,68 @@ __device__ __forceinline__ void heap_sift_down(long long *dist, int *idx, int k)
 //  k nearest in registers, builds histogram over self + k neighbours,
 //  equalizes with m = k+1.
 // ===========================================================================
+#if USE_TILED_KNN
+// Tiled version: block cooperatively loads BLOCK_SIZE points into shared
+// memory per tile, giving each thread BLOCK_SIZE reuses per load instead of 1.
+// Shared memory cost: 3 * BLOCK_SIZE * 4 = 1536 bytes — negligible.
+// All threads (including out-of-bounds ones) must participate in __syncthreads.
+__global__ void knn_kernel(const int * __restrict__ xs,
+                           const int * __restrict__ ys,
+                           const int * __restrict__ zs,
+                           const int * __restrict__ intensity,
+                           int       * __restrict__ out,
+                           int n, int k)
+{
+    __shared__ int s_xs[BLOCK_SIZE], s_ys[BLOCK_SIZE], s_zs[BLOCK_SIZE];
+
+    const int i = blockIdx.x * blockDim.x + threadIdx.x;
+
+    // k==0: uniform branch — all threads exit together, no syncthreads hazard.
+    if (k == 0) {
+        if (i < n) out[i] = intensity[i];
+        return;
+    }
+
+    const bool active = (i < n);
+    const int qx = active ? xs[i] : 0;
+    const int qy = active ? ys[i] : 0;
+    const int qz = active ? zs[i] : 0;
+
+    long long heap_dist[MAX_K];
+    int       heap_idx [MAX_K];
+    int       heap_size = 0;
+
+    for (int tile_start = 0; tile_start < n; tile_start += BLOCK_SIZE) {
+        // Cooperative load: every thread loads one element of the tile.
+        int j = tile_start + threadIdx.x;
+        s_xs[threadIdx.x] = (j < n) ? xs[j] : 0;
+        s_ys[threadIdx.x] = (j < n) ? ys[j] : 0;
+        s_zs[threadIdx.x] = (j < n) ? zs[j] : 0;
+        __syncthreads();
+
+        if (active) {
+            const int tile_len = min(BLOCK_SIZE, n - tile_start);
+            for (int t = 0; t < tile_len; ++t) {
+                const int jj = tile_start + t;
+                if (jj == i) continue;
+                long long dx = s_xs[t]-qx, dy = s_ys[t]-qy, dz = s_zs[t]-qz;
+                long long d2 = dx*dx + dy*dy + dz*dz;
+                HEAP_INSERT(heap_dist, heap_idx, heap_size, k, d2, jj);
+            }
+        }
+        __syncthreads();
+    }
+
+    if (!active) return;
+
+    int hist[INTENSITY_LEVELS] = {};
+    hist[intensity[i]]++;
+    for (int t = 0; t < heap_size; ++t) hist[intensity[heap_idx[t]]]++;
+    out[i] = equalize_point(hist, intensity[i], heap_size + 1);
+}
+
+#else  // USE_TILED_KNN == 0: original non-tiled version
+
 __global__ void knn_kernel(const int * __restrict__ xs,
                            const int * __restrict__ ys,
                            const int * __restrict__ zs,
@@ -173,6 +241,7 @@ __global__ void knn_kernel(const int * __restrict__ xs,
     for (int t = 0; t < heap_size; ++t) hist[intensity[heap_idx[t]]]++;
     out[i] = equalize_point(hist, intensity[i], heap_size + 1);
 }
+#endif  // USE_TILED_KNN
 
 std::vector<int> run_knn(const PointCloud &pc)
 {
