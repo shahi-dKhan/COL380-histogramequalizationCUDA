@@ -87,14 +87,14 @@ def run_kmeans(n, k, T, pts):
     if k == 0:
         return [p[3] for p in pts]
 
-    # Initial centroids = first k points
-    centroids = [[float(pts[c][0]), float(pts[c][1]), float(pts[c][2])]
-                 for c in range(k)]
+    # Initial centroids = first k points (integer coords, matching CUDA)
+    centroids = [[pts[c][0], pts[c][1], pts[c][2]] for c in range(k)]
 
     assign = [-1] * n
 
     for _ in range(T):
-        # Assignment
+        # Assignment — tie-break lexicographically by centroid coords,
+        # matching the CUDA kmeans_assign_kernel tie-breaking rule.
         new_assign = []
         for i in range(n):
             best, bi = float('inf'), 0
@@ -103,7 +103,11 @@ def run_kmeans(n, k, T, pts):
                 dy = centroids[c][1] - pts[i][1]
                 dz = centroids[c][2] - pts[i][2]
                 d2 = dx*dx + dy*dy + dz*dz
-                if d2 < best:
+                if d2 < best or (d2 == best and (
+                        centroids[c][0] < centroids[bi][0] or
+                        (centroids[c][0] == centroids[bi][0] and centroids[c][1] < centroids[bi][1]) or
+                        (centroids[c][0] == centroids[bi][0] and centroids[c][1] == centroids[bi][1]
+                         and centroids[c][2] < centroids[bi][2]))):
                     best, bi = d2, c
             new_assign.append(bi)
 
@@ -112,8 +116,8 @@ def run_kmeans(n, k, T, pts):
             break
         assign = new_assign
 
-        # Update centroids
-        sums = [[0.0, 0.0, 0.0] for _ in range(k)]
+        # Update centroids — integer division matching CUDA kmeans_update_kernel
+        sums = [[0, 0, 0] for _ in range(k)]
         counts = [0] * k
         for i in range(n):
             c = assign[i]
@@ -123,7 +127,8 @@ def run_kmeans(n, k, T, pts):
             counts[c] += 1
         for c in range(k):
             if counts[c] > 0:
-                centroids[c] = [sums[c][d] / counts[c] for d in range(3)]
+                # Truncate-toward-zero integer division, same as C++ sum/cnt
+                centroids[c] = [int(sums[c][d] / counts[c]) for d in range(3)]
 
     # Build per-cluster histograms
     hists   = [[0] * 256 for _ in range(k)]
