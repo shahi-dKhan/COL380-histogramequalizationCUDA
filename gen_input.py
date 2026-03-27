@@ -91,7 +91,7 @@ _GENERATORS = {
 # ---------------------------------------------------------------------------
 def generate_dataset(n, k, T, output_file="input.txt", seed=None, dist="uniform", R=10000):
     assert 1 <= n <= 100000, f"n={n} out of range"
-    assert 1 <= k <= 128,    f"k={k} out of range"
+    assert 0 <= k <= 128,    f"k={k} out of range"
     assert 1 <= T <= 50,     f"T={T} out of range"
     assert dist in _GENERATORS, f"Unknown dist '{dist}'"
 
