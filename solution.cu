@@ -114,11 +114,20 @@ __device__ __forceinline__ int equalize_point(const int * __restrict__ hist, int
     return orig;
 }
 
-__device__ __forceinline__ void heap_bubble_up(long long *dist, int *idx, int pos)
+__device__ __forceinline__ bool lex_greater(const int *xs, const int *ys, const int *zs, int a, int b)
+{
+    if (xs[a] != xs[b]) return xs[a] > xs[b];
+    if (ys[a] != ys[b]) return ys[a] > ys[b];
+    return zs[a] > zs[b];
+}
+
+__device__ __forceinline__ void heap_bubble_up(long long *dist, int *idx, int pos,
+                                               const int *xs, const int *ys, const int *zs)
 {
     while (pos > 0) {
         int par = (pos - 1) >> 1;
-        if (dist[par] < dist[pos]) {
+        if (dist[par] < dist[pos] ||
+            (dist[par] == dist[pos] && lex_greater(xs, ys, zs, idx[pos], idx[par]))) {
             long long td = dist[par]; dist[par] = dist[pos]; dist[pos] = td;
             int       ti = idx [par]; idx [par] = idx [pos]; idx [pos] = ti;
             pos = par;
@@ -126,13 +135,16 @@ __device__ __forceinline__ void heap_bubble_up(long long *dist, int *idx, int po
     }
 }
 
-__device__ __forceinline__ void heap_sift_down(long long *dist, int *idx, int k)
+__device__ __forceinline__ void heap_sift_down(long long *dist, int *idx, int k,
+                                               const int *xs, const int *ys, const int *zs)
 {
     int pos = 0;
     while (true) {
         int l = 2*pos+1, r = 2*pos+2, largest = pos;
-        if (l < k && dist[l] > dist[largest]) largest = l;
-        if (r < k && dist[r] > dist[largest]) largest = r;
+        if (l < k && (dist[l] > dist[largest] ||
+            (dist[l] == dist[largest] && lex_greater(xs, ys, zs, idx[l], idx[largest])))) largest = l;
+        if (r < k && (dist[r] > dist[largest] ||
+            (dist[r] == dist[largest] && lex_greater(xs, ys, zs, idx[r], idx[largest])))) largest = r;
         if (largest == pos) break;
         long long td = dist[pos]; dist[pos] = dist[largest]; dist[largest] = td;
         int       ti = idx [pos]; idx [pos] = idx [largest]; idx [largest] = ti;
@@ -140,15 +152,16 @@ __device__ __forceinline__ void heap_sift_down(long long *dist, int *idx, int k)
     }
 }
 
-#define HEAP_INSERT(dist, idx, heap_size, k, d2, j)  \
-    if ((heap_size) < (k)) {                          \
-        (dist)[(heap_size)] = (d2);                   \
-        (idx)[(heap_size)] = (j);                     \
-        heap_bubble_up((dist), (idx), (heap_size));   \
-        (heap_size)++;                                \
-    } else if ((d2) < (dist)[0]) {                    \
-        (dist)[0] = (d2); (idx)[0] = (j);             \
-        heap_sift_down((dist), (idx), (k));            \
+#define HEAP_INSERT(dist, idx, heap_size, k, d2, j, xs, ys, zs)                        \
+    if ((heap_size) < (k)) {                                                             \
+        (dist)[(heap_size)] = (d2);                                                      \
+        (idx)[(heap_size)] = (j);                                                        \
+        heap_bubble_up((dist), (idx), (heap_size), (xs), (ys), (zs));                   \
+        (heap_size)++;                                                                   \
+    } else if ((d2) < (dist)[0] ||                                                       \
+               ((d2) == (dist)[0] && lex_greater((xs),(ys),(zs),(idx)[0],(j)))) {       \
+        (dist)[0] = (d2); (idx)[0] = (j);                                               \
+        heap_sift_down((dist), (idx), (k), (xs), (ys), (zs));                           \
     }
 
 
@@ -173,7 +186,7 @@ __global__ void knn_kernel(const int * __restrict__ xs,
             if (j == i) continue;
             long long dx = xs[j]-qx, dy = ys[j]-qy, dz = zs[j]-qz;
             long long d2 = dx*dx + dy*dy + dz*dz;
-            HEAP_INSERT(heap_dist, heap_idx, heap_size, k, d2, j);
+            HEAP_INSERT(heap_dist, heap_idx, heap_size, k, d2, j, xs, ys, zs);
         }
 
         int hist[INTENSITY_LEVELS] = {};
@@ -242,7 +255,7 @@ __global__ void approx_knn_kernel(const int * __restrict__ xs,
                         if (j == i) continue;
                         long long ddx = xs[j]-qx, ddy = ys[j]-qy, ddz = zs[j]-qz;
                         long long d2  = ddx*ddx + ddy*ddy + ddz*ddz;
-                        HEAP_INSERT(heap_dist, heap_idx, heap_size, k, d2, j);
+                        HEAP_INSERT(heap_dist, heap_idx, heap_size, k, d2, j, xs, ys, zs);
                     }
                 }
             }

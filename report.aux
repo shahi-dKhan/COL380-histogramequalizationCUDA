@@ -22,40 +22,46 @@
 \@writefile{toc}{\contentsline {section}{\numberline {5}Results and Analysis}{6}{section.5}\protected@file@percent }
 \newlabel{sec:results}{{5}{6}{Results and Analysis}{section.5}{}}
 \@writefile{toc}{\contentsline {subsection}{\numberline {5.1}Scalability with $N$ (Group A)}{6}{subsection.5.1}\protected@file@percent }
-\@writefile{lot}{\contentsline {table}{\numberline {2}{\ignorespaces Group A: Runtime (seconds) as $N$ varies ($k=32$, $T=20$, uniform, non-tiled variant). Speedup = KNN / Approx; values ${<}1$ mean Approx is slower.}}{7}{table.caption.3}\protected@file@percent }
-\newlabel{tab:vary_n}{{2}{7}{Group A: Runtime (seconds) as $N$ varies ($k=32$, $T=20$, uniform, non-tiled variant). Speedup = KNN / Approx; values ${<}1$ mean Approx is slower}{table.caption.3}{}}
+\@writefile{lot}{\contentsline {table}{\numberline {2}{\ignorespaces Group A: Runtime (seconds) as $N$ varies ($k=32$, $T=20$, uniform, non-tiled variant). Speedup = KNN / Approx; values ${<}1$ mean Approx is slower.}}{6}{table.caption.3}\protected@file@percent }
+\newlabel{tab:vary_n}{{2}{6}{Group A: Runtime (seconds) as $N$ varies ($k=32$, $T=20$, uniform, non-tiled variant). Speedup = KNN / Approx; values ${<}1$ mean Approx is slower}{table.caption.3}{}}
 \@writefile{lof}{\contentsline {figure}{\numberline {1}{\ignorespaces Runtime vs.\ $N$ (log--log scale). KNN follows $O(N^2)$; Approx KNN has a constant host-side overhead that makes it slower than KNN for small $N$, but wins for $N \ge 25\,000$.}}{7}{figure.caption.4}\protected@file@percent }
 \newlabel{fig:vary_n}{{1}{7}{Runtime vs.\ $N$ (log--log scale). KNN follows $O(N^2)$; Approx KNN has a constant host-side overhead that makes it slower than KNN for small $N$, but wins for $N \ge 25\,000$}{figure.caption.4}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {2}{\ignorespaces Speedup of Approx KNN over Exact KNN vs.\ $N$. Values below 1 indicate Approx is slower. The cross-over occurs near $N=25\,000$; at $N=100\,000$ Approx KNN is $2.6\times $ faster.}}{7}{figure.caption.5}\protected@file@percent }
+\newlabel{fig:speedup_n}{{2}{7}{Speedup of Approx KNN over Exact KNN vs.\ $N$. Values below 1 indicate Approx is slower. The cross-over occurs near $N=25\,000$; at $N=100\,000$ Approx KNN is $2.6\times $ faster}{figure.caption.5}{}}
 \@writefile{toc}{\contentsline {subsection}{\numberline {5.2}Tiled vs.\ Non-Tiled Exact KNN}{7}{subsection.5.2}\protected@file@percent }
-\@writefile{lot}{\contentsline {table}{\numberline {3}{\ignorespaces Exact KNN runtime (seconds): tiled vs.\ non-tiled ($k=32$, $T=20$, uniform). Speedup is Tiled/Non-tiled; values $>1$ favour tiling.}}{7}{table.caption.5}\protected@file@percent }
-\newlabel{tab:tiled_vs_notiled}{{3}{7}{Exact KNN runtime (seconds): tiled vs.\ non-tiled ($k=32$, $T=20$, uniform). Speedup is Tiled/Non-tiled; values $>1$ favour tiling}{table.caption.5}{}}
+\@writefile{lot}{\contentsline {table}{\numberline {3}{\ignorespaces Exact KNN runtime (seconds): tiled vs.\ non-tiled ($k=32$, $T=20$, uniform). Speedup is Tiled/Non-tiled; values $>1$ favour tiling.}}{8}{table.caption.6}\protected@file@percent }
+\newlabel{tab:tiled_vs_notiled}{{3}{8}{Exact KNN runtime (seconds): tiled vs.\ non-tiled ($k=32$, $T=20$, uniform). Speedup is Tiled/Non-tiled; values $>1$ favour tiling}{table.caption.6}{}}
 \@writefile{toc}{\contentsline {subsection}{\numberline {5.3}Scalability with $k$ (Group B)}{8}{subsection.5.3}\protected@file@percent }
-\@writefile{lot}{\contentsline {table}{\numberline {4}{\ignorespaces Group B: Runtime (seconds) as $k$ varies ($N=10\,000$, $T=20$, uniform, non-tiled).}}{8}{table.caption.6}\protected@file@percent }
-\newlabel{tab:vary_k}{{4}{8}{Group B: Runtime (seconds) as $k$ varies ($N=10\,000$, $T=20$, uniform, non-tiled)}{table.caption.6}{}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {5.4}K-Means Iterations $T$ (Group C)}{8}{subsection.5.4}\protected@file@percent }
-\@writefile{lot}{\contentsline {table}{\numberline {5}{\ignorespaces Group C: K-Means runtime (seconds) as $T$ varies ($N=10\,000$, $k=32$, uniform, non-tiled). KNN and Approx timings are independent of $T$.}}{8}{table.caption.7}\protected@file@percent }
-\newlabel{tab:vary_T}{{5}{8}{Group C: K-Means runtime (seconds) as $T$ varies ($N=10\,000$, $k=32$, uniform, non-tiled). KNN and Approx timings are independent of $T$}{table.caption.7}{}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {5.5}Data Distribution Effects (Group D)}{8}{subsection.5.5}\protected@file@percent }
-\@writefile{lot}{\contentsline {table}{\numberline {6}{\ignorespaces Group D: Effect of distribution ($N=10\,000$, $k=32$, $T=20$, non-tiled).}}{9}{table.caption.8}\protected@file@percent }
-\newlabel{tab:vary_dist}{{6}{9}{Group D: Effect of distribution ($N=10\,000$, $k=32$, $T=20$, non-tiled)}{table.caption.8}{}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {5.6}Spatial Hash vs.\ Grid Approximate KNN}{9}{subsection.5.6}\protected@file@percent }
-\@writefile{lot}{\contentsline {table}{\numberline {7}{\ignorespaces Approx KNN: Grid vs.\ Spatial Hash ($k=32$, $T=20$, uniform, non-tiled KNN). Speedup = Grid / Hash; values ${>}1$ mean Hash is faster.}}{9}{table.caption.9}\protected@file@percent }
-\newlabel{tab:spatial_hash}{{7}{9}{Approx KNN: Grid vs.\ Spatial Hash ($k=32$, $T=20$, uniform, non-tiled KNN). Speedup = Grid / Hash; values ${>}1$ mean Hash is faster}{table.caption.9}{}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {5.7}Coordinate Range Effects (Group G)}{9}{subsection.5.7}\protected@file@percent }
-\@writefile{lot}{\contentsline {table}{\numberline {8}{\ignorespaces Group G: Effect of coordinate range $R$ ($N=10\,000$, $k=32$, $T=20$, uniform, non-tiled, grid approx).}}{10}{table.caption.10}\protected@file@percent }
-\newlabel{tab:vary_range}{{8}{10}{Group G: Effect of coordinate range $R$ ($N=10\,000$, $k=32$, $T=20$, uniform, non-tiled, grid approx)}{table.caption.10}{}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {5.8}Large-Scale Benchmarks (Group F)}{10}{subsection.5.8}\protected@file@percent }
-\@writefile{lot}{\contentsline {table}{\numberline {9}{\ignorespaces Group F: Large-scale results ($N=100\,000$, non-tiled, grid approx).}}{10}{table.caption.11}\protected@file@percent }
-\newlabel{tab:large}{{9}{10}{Group F: Large-scale results ($N=100\,000$, non-tiled, grid approx)}{table.caption.11}{}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {5.9}Correctness Verification (Group E)}{10}{subsection.5.9}\protected@file@percent }
-\@writefile{lot}{\contentsline {table}{\numberline {10}{\ignorespaces Group E: Correctness vs.\ sequential Python reference ($N=1000$, tiled). KNN MAE and K-Means MAE are 0.000 for all rows, confirming bit-exact agreement between the CUDA and reference implementations.}}{11}{table.caption.12}\protected@file@percent }
-\newlabel{tab:correctness}{{10}{11}{Group E: Correctness vs.\ sequential Python reference ($N=1000$, tiled). KNN MAE and K-Means MAE are 0.000 for all rows, confirming bit-exact agreement between the CUDA and reference implementations}{table.caption.12}{}}
-\@writefile{toc}{\contentsline {section}{\numberline {6}Discussion}{11}{section.6}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsection}{\numberline {6.1}Summary of Optimisation Gains}{11}{subsection.6.1}\protected@file@percent }
-\@writefile{lot}{\contentsline {table}{\numberline {11}{\ignorespaces Summary of optimisation impacts.}}{11}{table.caption.13}\protected@file@percent }
-\newlabel{tab:summary}{{11}{11}{Summary of optimisation impacts}{table.caption.13}{}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {6.2}Register Pressure and Tiling Limits}{11}{subsection.6.2}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsection}{\numberline {6.3}Approximate KNN Accuracy}{11}{subsection.6.3}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsection}{\numberline {6.4}Spatial Hashing vs.\ Grid: When to Use Which}{12}{subsection.6.4}\protected@file@percent }
-\@writefile{toc}{\contentsline {section}{\numberline {7}Conclusion}{12}{section.7}\protected@file@percent }
-\gdef \@abspage@last{12}
+\@writefile{lot}{\contentsline {table}{\numberline {4}{\ignorespaces Group B: Runtime (seconds) as $k$ varies ($N=10\,000$, $T=20$, uniform, non-tiled).}}{8}{table.caption.7}\protected@file@percent }
+\newlabel{tab:vary_k}{{4}{8}{Group B: Runtime (seconds) as $k$ varies ($N=10\,000$, $T=20$, uniform, non-tiled)}{table.caption.7}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {3}{\ignorespaces Runtime vs.\ $k$ ($N=10\,000$, $T=20$, uniform). Exact KNN grows sub-linearly due to $O(\log k)$ heap cost; K-Means is nearly flat. The spike in Approx at $k=8$ reflects the grid-heuristic edge case ($k/27 < 1$).}}{9}{figure.caption.8}\protected@file@percent }
+\newlabel{fig:vary_k}{{3}{9}{Runtime vs.\ $k$ ($N=10\,000$, $T=20$, uniform). Exact KNN grows sub-linearly due to $O(\log k)$ heap cost; K-Means is nearly flat. The spike in Approx at $k=8$ reflects the grid-heuristic edge case ($k/27 < 1$)}{figure.caption.8}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {5.4}K-Means Iterations $T$ (Group C)}{9}{subsection.5.4}\protected@file@percent }
+\@writefile{lot}{\contentsline {table}{\numberline {5}{\ignorespaces Group C: K-Means runtime (seconds) as $T$ varies ($N=10\,000$, $k=32$, uniform, non-tiled). KNN and Approx timings are independent of $T$.}}{9}{table.caption.9}\protected@file@percent }
+\newlabel{tab:vary_T}{{5}{9}{Group C: K-Means runtime (seconds) as $T$ varies ($N=10\,000$, $k=32$, uniform, non-tiled). KNN and Approx timings are independent of $T$}{table.caption.9}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {4}{\ignorespaces K-Means runtime vs.\ $T$ ($N=10\,000$, $k=32$, uniform). Sub-linear growth from $T=1$ to $T=50$ ($1.5\times $) reflects on-device early-exit: most clusters converge well before the iteration budget is exhausted.}}{10}{figure.caption.10}\protected@file@percent }
+\newlabel{fig:vary_T}{{4}{10}{K-Means runtime vs.\ $T$ ($N=10\,000$, $k=32$, uniform). Sub-linear growth from $T=1$ to $T=50$ ($1.5\times $) reflects on-device early-exit: most clusters converge well before the iteration budget is exhausted}{figure.caption.10}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {5.5}Data Distribution Effects (Group D)}{10}{subsection.5.5}\protected@file@percent }
+\@writefile{lot}{\contentsline {table}{\numberline {6}{\ignorespaces Group D: Effect of distribution ($N=10\,000$, $k=32$, $T=20$, non-tiled).}}{10}{table.caption.11}\protected@file@percent }
+\newlabel{tab:vary_dist}{{6}{10}{Group D: Effect of distribution ($N=10\,000$, $k=32$, $T=20$, non-tiled)}{table.caption.11}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {5.6}Spatial Hash vs.\ Grid Approximate KNN}{10}{subsection.5.6}\protected@file@percent }
+\@writefile{lot}{\contentsline {table}{\numberline {7}{\ignorespaces Approx KNN: Grid vs.\ Spatial Hash ($k=32$, $T=20$, uniform, non-tiled KNN). Speedup = Grid / Hash; values ${>}1$ mean Hash is faster.}}{10}{table.caption.12}\protected@file@percent }
+\newlabel{tab:spatial_hash}{{7}{10}{Approx KNN: Grid vs.\ Spatial Hash ($k=32$, $T=20$, uniform, non-tiled KNN). Speedup = Grid / Hash; values ${>}1$ mean Hash is faster}{table.caption.12}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {5.7}Coordinate Range Effects (Group G)}{11}{subsection.5.7}\protected@file@percent }
+\@writefile{lot}{\contentsline {table}{\numberline {8}{\ignorespaces Group G: Effect of coordinate range $R$ ($N=10\,000$, $k=32$, $T=20$, uniform, non-tiled, grid approx).}}{11}{table.caption.13}\protected@file@percent }
+\newlabel{tab:vary_range}{{8}{11}{Group G: Effect of coordinate range $R$ ($N=10\,000$, $k=32$, $T=20$, uniform, non-tiled, grid approx)}{table.caption.13}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {5.8}Large-Scale Benchmarks (Group F)}{11}{subsection.5.8}\protected@file@percent }
+\@writefile{lot}{\contentsline {table}{\numberline {9}{\ignorespaces Group F: Large-scale results ($N=100\,000$, non-tiled, grid approx).}}{11}{table.caption.14}\protected@file@percent }
+\newlabel{tab:large}{{9}{11}{Group F: Large-scale results ($N=100\,000$, non-tiled, grid approx)}{table.caption.14}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {5.9}Correctness Verification (Group E)}{12}{subsection.5.9}\protected@file@percent }
+\@writefile{lot}{\contentsline {table}{\numberline {10}{\ignorespaces Group E: Correctness vs.\ sequential Python reference ($N=1000$, tiled). KNN MAE and K-Means MAE are 0.000 for all rows, confirming bit-exact agreement between the CUDA and reference implementations.}}{12}{table.caption.15}\protected@file@percent }
+\newlabel{tab:correctness}{{10}{12}{Group E: Correctness vs.\ sequential Python reference ($N=1000$, tiled). KNN MAE and K-Means MAE are 0.000 for all rows, confirming bit-exact agreement between the CUDA and reference implementations}{table.caption.15}{}}
+\@writefile{toc}{\contentsline {section}{\numberline {6}Discussion}{12}{section.6}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {6.1}Summary of Optimisation Gains}{12}{subsection.6.1}\protected@file@percent }
+\@writefile{lot}{\contentsline {table}{\numberline {11}{\ignorespaces Summary of optimisation impacts.}}{12}{table.caption.16}\protected@file@percent }
+\newlabel{tab:summary}{{11}{12}{Summary of optimisation impacts}{table.caption.16}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {6.2}Register Pressure and Tiling Limits}{12}{subsection.6.2}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {6.3}Approximate KNN Accuracy}{12}{subsection.6.3}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {6.4}Spatial Hashing vs.\ Grid: When to Use Which}{13}{subsection.6.4}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{\numberline {7}Conclusion}{13}{section.7}\protected@file@percent }
+\gdef \@abspage@last{13}

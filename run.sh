@@ -2,6 +2,7 @@
 #PBS -N histogram_eq
 #PBS -o output.log
 #PBS -e error.log
+#PBS -q standard
 #PBS -P col7880.ee1221163.course
 #PBS -l select=1:ncpus=8:ngpus=1:mem=16G
 #PBS -l walltime=04:00:00

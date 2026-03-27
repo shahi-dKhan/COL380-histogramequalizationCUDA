@@ -1,6 +1,6 @@
 # Fdb version 4
-["pdflatex"] 1774615082.72195 "/Users/shahidkhan/Documents/Acads/Sem8/Parallel_Prog/Assignment2/COL380-histogramequalizationCUDA/report.tex" "report.pdf" "report" 1774615084.37867 0
-  "/Users/shahidkhan/Documents/Acads/Sem8/Parallel_Prog/Assignment2/COL380-histogramequalizationCUDA/report.tex" 1774615082.70658 30850 2b4d43e612b4f937b72b084ae237e165 ""
+["pdflatex"] 1774622517.73754 "/Users/shahidkhan/Documents/Acads/Sem8/Parallel_Prog/Assignment2/COL380-histogramequalizationCUDA/report.tex" "report.pdf" "report" 1774622519.80349 0
+  "/Users/shahidkhan/Documents/Acads/Sem8/Parallel_Prog/Assignment2/COL380-histogramequalizationCUDA/report.tex" 1774622517.39407 32202 95591a4e0ce3b2e00aceab73cbfdc3e9 ""
   "/usr/local/texlive/2024/texmf-dist/fonts/enc/dvips/cm-super/cm-super-ts1.enc" 1136849721 2900 1537cc8184ad1792082cd229ecc269f4 ""
   "/usr/local/texlive/2024/texmf-dist/fonts/map/fontname/texfonts.map" 1577235249 3524 cb3e574dea2d1052e39280babc910dc8 ""
   "/usr/local/texlive/2024/texmf-dist/fonts/tfm/jknappen/ec/tcrm1095.tfm" 1136768653 1536 02c06700a42be0f5a28664c7273f82e7 ""
@@ -219,10 +219,10 @@
   "/usr/local/texlive/2024/texmf-var/fonts/map/pdftex/updmap/pdftex.map" 1735154789.85033 5467645 128b85b7cde5f5edc5cb7f1dd7ff8736 ""
   "/usr/local/texlive/2024/texmf-var/web2c/pdftex/pdflatex.fmt" 1735154766 8221440 073c4267ee014c64425308f1e292fa56 ""
   "/usr/local/texlive/2024/texmf.cnf" 1710266656 577 e590dabc9e28c5b61546e15f63eebcdf ""
-  "report.aux" 1774615084.24847 8977 644c63cdd83bb8e816dea77eab4429e9 "pdflatex"
-  "report.out" 1774615084.25026 6062 c84862c88cf65a02a4d113d7e10598c4 "pdflatex"
-  "report.tex" 1774615082.70658 30850 2b4d43e612b4f937b72b084ae237e165 ""
-  "report.toc" 1774615084.25078 2752 c175540e181d6e99a4d243fb0ff2b4e6 "pdflatex"
+  "report.aux" 1774622519.65911 10709 70be3de77c3ccb511aa059e5e9726429 "pdflatex"
+  "report.out" 1774622519.66085 6062 c84862c88cf65a02a4d113d7e10598c4 "pdflatex"
+  "report.tex" 1774622517.39407 32202 95591a4e0ce3b2e00aceab73cbfdc3e9 ""
+  "report.toc" 1774622519.66134 2755 1c5f585e36a8fc98bb0e147a2a09236d "pdflatex"
   (generated)
   "report.aux"
   "report.log"

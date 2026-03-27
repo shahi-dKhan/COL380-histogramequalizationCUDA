@@ -27,8 +27,8 @@
 }
 
 \title{\textbf{GPU-Accelerated 3D Point Cloud Histogram Equalization}\\
-\large COL380 Assignment 2 -- CUDA Implementation and Analysis}
-\author{Shahid Khan \\ ee1221163}
+\large COL730 Assignment 2 -- CUDA Implementation and Analysis}
+\author{Shahid Khan \\ 2022EE11163}
 \date{}
 
 \begin{document}
@@ -55,7 +55,7 @@ Department of Computer Science and Engineering\\[0.5em]
 
 Histogram equalization is a classical image-processing technique that improves
 contrast by redistributing intensity values so that the empirical CDF of the
-output is approximately uniform.  This assignment extends that idea to a 3-D
+output is approximately uniform. This assignment extends that idea to a 3-D
 point cloud: each point $p_i$ carries an intensity $I_i\in[0,255]$, and its
 equalized intensity is computed from the local neighbourhood histogram using
 \begin{equation}
@@ -227,10 +227,9 @@ nvcc -O3 -arch=sm_35 -Xcompiler -fopenmp solution.cu -o a2
 \end{lstlisting}
 
 \begin{itemize}
-  \item \texttt{-O3}
-
-  \item \texttt{-arch=sm\_35}
-  
+  \item \textbf{\texttt{-O3}}: aggressive inlining, loop unrolling, and instruction scheduling on host and device; passed to \texttt{ptxas} for register-level optimisation.
+  \item \textbf{\texttt{-arch=sm\_35}}: targets Kepler compute capability 3.5, exposing the full PTX ISA without fat-binary overhead.
+  \item \textbf{\texttt{-Xcompiler -fopenmp}}: enables OpenMP SIMD pragmas for host-side loops (e.g.\ the counting-sort grid build).
 \end{itemize}
 
 \subsection{Heap vs.\ Unsorted Array for Exact KNN}
@@ -304,15 +303,11 @@ G & $R \in \{100,1\text{K},10\text{K},100\text{K},1\text{M}\}$, $N=10\text{K}$, 
 
 \subsection{Scalability with \texorpdfstring{$N$}{N} (Group A)}
 
-Table~\ref{tab:vary_n} shows timings for the non-tiled variant as $N$ grows
-from 1000 to 100\,000.  Exact KNN shows clear $O(N^2)$ scaling: doubling $N$
-from 50K to 100K doubles the KNN time ($0.050 \to 0.101$\,s).
-An interesting cross-over effect is visible: for $N \le 10\,000$ the
-approximate KNN is actually \emph{slower} than exact KNN because the host-side
-grid build (counting sort, cell assignment) incurs a fixed overhead that
-dominates when $N^2$ is still small.  Approximate KNN becomes faster only
-from $N \approx 25\,000$, reaching a $2.6\times$ advantage at $N=100\,000$.
-K-Means remains the fastest method throughout the range.
+Exact KNN shows clear $O(N^2)$ scaling: doubling $N$ from 50K to 100K doubles
+its time ($0.050 \to 0.101$\,s).  Approximate KNN is slower than exact KNN for
+$N \le 10\,000$, where the fixed host-side grid build dominates; it becomes
+faster from $N \approx 25\,000$, reaching $2.6\times$ at $N=100\,000$.
+K-Means is fastest throughout.
 
 \begin{table}[H]
 \centering
@@ -370,17 +365,43 @@ but wins for $N \ge 25\,000$.}
 \label{fig:vary_n}
 \end{figure}
 
+\begin{figure}[H]
+\centering
+\begin{tikzpicture}
+\begin{axis}[
+  xlabel={$N$ (points)},
+  ylabel={Speedup (KNN time / Approx time)},
+  xmode=log,
+  width=0.75\textwidth,
+  height=6cm,
+  legend pos=north west,
+  grid=both,
+  xtick={1000,5000,10000,25000,50000,100000},
+  xticklabels={1K,5K,10K,25K,50K,100K},
+  ymin=0,
+]
+\addplot[orange,mark=diamond*,thick] coordinates {
+  (1000,0.29)(5000,0.61)(10000,0.62)(25000,1.17)(50000,1.78)(100000,2.63)
+};
+\addlegendentry{Approx KNN speedup over Exact KNN}
+\addplot[dashed,gray,thick,domain=1000:100000] {1};
+\addlegendentry{Break-even ($1\times$)}
+\end{axis}
+\end{tikzpicture}
+\caption{Speedup of Approx KNN over Exact KNN vs.\ $N$.  Values below 1
+indicate Approx is slower.  The cross-over occurs near $N=25\,000$; at
+$N=100\,000$ Approx KNN is $2.6\times$ faster.}
+\label{fig:speedup_n}
+\end{figure}
+
 \subsection{Tiled vs.\ Non-Tiled Exact KNN}
 
 Table~\ref{tab:tiled_vs_notiled} compares the two KNN variants across $N$.
-Contrary to the theoretical $128\times$ bandwidth reduction, the tiled kernel
-shows \emph{no consistent advantage}.  At $N=1\,000$ it is $2.4\times$
-\emph{slower} --- the extra \texttt{\_\_syncthreads} overhead dominates when
-the total work is tiny and the launch is kernel-overhead bound.  For
-$N \ge 5\,000$ the two variants are within $\pm13\%$, essentially tied.
-The gain is masked by register pressure: with $k=32$, each thread holds a
-32-entry heap plus a 256-bin histogram, leaving little room for tile data
-without spilling to local memory.
+Contrary to the theoretical $128\times$ bandwidth reduction, tiling shows no
+consistent advantage: $2.4\times$ slower at $N=1\,000$ (\texttt{\_\_syncthreads}
+overhead dominates), within $\pm13\%$ for $N \ge 5\,000$.  Register pressure
+masks the gain: at $k=32$ each thread's heap plus 256-bin histogram exhausts
+the register budget, causing spills regardless of tiling.
 
 \begin{table}[H]
 \centering
@@ -401,12 +422,10 @@ $N$ & Tiled (s) & Non-tiled (s) & Tiled/Non-tiled \\
 \end{tabular}
 \end{table}
 
-\noindent\textbf{Large-scale} ($N=100\text{K}$, $k=128$, $T=50$):
-tiled takes $0.295$\,s and non-tiled $0.279$\,s --- non-tiled is marginally
-faster ($1.06\times$).  At $k=128$, the 128-element heap saturates the SM
-register file, forcing spills to local memory regardless of tiling; the extra
-synchronization overhead in the tiled kernel then tips the balance against it.
-The non-tiled kernel is used in the final \texttt{a2} binary.
+\noindent\textbf{Large-scale} ($N=100\text{K}$, $k=128$, $T=50$): tiled
+$0.295$\,s vs.\ non-tiled $0.279$\,s ($1.06\times$ in favour of non-tiled).
+At $k=128$ heap spills occur regardless of tiling; extra sync overhead tips
+the balance further against tiling.  Non-tiled is used in \texttt{a2}.
 
 \subsection{Scalability with \texorpdfstring{$k$}{k} (Group B)}
 
@@ -433,19 +452,52 @@ $k$ & KNN (s) & Approx (s) & K-Means (s) & Approx MAE \\
 \end{tabular}
 \end{table}
 
-KNN runtime grows with $k$ because more heap operations are needed per point.
-The growth from $k=1$ to $k=128$ is roughly $3.0\times$ ($0.00898 \to 0.02738$\,s),
-less than linear because the heap-insert cost is $O(\log k)$.
-At $k=128$, the exact KNN ($0.027$\,s) is actually \emph{slower} than the
-approximate KNN ($0.017$\,s), since the heap overhead at large $k$ outweighs
-the approx grid's per-candidate search.
+KNN runtime grows $3.0\times$ from $k=1$ to $k=128$ ($0.009 \to 0.027$\,s),
+sub-linearly due to $O(\log k)$ heap-insert cost.  At $k=128$, exact KNN
+($0.027$\,s) is slower than approximate KNN ($0.017$\,s) because heap overhead
+outweighs the grid's search cost.
 
-The approximate MAE is non-monotone: $k=8$ exhibits a notably high MAE of
-2.166.  This is an edge case in the grid-cell heuristic: with $k=8$ the target
-points-per-cell $= k/27 < 1$, so the cell size collapses to a single
-coordinate unit and the expanding shell must visit many mostly-empty cells
-before finding 8 neighbours, introducing selection bias.  For $k\ge 16$ the
-heuristic recovers and MAE falls to $\sim 0.15$--0.25.
+Approximate MAE is non-monotone: $k=8$ gives MAE $= 2.166$ because
+$k/27 < 1$ collapses the cell size to one coordinate unit, forcing the shell
+to traverse many empty cells.  For $k \ge 16$ the heuristic recovers
+($\text{MAE} \approx 0.15$--$0.25$).
+
+\begin{figure}[H]
+\centering
+\begin{tikzpicture}
+\begin{axis}[
+  xlabel={$k$ (neighbourhood size)},
+  ylabel={Time (s)},
+  xmode=log,
+  log basis x=2,
+  width=0.75\textwidth,
+  height=6cm,
+  legend pos=north west,
+  grid=both,
+  xtick={1,4,8,16,32,64,128},
+  xticklabels={1,4,8,16,32,64,128},
+]
+\addplot[blue,mark=*,thick] coordinates {
+  (1,0.00898)(4,0.00808)(8,0.00911)(16,0.00948)(32,0.01284)(64,0.01641)(128,0.02738)
+};
+\addlegendentry{Exact KNN}
+
+\addplot[red,mark=square*,thick] coordinates {
+  (1,0.01149)(4,0.01058)(8,0.01903)(16,0.01063)(32,0.01739)(64,0.02154)(128,0.01748)
+};
+\addlegendentry{Approx KNN}
+
+\addplot[green!60!black,mark=triangle*,thick] coordinates {
+  (1,0.00586)(4,0.00563)(8,0.00527)(16,0.00612)(32,0.00699)(64,0.00636)(128,0.00684)
+};
+\addlegendentry{K-Means}
+\end{axis}
+\end{tikzpicture}
+\caption{Runtime vs.\ $k$ ($N=10\,000$, $T=20$, uniform).  Exact KNN grows
+sub-linearly due to $O(\log k)$ heap cost; K-Means is nearly flat.  The spike
+in Approx at $k=8$ reflects the grid-heuristic edge case ($k/27 < 1$).}
+\label{fig:vary_k}
+\end{figure}
 
 \subsection{K-Means Iterations \texorpdfstring{$T$}{T} (Group C)}
 
@@ -476,6 +528,30 @@ early.  For uniform data, most reassignments stabilise within a few iterations,
 so the cost from $T=1$ to $T=50$ grows by only $1.5\times$ ($0.00505 \to 0.00761$\,s)
 despite a $50\times$ iteration budget.
 
+\begin{figure}[H]
+\centering
+\begin{tikzpicture}
+\begin{axis}[
+  xlabel={$T$ (max iterations)},
+  ylabel={K-Means time (s)},
+  width=0.75\textwidth,
+  height=6cm,
+  grid=both,
+  xtick={1,5,10,20,50},
+  ymin=0,
+  ymax=0.010,
+]
+\addplot[violet,mark=*,thick] coordinates {
+  (1,0.00505)(5,0.00560)(10,0.00596)(20,0.00625)(50,0.00761)
+};
+\end{axis}
+\end{tikzpicture}
+\caption{K-Means runtime vs.\ $T$ ($N=10\,000$, $k=32$, uniform).  Sub-linear
+growth from $T=1$ to $T=50$ ($1.5\times$) reflects on-device early-exit: most
+clusters converge well before the iteration budget is exhausted.}
+\label{fig:vary_T}
+\end{figure}
+
 \subsection{Data Distribution Effects (Group D)}
 
 Table~\ref{tab:vary_dist} compares all four input distributions at
@@ -501,11 +577,9 @@ Skewed    & 0.01293 & 0.02160 & 0.00602 & 0.155 \\
 \textbf{Exact KNN} is nearly identical across distributions since it always
 scans all $N$ points.
 
-\textbf{Approximate KNN} is similar across all four distributions at this scale.
-The skewed distribution is only $1.6\times$ slower than uniform ($0.022$
-vs.\ $0.013$\,s), a milder penalty than expected: the grid heuristic sizes
-cells proportionally to the bounding volume, so even a bimodal point spread
-converges in a comparable number of shell expansions.
+\textbf{Approximate KNN} is similar across distributions; skewed is only
+$1.6\times$ slower than uniform ($0.022$ vs.\ $0.013$\,s) because the grid
+sizes cells proportionally to the bounding volume.
 
 The clustered distribution yields \textbf{zero MAE} for approximate KNN: since
 all intra-cluster distances are small and inter-cluster distances are large, the
@@ -536,13 +610,11 @@ $N$ & Grid (s) & Spatial Hash (s) & Grid/Hash \\
 \end{tabular}
 \end{table}
 
-The results are mixed: spatial hashing is faster at $N \le 10\,000$ (up to
-$1.7\times$ at $N=1\,000$) and also at $N=50\,000$ ($1.4\times$), while the
-flat grid wins at $N=25\,000$ and $N=100\,000$ ($\sim 0.9\times$).  Neither
-variant dominates consistently across the full range.  Hashing's advantage at
-small $N$ comes from skipping empty cells cheaply (head $= -1$), while the
-grid's advantage at very large $N$ reflects coalesced sequential cell-array
-access versus hash-chain pointer chasing.
+Neither variant dominates: hashing is faster at $N \le 10\,000$ (up to
+$1.7\times$ at $N=1\,000$) and at $N=50\,000$ ($1.4\times$), while the grid
+wins at $N=25\,000$ and $N=100\,000$ ($\sim 0.9\times$).  Hashing skips empty
+cells cheaply (\texttt{head}$\,=\,-1$); the grid benefits from coalesced
+sequential access at large $N$.
 
 Both variants produce identical MAE values, confirming that spatial hashing
 does not alter approximation quality --- only the data structure changes.
@@ -653,11 +725,11 @@ optimisation across all test groups.
 \centering
 \caption{Summary of optimisation impacts.}
 \label{tab:summary}
-\begin{tabular}{lll}
+\begin{tabular}{llp{4.5cm}}
 \toprule
 Optimisation & Best-case speedup & Regime \\
 \midrule
-Tiled KNN            & $2.4\times$ \emph{slower} at $N=1\text{K}$; $\pm13\%$ for $N\ge5\text{K}$ & register pressure + sync overhead \\
+Tiled KNN            & $2.4\times$ slower at $N=1\text{K}$; $\pm13\%$ for $N\ge5\text{K}$ & register pressure + sync overhead \\
 Unsorted array KNN   & $3.1\times$ slower & $k=128$, $N=10\text{K}$ (heap wins at large $k$) \\
 Spatial Hash Approx  & 1.7$\times$ faster  & $N=1\,000$ \\
 Spatial Hash Approx  & 0.9$\times$         & $N=100\text{K}$ (grid is faster) \\
@@ -668,17 +740,14 @@ Approx vs.\ Exact    & up to 2.6$\times$   & $N=100\text{K}$, $k=32$ \\
 
 \subsection{Register Pressure and Tiling Limits}
 
-The most significant bottleneck for the exact KNN kernel is register pressure.
-Each thread holds \texttt{heap\_dist[MAX\_K]} (up to 1\,kB), \texttt{heap\_idx[MAX\_K]}
-(up to 512\,B), and \texttt{hist[256]} (1\,kB) --- approximately 640 registers
-at $k=128$ if kept live simultaneously.  The SM on sm\_35 limits each block to
-65536 registers, so with BLOCK\_SIZE\,=\,128 the per-thread budget is 512
-registers; the heap and histogram together exceed this, causing spilling to
-local memory.  Tiling reduces global-memory bandwidth in theory, but the
-local-memory spill traffic replaces it, leaving the measured speedup negligible
-($\pm2\%$) across all tested sizes.  The practical conclusion is that tiling
-provides no benefit on sm\_35 for this kernel; a different approach (e.g.\
-reducing per-thread state via warp-cooperative heap updates) would be needed.
+The exact KNN kernel is bottlenecked by register pressure.  Each thread holds
+\texttt{heap\_dist[MAX\_K]} ($\le$1\,kB), \texttt{heap\_idx[MAX\_K]} ($\le$512\,B),
+and \texttt{hist[256]} (1\,kB) --- $\approx$640 registers at $k=128$.  On
+sm\_35 with BLOCK\_SIZE$\,=\,$128, the per-thread budget is 512 registers
+(65536 per block), so both arrays spill to local memory.  Tiling reduces global
+bandwidth in theory, but local-memory spill traffic replaces it, leaving
+speedup negligible ($\pm2\%$); warp-cooperative heap updates would be needed to
+reduce per-thread state.
 
 \subsection{Approximate KNN Accuracy}
 
