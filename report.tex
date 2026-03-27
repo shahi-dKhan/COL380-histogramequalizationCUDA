@@ -218,11 +218,7 @@ Variant & \texttt{TILED\_KNN} & \texttt{SPATIAL\_HASH} & \texttt{UNSORTED\_ARRAY
 
 Based on the results (Section~\ref{sec:results}), the non-tiled KNN with
 max-heap and the uniform-grid approx KNN were selected as the best-performing
-combination.  The final submission is a single \texttt{a2} binary built with:
-\begin{lstlisting}
-nvcc -O3 -arch=sm_35 -Xcompiler -fopenmp solution.cu -o a2
-\end{lstlisting}
-Usage: \texttt{./a2 input.txt knn|approx\_knn|kmeans}
+combination.  
 
 \subsection{Heap vs.\ Unsorted Array for Exact KNN}
 
@@ -243,15 +239,7 @@ structure for the full $k \le 128$ range and is used in the final \texttt{a2}.
 \section{Experimental Setup}
 % =============================================================================
 
-\textbf{Hardware}: 1 PBS node with 8 CPU cores (OMP\_NUM\_THREADS=8), 1 NVIDIA
-GPU (CUDA 11.0, sm\_35 target), 16\,GB host RAM.
 
-\textbf{Compiler}: \texttt{nvcc -O3 -arch=sm\_35 -Xcompiler -fopenmp}.
-
-\textbf{Input generation}: A Python script (\texttt{gen\_input.py}) generates
-$N$ unique 3-D integer points with intensity $\in[0,255]$ under four
-distributions (Table~\ref{tab:dists}).  All runs use seed 42 for
-reproducibility.
 
 \begin{table}[H]
 \centering
@@ -636,17 +624,9 @@ $k=32$, skewed    & 0.000 & 0.000 & 0.111 \\
 \end{tabular}
 \end{table}
 
-The GPU exact KNN matches the sequential Python reference \emph{exactly}
-(MAE\,=\,0.000 for every test case), confirming correctness of both the
-distance computation and the histogram equalization step.
 
 K-Means MAE vs.\ sequential is 0.000 for all cases, confirming bit-exact
-agreement between the CUDA and reference implementations.  Both use the first
-$k$ points as initial centroids, integer-truncated centroid updates
-($\lfloor \text{sum}/\text{count} \rfloor$), and a lexicographic tie-breaking
-rule on centroid coordinates---ensuring fully deterministic, reproducible
-convergence.
-
+agreement between the CUDA and reference implementations.  
 % =============================================================================
 \section{Discussion}
 % =============================================================================
@@ -743,9 +723,6 @@ The key findings are:
 \end{enumerate}
 
 The best-performing combination (non-tiled KNN + max-heap + uniform-grid approx)
-is consolidated into a single \texttt{a2} binary.  Future work could reduce
-per-thread register pressure via warp-cooperative heap updates to unlock the
-full shared-memory tiling benefit, or explore multi-GPU partitioning for
-$N > 100\,000$.
+is consolidated into a single \texttt{a2} binary. 
 
 \end{document}

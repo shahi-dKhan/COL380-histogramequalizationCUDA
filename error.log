@@ -55,3 +55,62 @@ solution.cu(436): warning: function "run_approx_knn_grid" was declared but never
 nvcc warning : The 'compute_35', 'compute_37', 'compute_50', 'sm_35', 'sm_37' and 'sm_50' architectures are deprecated, and may be removed in a future release (Use -Wno-deprecated-gpu-targets to suppress warning).
 solution.cu(436): warning: function "run_approx_knn_grid" was declared but never referenced
 
+nvcc warning : The 'compute_35', 'compute_37', 'compute_50', 'sm_35', 'sm_37' and 'sm_50' architectures are deprecated, and may be removed in a future release (Use -Wno-deprecated-gpu-targets to suppress warning).
+solution.cu(521): warning: function "run_approx_knn_hash" was declared but never referenced
+
+nvcc warning : The 'compute_35', 'compute_37', 'compute_50', 'sm_35', 'sm_37' and 'sm_50' architectures are deprecated, and may be removed in a future release (Use -Wno-deprecated-gpu-targets to suppress warning).
+solution.cu(521): warning: function "run_approx_knn_hash" was declared but never referenced
+
+nvcc warning : The 'compute_35', 'compute_37', 'compute_50', 'sm_35', 'sm_37' and 'sm_50' architectures are deprecated, and may be removed in a future release (Use -Wno-deprecated-gpu-targets to suppress warning).
+solution.cu(436): warning: function "run_approx_knn_grid" was declared but never referenced
+
+nvcc warning : The 'compute_35', 'compute_37', 'compute_50', 'sm_35', 'sm_37' and 'sm_50' architectures are deprecated, and may be removed in a future release (Use -Wno-deprecated-gpu-targets to suppress warning).
+solution.cu(436): warning: function "run_approx_knn_grid" was declared but never referenced
+
+nvcc warning : The 'compute_35', 'compute_37', 'compute_50', 'sm_35', 'sm_37' and 'sm_50' architectures are deprecated, and may be removed in a future release (Use -Wno-deprecated-gpu-targets to suppress warning).
+solution.cu(521): warning: function "run_approx_knn_hash" was declared but never referenced
+
+nvcc warning : The 'compute_35', 'compute_37', 'compute_50', 'sm_35', 'sm_37' and 'sm_50' architectures are deprecated, and may be removed in a future release (Use -Wno-deprecated-gpu-targets to suppress warning).
+solution.cu(521): warning: function "run_approx_knn_hash" was declared but never referenced
+
+nvcc warning : The 'compute_35', 'compute_37', 'compute_50', 'sm_35', 'sm_37' and 'sm_50' architectures are deprecated, and may be removed in a future release (Use -Wno-deprecated-gpu-targets to suppress warning).
+solution.cu(436): warning: function "run_approx_knn_grid" was declared but never referenced
+
+nvcc warning : The 'compute_35', 'compute_37', 'compute_50', 'sm_35', 'sm_37' and 'sm_50' architectures are deprecated, and may be removed in a future release (Use -Wno-deprecated-gpu-targets to suppress warning).
+solution.cu(436): warning: function "run_approx_knn_grid" was declared but never referenced
+
+nvcc warning : The 'compute_35', 'compute_37', 'compute_50', 'sm_35', 'sm_37' and 'sm_50' architectures are deprecated, and may be removed in a future release (Use -Wno-deprecated-gpu-targets to suppress warning).
+solution.cu(521): warning: function "run_approx_knn_hash" was declared but never referenced
+
+nvcc warning : The 'compute_35', 'compute_37', 'compute_50', 'sm_35', 'sm_37' and 'sm_50' architectures are deprecated, and may be removed in a future release (Use -Wno-deprecated-gpu-targets to suppress warning).
+solution.cu(521): warning: function "run_approx_knn_hash" was declared but never referenced
+
+nvcc warning : The 'compute_35', 'compute_37', 'compute_50', 'sm_35', 'sm_37' and 'sm_50' architectures are deprecated, and may be removed in a future release (Use -Wno-deprecated-gpu-targets to suppress warning).
+solution.cu(436): warning: function "run_approx_knn_grid" was declared but never referenced
+
+nvcc warning : The 'compute_35', 'compute_37', 'compute_50', 'sm_35', 'sm_37' and 'sm_50' architectures are deprecated, and may be removed in a future release (Use -Wno-deprecated-gpu-targets to suppress warning).
+solution.cu(436): warning: function "run_approx_knn_grid" was declared but never referenced
+
+nvcc warning : The 'compute_35', 'compute_37', 'compute_50', 'sm_35', 'sm_37' and 'sm_50' architectures are deprecated, and may be removed in a future release (Use -Wno-deprecated-gpu-targets to suppress warning).
+solution.cu(204): warning: variable "qI" was declared but never referenced
+
+solution.cu(618): warning: function "run_approx_knn_hash" was declared but never referenced
+
+nvcc warning : The 'compute_35', 'compute_37', 'compute_50', 'sm_35', 'sm_37' and 'sm_50' architectures are deprecated, and may be removed in a future release (Use -Wno-deprecated-gpu-targets to suppress warning).
+solution.cu(296): warning: variable "qI" was declared but never referenced
+
+solution.cu(618): warning: function "run_approx_knn_hash" was declared but never referenced
+
+nvcc warning : The 'compute_35', 'compute_37', 'compute_50', 'sm_35', 'sm_37' and 'sm_50' architectures are deprecated, and may be removed in a future release (Use -Wno-deprecated-gpu-targets to suppress warning).
+solution.cu(204): warning: variable "qI" was declared but never referenced
+
+solution.cu(533): warning: function "run_approx_knn_grid" was declared but never referenced
+
+nvcc warning : The 'compute_35', 'compute_37', 'compute_50', 'sm_35', 'sm_37' and 'sm_50' architectures are deprecated, and may be removed in a future release (Use -Wno-deprecated-gpu-targets to suppress warning).
+solution.cu(296): warning: variable "qI" was declared but never referenced
+
+solution.cu(533): warning: function "run_approx_knn_grid" was declared but never referenced
+
+nvcc warning : The 'compute_35', 'compute_37', 'compute_50', 'sm_35', 'sm_37' and 'sm_50' architectures are deprecated, and may be removed in a future release (Use -Wno-deprecated-gpu-targets to suppress warning).
+solution.cu(618): warning: function "run_approx_knn_hash" was declared but never referenced
+
