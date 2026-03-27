@@ -1,0 +1,527 @@
+========================================
+ BUILD
+========================================
+rm -f a2 *.txt results.csv
+nvcc -O3 -arch=sm_35 -Xcompiler -fopenmp solution.cu -o a2
+
+========================================
+ CORRECTNESS TESTS  (vs sequential.py)
+ N <= 2000: exact MAE=0 required
+ N >  2000: validity check (range + coords)
+========================================
+
+=== Edge / tiny N ===
+  [n=1 k=0 T=1 dist=uniform]
+    knn                       
+    kmeans                    
+    approx_knn                FAIL  [Errno 2] No such file or directory: 'approx_knn.txt'
+
+  [n=2 k=1 T=1 dist=uniform]
+Dataset written to input.txt  [n=2, k=1, T=1, dist=uniform, seed=42, R=10000]
+    knn                       PASS  MAE=0.0000  mismatches=0/2
+    kmeans                    PASS  MAE=0.0000  mismatches=0/2
+    approx_knn                PASS  n=2  all intensities in [0,255]  coords match
+
+  [n=10 k=3 T=5 dist=uniform]
+Dataset written to input.txt  [n=10, k=3, T=5, dist=uniform, seed=42, R=10000]
+    knn                       PASS  MAE=0.0000  mismatches=0/10
+    kmeans                    PASS  MAE=0.0000  mismatches=0/10
+    approx_knn                PASS  n=10  all intensities in [0,255]  coords match
+
+  [n=50 k=10 T=10 dist=uniform]
+Dataset written to input.txt  [n=50, k=10, T=10, dist=uniform, seed=42, R=10000]
+    knn                       PASS  MAE=0.0000  mismatches=0/50
+    kmeans                    PASS  MAE=0.0000  mismatches=0/50
+    approx_knn                PASS  n=50  all intensities in [0,255]  coords match
+
+
+=== Small N: vary k (n=100, T=20, uniform) ===
+  [n=100 k=1 T=20 dist=uniform]
+Dataset written to input.txt  [n=100, k=1, T=20, dist=uniform, seed=42, R=10000]
+    knn                       PASS  MAE=0.0000  mismatches=0/100
+    kmeans                    PASS  MAE=0.0000  mismatches=0/100
+    approx_knn                PASS  n=100  all intensities in [0,255]  coords match
+
+  [n=100 k=4 T=20 dist=uniform]
+Dataset written to input.txt  [n=100, k=4, T=20, dist=uniform, seed=42, R=10000]
+    knn                       PASS  MAE=0.0000  mismatches=0/100
+    kmeans                    PASS  MAE=0.0000  mismatches=0/100
+    approx_knn                PASS  n=100  all intensities in [0,255]  coords match
+
+  [n=100 k=16 T=20 dist=uniform]
+Dataset written to input.txt  [n=100, k=16, T=20, dist=uniform, seed=42, R=10000]
+    knn                       PASS  MAE=0.0000  mismatches=0/100
+    kmeans                    PASS  MAE=0.0000  mismatches=0/100
+    approx_knn                PASS  n=100  all intensities in [0,255]  coords match
+
+  [n=100 k=32 T=20 dist=uniform]
+Dataset written to input.txt  [n=100, k=32, T=20, dist=uniform, seed=42, R=10000]
+    knn                       PASS  MAE=0.0000  mismatches=0/100
+    kmeans                    PASS  MAE=0.0000  mismatches=0/100
+    approx_knn                PASS  n=100  all intensities in [0,255]  coords match
+
+  [n=100 k=64 T=20 dist=uniform]
+Dataset written to input.txt  [n=100, k=64, T=20, dist=uniform, seed=42, R=10000]
+    knn                       PASS  MAE=0.0000  mismatches=0/100
+    kmeans                    PASS  MAE=0.0000  mismatches=0/100
+    approx_knn                PASS  n=100  all intensities in [0,255]  coords match
+
+  [n=100 k=99 T=20 dist=uniform]
+Dataset written to input.txt  [n=100, k=99, T=20, dist=uniform, seed=42, R=10000]
+    knn                       PASS  MAE=0.0000  mismatches=0/100
+    kmeans                    PASS  MAE=0.0000  mismatches=0/100
+    approx_knn                PASS  n=100  all intensities in [0,255]  coords match
+
+
+=== N=500: vary distribution ===
+  [n=500 k=32 T=20 dist=uniform]
+Dataset written to input.txt  [n=500, k=32, T=20, dist=uniform, seed=42, R=10000]
+    knn                       PASS  MAE=0.0000  mismatches=0/500
+    kmeans                    PASS  MAE=0.0000  mismatches=0/500
+    approx_knn                PASS  n=500  all intensities in [0,255]  coords match
+
+  [n=500 k=32 T=20 dist=dense]
+Dataset written to input.txt  [n=500, k=32, T=20, dist=dense, seed=42, R=10000]
+    knn                       PASS  MAE=0.0000  mismatches=0/500
+    kmeans                    PASS  MAE=0.0000  mismatches=0/500
+    approx_knn                PASS  n=500  all intensities in [0,255]  coords match
+
+  [n=500 k=32 T=20 dist=clustered]
+Dataset written to input.txt  [n=500, k=32, T=20, dist=clustered, seed=42, R=10000]
+    knn                       PASS  MAE=0.0000  mismatches=0/500
+    kmeans                    PASS  MAE=0.0000  mismatches=0/500
+    approx_knn                PASS  n=500  all intensities in [0,255]  coords match
+
+  [n=500 k=32 T=20 dist=skewed]
+Dataset written to input.txt  [n=500, k=32, T=20, dist=skewed, seed=42, R=10000]
+    knn                       PASS  MAE=0.0000  mismatches=0/500
+    kmeans                    PASS  MAE=0.0000  mismatches=0/500
+    approx_knn                PASS  n=500  all intensities in [0,255]  coords match
+
+
+=== N=1000: vary k ===
+  [n=1000 k=1 T=20 dist=uniform]
+Dataset written to input.txt  [n=1000, k=1, T=20, dist=uniform, seed=42, R=10000]
+    knn                       PASS  MAE=0.0000  mismatches=0/1000
+    kmeans                    PASS  MAE=0.0000  mismatches=0/1000
+    approx_knn                PASS  n=1000  all intensities in [0,255]  coords match
+
+  [n=1000 k=16 T=20 dist=uniform]
+Dataset written to input.txt  [n=1000, k=16, T=20, dist=uniform, seed=42, R=10000]
+    knn                       PASS  MAE=0.0000  mismatches=0/1000
+    kmeans                    PASS  MAE=0.0000  mismatches=0/1000
+    approx_knn                PASS  n=1000  all intensities in [0,255]  coords match
+
+  [n=1000 k=32 T=20 dist=uniform]
+Dataset written to input.txt  [n=1000, k=32, T=20, dist=uniform, seed=42, R=10000]
+    knn                       PASS  MAE=0.0000  mismatches=0/1000
+    kmeans                    PASS  MAE=0.0000  mismatches=0/1000
+    approx_knn                PASS  n=1000  all intensities in [0,255]  coords match
+
+  [n=1000 k=64 T=20 dist=uniform]
+Dataset written to input.txt  [n=1000, k=64, T=20, dist=uniform, seed=42, R=10000]
+    knn                       PASS  MAE=0.0000  mismatches=0/1000
+    kmeans                    PASS  MAE=0.0000  mismatches=0/1000
+    approx_knn                PASS  n=1000  all intensities in [0,255]  coords match
+
+  [n=1000 k=128 T=20 dist=uniform]
+Dataset written to input.txt  [n=1000, k=128, T=20, dist=uniform, seed=42, R=10000]
+    knn                       PASS  MAE=0.0000  mismatches=0/1000
+    kmeans                    PASS  MAE=0.0000  mismatches=0/1000
+    approx_knn                PASS  n=1000  all intensities in [0,255]  coords match
+
+
+=== N=1000: vary T ===
+  [n=1000 k=32 T=1 dist=uniform]
+Dataset written to input.txt  [n=1000, k=32, T=1, dist=uniform, seed=42, R=10000]
+    knn                       PASS  MAE=0.0000  mismatches=0/1000
+    kmeans                    PASS  MAE=0.0000  mismatches=0/1000
+    approx_knn                PASS  n=1000  all intensities in [0,255]  coords match
+
+  [n=1000 k=32 T=5 dist=uniform]
+Dataset written to input.txt  [n=1000, k=32, T=5, dist=uniform, seed=42, R=10000]
+    knn                       PASS  MAE=0.0000  mismatches=0/1000
+    kmeans                    PASS  MAE=0.0000  mismatches=0/1000
+    approx_knn                PASS  n=1000  all intensities in [0,255]  coords match
+
+  [n=1000 k=32 T=50 dist=uniform]
+Dataset written to input.txt  [n=1000, k=32, T=50, dist=uniform, seed=42, R=10000]
+    knn                       PASS  MAE=0.0000  mismatches=0/1000
+    kmeans                    PASS  MAE=0.0000  mismatches=0/1000
+    approx_knn                PASS  n=1000  all intensities in [0,255]  coords match
+
+
+=== N=2000: distributions ===
+  [n=2000 k=32 T=20 dist=uniform]
+Dataset written to input.txt  [n=2000, k=32, T=20, dist=uniform, seed=42, R=10000]
+    knn                       PASS  MAE=0.0000  mismatches=0/2000
+    kmeans                    PASS  MAE=0.0000  mismatches=0/2000
+    approx_knn                PASS  n=2000  all intensities in [0,255]  coords match
+
+  [n=2000 k=32 T=20 dist=dense]
+Dataset written to input.txt  [n=2000, k=32, T=20, dist=dense, seed=42, R=10000]
+    knn                       PASS  MAE=0.0000  mismatches=0/2000
+    kmeans                    PASS  MAE=0.0000  mismatches=0/2000
+    approx_knn                PASS  n=2000  all intensities in [0,255]  coords match
+
+  [n=2000 k=32 T=20 dist=clustered]
+Dataset written to input.txt  [n=2000, k=32, T=20, dist=clustered, seed=42, R=10000]
+    knn                       PASS  MAE=0.0000  mismatches=0/2000
+    kmeans                    PASS  MAE=0.0000  mismatches=0/2000
+    approx_knn                PASS  n=2000  all intensities in [0,255]  coords match
+
+  [n=2000 k=32 T=20 dist=skewed]
+Dataset written to input.txt  [n=2000, k=32, T=20, dist=skewed, seed=42, R=10000]
+    knn                       PASS  MAE=0.0000  mismatches=0/2000
+    kmeans                    PASS  MAE=0.0000  mismatches=0/2000
+    approx_knn                PASS  n=2000  all intensities in [0,255]  coords match
+
+
+=== Large N: validity only ===
+  [n=5000 k=32 T=20 dist=uniform]
+Dataset written to input.txt  [n=5000, k=32, T=20, dist=uniform, seed=42, R=10000]
+    knn                       PASS  n=5000  all intensities in [0,255]  coords match
+    kmeans                    PASS  n=5000  all intensities in [0,255]  coords match
+    approx_knn                PASS  n=5000  all intensities in [0,255]  coords match
+
+  [n=5000 k=128 T=20 dist=uniform]
+Dataset written to input.txt  [n=5000, k=128, T=20, dist=uniform, seed=42, R=10000]
+    knn                       PASS  n=5000  all intensities in [0,255]  coords match
+    kmeans                    PASS  n=5000  all intensities in [0,255]  coords match
+    approx_knn                PASS  n=5000  all intensities in [0,255]  coords match
+
+  [n=10000 k=32 T=20 dist=uniform]
+Dataset written to input.txt  [n=10000, k=32, T=20, dist=uniform, seed=42, R=10000]
+    knn                       PASS  n=10000  all intensities in [0,255]  coords match
+    kmeans                    PASS  n=10000  all intensities in [0,255]  coords match
+    approx_knn                PASS  n=10000  all intensities in [0,255]  coords match
+
+  [n=10000 k=32 T=20 dist=dense]
+Dataset written to input.txt  [n=10000, k=32, T=20, dist=dense, seed=42, R=10000]
+    knn                       PASS  n=10000  all intensities in [0,255]  coords match
+    kmeans                    PASS  n=10000  all intensities in [0,255]  coords match
+    approx_knn                PASS  n=10000  all intensities in [0,255]  coords match
+
+  [n=10000 k=32 T=20 dist=clustered]
+Dataset written to input.txt  [n=10000, k=32, T=20, dist=clustered, seed=42, R=10000]
+    knn                       PASS  n=10000  all intensities in [0,255]  coords match
+    kmeans                    PASS  n=10000  all intensities in [0,255]  coords match
+    approx_knn                PASS  n=10000  all intensities in [0,255]  coords match
+
+  [n=10000 k=32 T=20 dist=skewed]
+Dataset written to input.txt  [n=10000, k=32, T=20, dist=skewed, seed=42, R=10000]
+    knn                       PASS  n=10000  all intensities in [0,255]  coords match
+    kmeans                    PASS  n=10000  all intensities in [0,255]  coords match
+    approx_knn                PASS  n=10000  all intensities in [0,255]  coords match
+
+  [n=10000 k=1 T=20 dist=uniform]
+Dataset written to input.txt  [n=10000, k=1, T=20, dist=uniform, seed=42, R=10000]
+    knn                       PASS  n=10000  all intensities in [0,255]  coords match
+    kmeans                    PASS  n=10000  all intensities in [0,255]  coords match
+    approx_knn                PASS  n=10000  all intensities in [0,255]  coords match
+
+  [n=10000 k=128 T=20 dist=uniform]
+Dataset written to input.txt  [n=10000, k=128, T=20, dist=uniform, seed=42, R=10000]
+    knn                       PASS  n=10000  all intensities in [0,255]  coords match
+    kmeans                    PASS  n=10000  all intensities in [0,255]  coords match
+    approx_knn                PASS  n=10000  all intensities in [0,255]  coords match
+
+  [n=25000 k=32 T=20 dist=uniform]
+Dataset written to input.txt  [n=25000, k=32, T=20, dist=uniform, seed=42, R=10000]
+    knn                       PASS  n=25000  all intensities in [0,255]  coords match
+    kmeans                    PASS  n=25000  all intensities in [0,255]  coords match
+    approx_knn                PASS  n=25000  all intensities in [0,255]  coords match
+
+  [n=50000 k=32 T=20 dist=uniform]
+Dataset written to input.txt  [n=50000, k=32, T=20, dist=uniform, seed=42, R=10000]
+    knn                       PASS  n=50000  all intensities in [0,255]  coords match
+    kmeans                    PASS  n=50000  all intensities in [0,255]  coords match
+    approx_knn                PASS  n=50000  all intensities in [0,255]  coords match
+
+  [n=50000 k=64 T=30 dist=uniform]
+Dataset written to input.txt  [n=50000, k=64, T=30, dist=uniform, seed=42, R=10000]
+    knn                       PASS  n=50000  all intensities in [0,255]  coords match
+    kmeans                    PASS  n=50000  all intensities in [0,255]  coords match
+    approx_knn                PASS  n=50000  all intensities in [0,255]  coords match
+
+  [n=100000 k=32 T=20 dist=uniform]
+Dataset written to input.txt  [n=100000, k=32, T=20, dist=uniform, seed=42, R=10000]
+    knn                       PASS  n=100000  all intensities in [0,255]  coords match
+    kmeans                    PASS  n=100000  all intensities in [0,255]  coords match
+    approx_knn                PASS  n=100000  all intensities in [0,255]  coords match
+
+  [n=100000 k=128 T=50 dist=uniform]
+Dataset written to input.txt  [n=100000, k=128, T=50, dist=uniform, seed=42, R=10000]
+    knn                       PASS  n=100000  all intensities in [0,255]  coords match
+    kmeans                    PASS  n=100000  all intensities in [0,255]  coords match
+    approx_knn                PASS  n=100000  all intensities in [0,255]  coords match
+
+
+========================================
+ SUMMARY:  114 / 117 passed
+ 3 TEST(S) FAILED
+========================================
+========================================
+ BUILD
+========================================
+rm -f a2 *.txt results.csv
+nvcc -O3 -arch=sm_35 -Xcompiler -fopenmp solution.cu -o a2
+
+========================================
+ CORRECTNESS TESTS  (vs sequential.py)
+ N <= 2000: exact MAE=0 required
+ N >  2000: validity check (range + coords)
+========================================
+
+=== Edge / tiny N ===
+  [n=1 k=0 T=1 dist=uniform]
+Dataset written to input.txt  [n=1, k=0, T=1, dist=uniform, seed=42, R=10000]
+    knn                       PASS  MAE=0.0000  mismatches=0/1
+    kmeans                    
+    approx_knn                PASS  n=1  all intensities in [0,255]  coords match
+
+  [n=2 k=1 T=1 dist=uniform]
+Dataset written to input.txt  [n=2, k=1, T=1, dist=uniform, seed=42, R=10000]
+    knn                       PASS  MAE=0.0000  mismatches=0/2
+    kmeans                    PASS  MAE=0.0000  mismatches=0/2
+    approx_knn                PASS  n=2  all intensities in [0,255]  coords match
+
+  [n=10 k=3 T=5 dist=uniform]
+Dataset written to input.txt  [n=10, k=3, T=5, dist=uniform, seed=42, R=10000]
+    knn                       PASS  MAE=0.0000  mismatches=0/10
+    kmeans                    PASS  MAE=0.0000  mismatches=0/10
+    approx_knn                PASS  n=10  all intensities in [0,255]  coords match
+
+  [n=50 k=10 T=10 dist=uniform]
+Dataset written to input.txt  [n=50, k=10, T=10, dist=uniform, seed=42, R=10000]
+    knn                       PASS  MAE=0.0000  mismatches=0/50
+    kmeans                    PASS  MAE=0.0000  mismatches=0/50
+    approx_knn                PASS  n=50  all intensities in [0,255]  coords match
+
+
+=== Small N: vary k (n=100, T=20, uniform) ===
+  [n=100 k=1 T=20 dist=uniform]
+Dataset written to input.txt  [n=100, k=1, T=20, dist=uniform, seed=42, R=10000]
+    knn                       PASS  MAE=0.0000  mismatches=0/100
+    kmeans                    PASS  MAE=0.0000  mismatches=0/100
+    approx_knn                PASS  n=100  all intensities in [0,255]  coords match
+
+  [n=100 k=4 T=20 dist=uniform]
+Dataset written to input.txt  [n=100, k=4, T=20, dist=uniform, seed=42, R=10000]
+    knn                       PASS  MAE=0.0000  mismatches=0/100
+    kmeans                    PASS  MAE=0.0000  mismatches=0/100
+    approx_knn                PASS  n=100  all intensities in [0,255]  coords match
+
+  [n=100 k=16 T=20 dist=uniform]
+Dataset written to input.txt  [n=100, k=16, T=20, dist=uniform, seed=42, R=10000]
+    knn                       PASS  MAE=0.0000  mismatches=0/100
+    kmeans                    PASS  MAE=0.0000  mismatches=0/100
+    approx_knn                PASS  n=100  all intensities in [0,255]  coords match
+
+  [n=100 k=32 T=20 dist=uniform]
+Dataset written to input.txt  [n=100, k=32, T=20, dist=uniform, seed=42, R=10000]
+    knn                       PASS  MAE=0.0000  mismatches=0/100
+    kmeans                    PASS  MAE=0.0000  mismatches=0/100
+    approx_knn                PASS  n=100  all intensities in [0,255]  coords match
+
+  [n=100 k=64 T=20 dist=uniform]
+Dataset written to input.txt  [n=100, k=64, T=20, dist=uniform, seed=42, R=10000]
+    knn                       PASS  MAE=0.0000  mismatches=0/100
+    kmeans                    PASS  MAE=0.0000  mismatches=0/100
+    approx_knn                PASS  n=100  all intensities in [0,255]  coords match
+
+  [n=100 k=99 T=20 dist=uniform]
+Dataset written to input.txt  [n=100, k=99, T=20, dist=uniform, seed=42, R=10000]
+    knn                       PASS  MAE=0.0000  mismatches=0/100
+    kmeans                    PASS  MAE=0.0000  mismatches=0/100
+    approx_knn                PASS  n=100  all intensities in [0,255]  coords match
+
+
+=== N=500: vary distribution ===
+  [n=500 k=32 T=20 dist=uniform]
+Dataset written to input.txt  [n=500, k=32, T=20, dist=uniform, seed=42, R=10000]
+    knn                       PASS  MAE=0.0000  mismatches=0/500
+    kmeans                    PASS  MAE=0.0000  mismatches=0/500
+    approx_knn                PASS  n=500  all intensities in [0,255]  coords match
+
+  [n=500 k=32 T=20 dist=dense]
+Dataset written to input.txt  [n=500, k=32, T=20, dist=dense, seed=42, R=10000]
+    knn                       PASS  MAE=0.0000  mismatches=0/500
+    kmeans                    PASS  MAE=0.0000  mismatches=0/500
+    approx_knn                PASS  n=500  all intensities in [0,255]  coords match
+
+  [n=500 k=32 T=20 dist=clustered]
+Dataset written to input.txt  [n=500, k=32, T=20, dist=clustered, seed=42, R=10000]
+    knn                       PASS  MAE=0.0000  mismatches=0/500
+    kmeans                    PASS  MAE=0.0000  mismatches=0/500
+    approx_knn                PASS  n=500  all intensities in [0,255]  coords match
+
+  [n=500 k=32 T=20 dist=skewed]
+Dataset written to input.txt  [n=500, k=32, T=20, dist=skewed, seed=42, R=10000]
+    knn                       PASS  MAE=0.0000  mismatches=0/500
+    kmeans                    PASS  MAE=0.0000  mismatches=0/500
+    approx_knn                PASS  n=500  all intensities in [0,255]  coords match
+
+
+=== N=1000: vary k ===
+  [n=1000 k=1 T=20 dist=uniform]
+Dataset written to input.txt  [n=1000, k=1, T=20, dist=uniform, seed=42, R=10000]
+    knn                       PASS  MAE=0.0000  mismatches=0/1000
+    kmeans                    PASS  MAE=0.0000  mismatches=0/1000
+    approx_knn                PASS  n=1000  all intensities in [0,255]  coords match
+
+  [n=1000 k=16 T=20 dist=uniform]
+Dataset written to input.txt  [n=1000, k=16, T=20, dist=uniform, seed=42, R=10000]
+    knn                       PASS  MAE=0.0000  mismatches=0/1000
+    kmeans                    PASS  MAE=0.0000  mismatches=0/1000
+    approx_knn                PASS  n=1000  all intensities in [0,255]  coords match
+
+  [n=1000 k=32 T=20 dist=uniform]
+Dataset written to input.txt  [n=1000, k=32, T=20, dist=uniform, seed=42, R=10000]
+    knn                       PASS  MAE=0.0000  mismatches=0/1000
+    kmeans                    PASS  MAE=0.0000  mismatches=0/1000
+    approx_knn                PASS  n=1000  all intensities in [0,255]  coords match
+
+  [n=1000 k=64 T=20 dist=uniform]
+Dataset written to input.txt  [n=1000, k=64, T=20, dist=uniform, seed=42, R=10000]
+    knn                       PASS  MAE=0.0000  mismatches=0/1000
+    kmeans                    PASS  MAE=0.0000  mismatches=0/1000
+    approx_knn                PASS  n=1000  all intensities in [0,255]  coords match
+
+  [n=1000 k=128 T=20 dist=uniform]
+Dataset written to input.txt  [n=1000, k=128, T=20, dist=uniform, seed=42, R=10000]
+    knn                       PASS  MAE=0.0000  mismatches=0/1000
+    kmeans                    PASS  MAE=0.0000  mismatches=0/1000
+    approx_knn                PASS  n=1000  all intensities in [0,255]  coords match
+
+
+=== N=1000: vary T ===
+  [n=1000 k=32 T=1 dist=uniform]
+Dataset written to input.txt  [n=1000, k=32, T=1, dist=uniform, seed=42, R=10000]
+    knn                       PASS  MAE=0.0000  mismatches=0/1000
+    kmeans                    PASS  MAE=0.0000  mismatches=0/1000
+    approx_knn                PASS  n=1000  all intensities in [0,255]  coords match
+
+  [n=1000 k=32 T=5 dist=uniform]
+Dataset written to input.txt  [n=1000, k=32, T=5, dist=uniform, seed=42, R=10000]
+    knn                       PASS  MAE=0.0000  mismatches=0/1000
+    kmeans                    PASS  MAE=0.0000  mismatches=0/1000
+    approx_knn                PASS  n=1000  all intensities in [0,255]  coords match
+
+  [n=1000 k=32 T=50 dist=uniform]
+Dataset written to input.txt  [n=1000, k=32, T=50, dist=uniform, seed=42, R=10000]
+    knn                       PASS  MAE=0.0000  mismatches=0/1000
+    kmeans                    PASS  MAE=0.0000  mismatches=0/1000
+    approx_knn                PASS  n=1000  all intensities in [0,255]  coords match
+
+
+=== N=2000: distributions ===
+  [n=2000 k=32 T=20 dist=uniform]
+Dataset written to input.txt  [n=2000, k=32, T=20, dist=uniform, seed=42, R=10000]
+    knn                       PASS  MAE=0.0000  mismatches=0/2000
+    kmeans                    PASS  MAE=0.0000  mismatches=0/2000
+    approx_knn                PASS  n=2000  all intensities in [0,255]  coords match
+
+  [n=2000 k=32 T=20 dist=dense]
+Dataset written to input.txt  [n=2000, k=32, T=20, dist=dense, seed=42, R=10000]
+    knn                       PASS  MAE=0.0000  mismatches=0/2000
+    kmeans                    PASS  MAE=0.0000  mismatches=0/2000
+    approx_knn                PASS  n=2000  all intensities in [0,255]  coords match
+
+  [n=2000 k=32 T=20 dist=clustered]
+Dataset written to input.txt  [n=2000, k=32, T=20, dist=clustered, seed=42, R=10000]
+    knn                       PASS  MAE=0.0000  mismatches=0/2000
+    kmeans                    PASS  MAE=0.0000  mismatches=0/2000
+    approx_knn                PASS  n=2000  all intensities in [0,255]  coords match
+
+  [n=2000 k=32 T=20 dist=skewed]
+Dataset written to input.txt  [n=2000, k=32, T=20, dist=skewed, seed=42, R=10000]
+    knn                       PASS  MAE=0.0000  mismatches=0/2000
+    kmeans                    PASS  MAE=0.0000  mismatches=0/2000
+    approx_knn                PASS  n=2000  all intensities in [0,255]  coords match
+
+
+=== Large N: validity only ===
+  [n=5000 k=32 T=20 dist=uniform]
+Dataset written to input.txt  [n=5000, k=32, T=20, dist=uniform, seed=42, R=10000]
+    knn                       PASS  n=5000  all intensities in [0,255]  coords match
+    kmeans                    PASS  n=5000  all intensities in [0,255]  coords match
+    approx_knn                PASS  n=5000  all intensities in [0,255]  coords match
+
+  [n=5000 k=128 T=20 dist=uniform]
+Dataset written to input.txt  [n=5000, k=128, T=20, dist=uniform, seed=42, R=10000]
+    knn                       PASS  n=5000  all intensities in [0,255]  coords match
+    kmeans                    PASS  n=5000  all intensities in [0,255]  coords match
+    approx_knn                PASS  n=5000  all intensities in [0,255]  coords match
+
+  [n=10000 k=32 T=20 dist=uniform]
+Dataset written to input.txt  [n=10000, k=32, T=20, dist=uniform, seed=42, R=10000]
+    knn                       PASS  n=10000  all intensities in [0,255]  coords match
+    kmeans                    PASS  n=10000  all intensities in [0,255]  coords match
+    approx_knn                PASS  n=10000  all intensities in [0,255]  coords match
+
+  [n=10000 k=32 T=20 dist=dense]
+Dataset written to input.txt  [n=10000, k=32, T=20, dist=dense, seed=42, R=10000]
+    knn                       PASS  n=10000  all intensities in [0,255]  coords match
+    kmeans                    PASS  n=10000  all intensities in [0,255]  coords match
+    approx_knn                PASS  n=10000  all intensities in [0,255]  coords match
+
+  [n=10000 k=32 T=20 dist=clustered]
+Dataset written to input.txt  [n=10000, k=32, T=20, dist=clustered, seed=42, R=10000]
+    knn                       PASS  n=10000  all intensities in [0,255]  coords match
+    kmeans                    PASS  n=10000  all intensities in [0,255]  coords match
+    approx_knn                PASS  n=10000  all intensities in [0,255]  coords match
+
+  [n=10000 k=32 T=20 dist=skewed]
+Dataset written to input.txt  [n=10000, k=32, T=20, dist=skewed, seed=42, R=10000]
+    knn                       PASS  n=10000  all intensities in [0,255]  coords match
+    kmeans                    PASS  n=10000  all intensities in [0,255]  coords match
+    approx_knn                PASS  n=10000  all intensities in [0,255]  coords match
+
+  [n=10000 k=1 T=20 dist=uniform]
+Dataset written to input.txt  [n=10000, k=1, T=20, dist=uniform, seed=42, R=10000]
+    knn                       PASS  n=10000  all intensities in [0,255]  coords match
+    kmeans                    PASS  n=10000  all intensities in [0,255]  coords match
+    approx_knn                PASS  n=10000  all intensities in [0,255]  coords match
+
+  [n=10000 k=128 T=20 dist=uniform]
+Dataset written to input.txt  [n=10000, k=128, T=20, dist=uniform, seed=42, R=10000]
+    knn                       PASS  n=10000  all intensities in [0,255]  coords match
+    kmeans                    PASS  n=10000  all intensities in [0,255]  coords match
+    approx_knn                PASS  n=10000  all intensities in [0,255]  coords match
+
+  [n=25000 k=32 T=20 dist=uniform]
+Dataset written to input.txt  [n=25000, k=32, T=20, dist=uniform, seed=42, R=10000]
+    knn                       PASS  n=25000  all intensities in [0,255]  coords match
+    kmeans                    PASS  n=25000  all intensities in [0,255]  coords match
+    approx_knn                PASS  n=25000  all intensities in [0,255]  coords match
+
+  [n=50000 k=32 T=20 dist=uniform]
+Dataset written to input.txt  [n=50000, k=32, T=20, dist=uniform, seed=42, R=10000]
+    knn                       PASS  n=50000  all intensities in [0,255]  coords match
+    kmeans                    PASS  n=50000  all intensities in [0,255]  coords match
+    approx_knn                PASS  n=50000  all intensities in [0,255]  coords match
+
+  [n=50000 k=64 T=30 dist=uniform]
+Dataset written to input.txt  [n=50000, k=64, T=30, dist=uniform, seed=42, R=10000]
+    knn                       PASS  n=50000  all intensities in [0,255]  coords match
+    kmeans                    PASS  n=50000  all intensities in [0,255]  coords match
+    approx_knn                PASS  n=50000  all intensities in [0,255]  coords match
+
+  [n=100000 k=32 T=20 dist=uniform]
+Dataset written to input.txt  [n=100000, k=32, T=20, dist=uniform, seed=42, R=10000]
+    knn                       PASS  n=100000  all intensities in [0,255]  coords match
+    kmeans                    PASS  n=100000  all intensities in [0,255]  coords match
+    approx_knn                PASS  n=100000  all intensities in [0,255]  coords match
+
+  [n=100000 k=128 T=50 dist=uniform]
+Dataset written to input.txt  [n=100000, k=128, T=50, dist=uniform, seed=42, R=10000]
+    knn                       PASS  n=100000  all intensities in [0,255]  coords match
+    kmeans                    PASS  n=100000  all intensities in [0,255]  coords match
+    approx_knn                PASS  n=100000  all intensities in [0,255]  coords match
+
+
+========================================
+ SUMMARY:  116 / 117 passed
+ 1 TEST(S) FAILED
+========================================

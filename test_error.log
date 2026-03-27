@@ -1,0 +1,20 @@
+nvcc warning : The 'compute_35', 'compute_37', 'compute_50', 'sm_35', 'sm_37' and 'sm_50' architectures are deprecated, and may be removed in a future release (Use -Wno-deprecated-gpu-targets to suppress warning).
+Traceback (most recent call last):
+  File "gen_input.py", line 124, in <module>
+    seed=args.seed, dist=args.dist, R=args.range)
+  File "gen_input.py", line 94, in generate_dataset
+    assert 1 <= k <= 128,    f"k={k} out of range"
+AssertionError: k=0 out of range
+Traceback (most recent call last):
+  File "<stdin>", line 4, in <module>
+  File "<stdin>", line 3, in read
+FileNotFoundError: [Errno 2] No such file or directory: 'knn.txt'
+Traceback (most recent call last):
+  File "<stdin>", line 4, in <module>
+  File "<stdin>", line 3, in read
+FileNotFoundError: [Errno 2] No such file or directory: 'kmeans.txt'
+nvcc warning : The 'compute_35', 'compute_37', 'compute_50', 'sm_35', 'sm_37' and 'sm_50' architectures are deprecated, and may be removed in a future release (Use -Wno-deprecated-gpu-targets to suppress warning).
+Traceback (most recent call last):
+  File "<stdin>", line 4, in <module>
+  File "<stdin>", line 3, in read
+FileNotFoundError: [Errno 2] No such file or directory: 'kmeans.txt'
