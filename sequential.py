@@ -32,7 +32,7 @@ def equalize(hist, orig, m):
         if v == orig:
             if m == cdf_min:
                 return orig
-            val = round((cdf - cdf_min) / (m - cdf_min) * 255)
+            val = int(math.floor((cdf - cdf_min) / (m - cdf_min) * 255.0))
             return max(0, min(255, val))
     return orig
 

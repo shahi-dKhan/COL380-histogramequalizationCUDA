@@ -93,9 +93,8 @@ __device__ __forceinline__ int equalize_point(const int * __restrict__ hist, int
         if (cdf > 0 && cdf_min < 0) cdf_min = cdf;
         if (v == orig) {
             if (m == cdf_min) return orig;
-            int val = __float2int_rn(
-                static_cast<float>(cdf - cdf_min) /
-                static_cast<float>(m   - cdf_min) * (INTENSITY_LEVELS - 1));
+            double temp = ((double)(cdf - cdf_min) / (double)(m - cdf_min)) * 255.0;
+            int val = (int)floor(temp);
             return max(0, min(INTENSITY_LEVELS - 1, val));
         }
     }
