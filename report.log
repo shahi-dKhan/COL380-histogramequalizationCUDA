@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.26 (TeX Live 2024) (preloaded format=pdflatex 2024.12.26)  27 MAR 2026 03:54
+This is pdfTeX, Version 3.141592653-2.6-1.40.26 (TeX Live 2024) (preloaded format=pdflatex 2024.12.26)  27 MAR 2026 18:08
 entering extended mode
  restricted \write18 enabled.
  file:line:error style messages enabled.
@@ -675,16 +675,17 @@ File: umsb.fd 2013/01/14 v3.01 AMS symbols B
 \openout5 = `report.toc'.
 
  [2] [3{/usr/local/texlive/2024/texmf-dist/fonts/enc/dvips/cm-super/cm-super-ts1.enc}] [4] [5]
-LaTeX Font Info:    Trying to load font information for OMS+cmr on input line 291.
+LaTeX Font Info:    Trying to load font information for OMS+cmr on input line 292.
  (/usr/local/texlive/2024/texmf-dist/tex/latex/base/omscmr.fd
 File: omscmr.fd 2023/04/13 v2.5m Standard LaTeX font definitions
 )
 LaTeX Font Info:    Font shape `OMS/cmr/m/n' in size <10.95> not available
-(Font)              Font shape `OMS/cmsy/m/n' tried instead on input line 291.
-Package pgfplots info on input line 349: Using 'lua backend=false' for axis: xmode=log unsupported (yet).
-Package pgfplots info on input line 349: Using 'lua backend=false' for axis: ymode=log unsupported (yet).
- [6] [7] [8] [9] [10]
-Overfull \hbox (88.26955pt too wide) in paragraph at lines 663--674
+(Font)              Font shape `OMS/cmsy/m/n' tried instead on input line 292.
+ [6]
+Package pgfplots info on input line 350: Using 'lua backend=false' for axis: xmode=log unsupported (yet).
+Package pgfplots info on input line 350: Using 'lua backend=false' for axis: ymode=log unsupported (yet).
+ [7] [8] [9] [10]
+Overfull \hbox (88.26955pt too wide) in paragraph at lines 656--667
  [][] 
  []
 
@@ -694,21 +695,21 @@ LaTeX2e <2023-11-01> patch level 1
 L3 programming layer <2024-02-20>
  ***********
 Package rerunfilecheck Info: File `report.out' has not changed.
-(rerunfilecheck)             Checksum: 3CB23EC7CC61C8B343807C2B4EE1D7F2;5861.
+(rerunfilecheck)             Checksum: C84862C88CF65A02A4D113D7E10598C4;6062.
  ) 
 Here is how much of TeX's memory you used:
- 34504 strings out of 474116
- 787786 string characters out of 5743681
+ 34506 strings out of 474116
+ 787816 string characters out of 5743681
  2031187 words of memory out of 5000000
- 56275 multiletter control sequences out of 15000+600000
+ 56276 multiletter control sequences out of 15000+600000
  567616 words of font info for 73 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
  99i,19n,107p,825b,2293s stack positions out of 10000i,1000n,20000p,200000b,200000s
 </usr/local/texlive/2024/texmf-dist/fonts/type1/public/amsfonts/cm/cmbx10.pfb></usr/local/texlive/2024/texmf-dist/fonts/type1/public/amsfonts/cm/cmbx12.pfb></usr/local/texlive/2024/texmf-dist/fonts/type1/public/amsfonts/cm/cmex10.pfb></usr/local/texlive/2024/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi10.pfb></usr/local/texlive/2024/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi12.pfb></usr/local/texlive/2024/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi8.pfb></usr/local/texlive/2024/texmf-dist/fonts/type1/public/amsfonts/cm/cmr10.pfb></usr/local/texlive/2024/texmf-dist/fonts/type1/public/amsfonts/cm/cmr12.pfb></usr/local/texlive/2024/texmf-dist/fonts/type1/public/amsfonts/cm/cmr8.pfb></usr/local/texlive/2024/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy10.pfb></usr/local/texlive/2024/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy8.pfb></usr/local/texlive/2024/texmf-dist/fonts/type1/public/amsfonts/cm/cmti10.pfb></usr/local/texlive/2024/texmf-dist/fonts/type1/public/amsfonts/cm/cmtt10.pfb></usr/local/texlive/2024/texmf-dist/fonts/type1/public/cm-super/sfrm1095.pfb>
-Output written on report.pdf (12 pages, 232748 bytes).
+Output written on report.pdf (12 pages, 230923 bytes).
 PDF statistics:
- 348 PDF objects out of 1000 (max. 8388607)
- 302 compressed objects within 4 object streams
- 79 named destinations out of 1000 (max. 500000)
- 245 words of extra memory for PDF output out of 10000 (max. 10000000)
+ 352 PDF objects out of 1000 (max. 8388607)
+ 306 compressed objects within 4 object streams
+ 80 named destinations out of 1000 (max. 500000)
+ 253 words of extra memory for PDF output out of 10000 (max. 10000000)
 

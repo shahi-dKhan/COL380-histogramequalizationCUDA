@@ -220,6 +220,19 @@ Based on the results (Section~\ref{sec:results}), the non-tiled KNN with
 max-heap and the uniform-grid approx KNN were selected as the best-performing
 combination.  
 
+\subsection{Compiler-Level Optimisations}
+The binary is compiled with the following \texttt{nvcc} flags:
+\begin{lstlisting}
+nvcc -O3 -arch=sm_35 -Xcompiler -fopenmp solution.cu -o a2
+\end{lstlisting}
+
+\begin{itemize}
+  \item \texttt{-O3}
+
+  \item \texttt{-arch=sm\_35}
+  
+\end{itemize}
+
 \subsection{Heap vs.\ Unsorted Array for Exact KNN}
 
 The unsorted-array variant maintains the $k$ nearest candidates in a plain

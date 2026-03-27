@@ -13,22 +13,23 @@
 \@writefile{toc}{\contentsline {subsection}{\numberline {3.1}Shared-Memory Tiling (Exact KNN)}{4}{subsection.3.1}\protected@file@percent }
 \@writefile{toc}{\contentsline {subsection}{\numberline {3.2}Spatial Hashing (Approximate KNN)}{5}{subsection.3.2}\protected@file@percent }
 \@writefile{toc}{\contentsline {subsection}{\numberline {3.3}Implementation Selection and Consolidated Binary}{5}{subsection.3.3}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsection}{\numberline {3.4}Heap vs.\ Unsorted Array for Exact KNN}{5}{subsection.3.4}\protected@file@percent }
-\@writefile{toc}{\contentsline {section}{\numberline {4}Experimental Setup}{5}{section.4}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {3.4}Compiler-Level Optimisations}{5}{subsection.3.4}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {3.5}Heap vs.\ Unsorted Array for Exact KNN}{5}{subsection.3.5}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{\numberline {4}Experimental Setup}{6}{section.4}\protected@file@percent }
 \@writefile{lot}{\contentsline {table}{\numberline {1}{\ignorespaces Point distributions used in experiments.}}{6}{table.caption.2}\protected@file@percent }
 \providecommand*\caption@xref[2]{\@setref\relax\@undefined{#1}}
 \newlabel{tab:dists}{{1}{6}{Point distributions used in experiments}{table.caption.2}{}}
 \@writefile{toc}{\contentsline {section}{\numberline {5}Results and Analysis}{6}{section.5}\protected@file@percent }
 \newlabel{sec:results}{{5}{6}{Results and Analysis}{section.5}{}}
 \@writefile{toc}{\contentsline {subsection}{\numberline {5.1}Scalability with $N$ (Group A)}{6}{subsection.5.1}\protected@file@percent }
-\@writefile{lot}{\contentsline {table}{\numberline {2}{\ignorespaces Group A: Runtime (seconds) as $N$ varies ($k=32$, $T=20$, uniform, non-tiled variant). Speedup = KNN / Approx; values ${<}1$ mean Approx is slower.}}{6}{table.caption.3}\protected@file@percent }
-\newlabel{tab:vary_n}{{2}{6}{Group A: Runtime (seconds) as $N$ varies ($k=32$, $T=20$, uniform, non-tiled variant). Speedup = KNN / Approx; values ${<}1$ mean Approx is slower}{table.caption.3}{}}
+\@writefile{lot}{\contentsline {table}{\numberline {2}{\ignorespaces Group A: Runtime (seconds) as $N$ varies ($k=32$, $T=20$, uniform, non-tiled variant). Speedup = KNN / Approx; values ${<}1$ mean Approx is slower.}}{7}{table.caption.3}\protected@file@percent }
+\newlabel{tab:vary_n}{{2}{7}{Group A: Runtime (seconds) as $N$ varies ($k=32$, $T=20$, uniform, non-tiled variant). Speedup = KNN / Approx; values ${<}1$ mean Approx is slower}{table.caption.3}{}}
 \@writefile{lof}{\contentsline {figure}{\numberline {1}{\ignorespaces Runtime vs.\ $N$ (log--log scale). KNN follows $O(N^2)$; Approx KNN has a constant host-side overhead that makes it slower than KNN for small $N$, but wins for $N \ge 25\,000$.}}{7}{figure.caption.4}\protected@file@percent }
 \newlabel{fig:vary_n}{{1}{7}{Runtime vs.\ $N$ (log--log scale). KNN follows $O(N^2)$; Approx KNN has a constant host-side overhead that makes it slower than KNN for small $N$, but wins for $N \ge 25\,000$}{figure.caption.4}{}}
 \@writefile{toc}{\contentsline {subsection}{\numberline {5.2}Tiled vs.\ Non-Tiled Exact KNN}{7}{subsection.5.2}\protected@file@percent }
 \@writefile{lot}{\contentsline {table}{\numberline {3}{\ignorespaces Exact KNN runtime (seconds): tiled vs.\ non-tiled ($k=32$, $T=20$, uniform). Speedup is Tiled/Non-tiled; values $>1$ favour tiling.}}{7}{table.caption.5}\protected@file@percent }
 \newlabel{tab:tiled_vs_notiled}{{3}{7}{Exact KNN runtime (seconds): tiled vs.\ non-tiled ($k=32$, $T=20$, uniform). Speedup is Tiled/Non-tiled; values $>1$ favour tiling}{table.caption.5}{}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {5.3}Scalability with $k$ (Group B)}{7}{subsection.5.3}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {5.3}Scalability with $k$ (Group B)}{8}{subsection.5.3}\protected@file@percent }
 \@writefile{lot}{\contentsline {table}{\numberline {4}{\ignorespaces Group B: Runtime (seconds) as $k$ varies ($N=10\,000$, $T=20$, uniform, non-tiled).}}{8}{table.caption.6}\protected@file@percent }
 \newlabel{tab:vary_k}{{4}{8}{Group B: Runtime (seconds) as $k$ varies ($N=10\,000$, $T=20$, uniform, non-tiled)}{table.caption.6}{}}
 \@writefile{toc}{\contentsline {subsection}{\numberline {5.4}K-Means Iterations $T$ (Group C)}{8}{subsection.5.4}\protected@file@percent }
@@ -54,7 +55,7 @@
 \@writefile{lot}{\contentsline {table}{\numberline {11}{\ignorespaces Summary of optimisation impacts.}}{11}{table.caption.13}\protected@file@percent }
 \newlabel{tab:summary}{{11}{11}{Summary of optimisation impacts}{table.caption.13}{}}
 \@writefile{toc}{\contentsline {subsection}{\numberline {6.2}Register Pressure and Tiling Limits}{11}{subsection.6.2}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsection}{\numberline {6.3}Approximate KNN Accuracy}{12}{subsection.6.3}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {6.3}Approximate KNN Accuracy}{11}{subsection.6.3}\protected@file@percent }
 \@writefile{toc}{\contentsline {subsection}{\numberline {6.4}Spatial Hashing vs.\ Grid: When to Use Which}{12}{subsection.6.4}\protected@file@percent }
 \@writefile{toc}{\contentsline {section}{\numberline {7}Conclusion}{12}{section.7}\protected@file@percent }
 \gdef \@abspage@last{12}
